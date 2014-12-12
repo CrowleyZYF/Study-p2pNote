@@ -42,12 +42,17 @@ public class listAdapter extends SimpleAdapter{
 		if(convertView==null){
 			this.inflater = (LayoutInflater) context.getSystemService(Context.LAYOUT_INFLATER_SERVICE);
 			convertView = inflater.inflate(R.layout.index_listview_item, null);
-			String teString=(String) ((TextView)convertView.findViewById(R.id.item_name)).getText();
+			localView = super.getView(position, convertView, parent);			
+		}else{
 			localView = super.getView(position, convertView, parent);
-			if(((TextView)convertView.findViewById(R.id.item_name)).getText()=="陆金所-富赢人生"){
-				((TextView)convertView.findViewById(R.id.item_name)).setTextColor(Color.rgb(233, 84, 4));
-			}
-		}		
+		}
+		if(((TextView)convertView.findViewById(R.id.item_name)).getText().toString().equals("陆金所-富赢人生")){
+			((TextView)convertView.findViewById(R.id.item_name)).setTextColor(this.context.getResources().getColor(R.color.company02));
+		}else if(((TextView)convertView.findViewById(R.id.item_name)).getText().toString().equals("人人贷-优选计划")){
+			//((TextView)convertView.findViewById(R.id.item_name)).setTextColor(Color.rgb(133, 4, 4));
+			((TextView)convertView.findViewById(R.id.item_name)).setTextColor(this.context.getResources().getColor(R.color.company01));
+			
+		}
 		return localView;
 	}
 
