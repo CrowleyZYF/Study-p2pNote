@@ -25,9 +25,11 @@ import android.widget.AdapterView;
 import android.widget.AdapterView.OnItemSelectedListener;
 import android.widget.ArrayAdapter;
 import android.widget.DatePicker;
+import android.widget.EditText;
 import android.widget.SimpleAdapter;
 import android.widget.Spinner;
 import android.widget.TextView;
+import android.widget.Toast;
 
 public class NewItemActivity extends Activity implements OnItemSelectedListener,android.view.View.OnClickListener{
 	
@@ -82,6 +84,11 @@ public class NewItemActivity extends Activity implements OnItemSelectedListener,
 	private SimpleAdapter method_Adapter;
 	private List<Map<String, Object>> methodList;
 	
+	//收益率
+	private EditText minEditText;
+	private EditText maxEditText;
+	private TextView middle2TextView;
+	
 	//日期
 	private Calendar cal;
 	private int year;
@@ -107,6 +114,9 @@ public class NewItemActivity extends Activity implements OnItemSelectedListener,
 		typeSpinner = (Spinner) findViewById(R.id.type);
 		rateSpinner = (Spinner) findViewById(R.id.earning_rate);
 		methodSpinner = (Spinner) findViewById(R.id.earning_method);
+		minEditText = (EditText) findViewById(R.id.earning_min);
+		maxEditText = (EditText) findViewById(R.id.earning_max);
+		middle2TextView = (TextView) findViewById(R.id.middle2);
 		begin_time = (TextView) findViewById(R.id.begin_time);
 		end_time = (TextView) findViewById(R.id.end_time);
 		platformList = new ArrayList<Map<String,Object>>();
@@ -128,8 +138,10 @@ public class NewItemActivity extends Activity implements OnItemSelectedListener,
 		
 		
 		platformSpinner.setOnItemSelectedListener(this);
+		rateSpinner.setOnItemSelectedListener(this);
 		begin_time.setOnClickListener(this);
 		end_time.setOnClickListener(this);
+		
 		
 		
 		/*SQLiteDatabase db = openOrCreateDatabase("record.db", MODE_PRIVATE, null);
@@ -223,30 +235,47 @@ public class NewItemActivity extends Activity implements OnItemSelectedListener,
 	@Override
 	public void onItemSelected(AdapterView<?> parent, View view, int position,
 			long id) {
-		// TODO Auto-generated method stub
-		Map<String, Object> map = platformList.get(position);
-		String company_name = (String) map.get("company_name");
-		Log.i("m_info", company_name);
+		//Toast.makeText(getApplicationContext(), "id:"+parent.getId(),Toast.LENGTH_SHORT).show();
+		//Log.i("m_info", "id:"+id);
 		if(init==false){
+			Map<String, Object> map = platformList.get(position);
+			String company_name = (String) map.get("company_name");
 			init=true;
 			for(int i=0;i<typeMap.get(company_name).size();i++){
 				typeList.add(typeMap.get(company_name).get(i));
 			}
 			type_adapter=new SimpleAdapter(this, typeList, R.layout.select_type_item, new String[]{"company_icon","type_name"}, new int[]{R.id.company_icon,R.id.type_name});
 			typeSpinner.setAdapter(type_adapter);
-		}else{
-			typeList.clear();
-			for(int i=0;i<typeMap.get(company_name).size();i++){
-				typeList.add(typeMap.get(company_name).get(i));
+		}else{			
+			switch (parent.getId()) {
+			case R.id.platform:{
+				Map<String, Object> map = platformList.get(position);
+				String company_name = (String) map.get("company_name");
+				typeList.clear();
+				for(int i=0;i<typeMap.get(company_name).size();i++){
+					typeList.add(typeMap.get(company_name).get(i));
+				}
+				type_adapter.notifyDataSetChanged();				
+				break;			
 			}
-			type_adapter.notifyDataSetChanged();
-		}		
-		
-		
-		/*String cityName = adapter.getItem(position);
-		//String city = list.get(position);
-		textView.setText("你选择的城市是"+cityName);*/
-		
+			case R.id.earning_rate:{
+				Map<String, Object> map = rateList.get(position);
+				String earning_rate_name = (String) map.get("earning_rate_name");
+				if (earning_rate_name.equals(getResources().getString(R.string.select_earning_item02))) {
+					minEditText.setVisibility(View.GONE);
+					middle2TextView.setVisibility(View.GONE);
+					maxEditText.setHint("收益率");
+				}else{
+					minEditText.setVisibility(View.VISIBLE);
+					middle2TextView.setVisibility(View.VISIBLE);
+					maxEditText.setHint("上限");
+				}				
+				break;				
+			}
+			default:
+				break;
+			}
+		}				
 	}
 
 	@Override
@@ -261,8 +290,7 @@ public class NewItemActivity extends Activity implements OnItemSelectedListener,
 		// TODO Auto-generated method stub
 		switch (v.getId()) {
 		case R.id.begin_time:{
-			new DatePickerDialog(this, new OnDateSetListener() {
-				
+			new DatePickerDialog(this, new OnDateSetListener() {				
 				@Override
 				public void onDateSet(DatePicker view, int year, int monthOfYear, int dayOfMonth) {
 					// TODO Auto-generated method stub
@@ -273,8 +301,7 @@ public class NewItemActivity extends Activity implements OnItemSelectedListener,
 		}
 		case R.id.end_time:{
 			begin=false;
-			new DatePickerDialog(this, new OnDateSetListener() {
-				
+			new DatePickerDialog(this, new OnDateSetListener() {				
 				@Override
 				public void onDateSet(DatePicker view, int year, int monthOfYear, int dayOfMonth) {
 					// TODO Auto-generated method stub
