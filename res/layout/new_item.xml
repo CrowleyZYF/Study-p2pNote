@@ -190,12 +190,15 @@
 	                    android:layout_height="wrap_content"
                         >
                         
-                        <TextView
+                        <Spinner
+                            android:id="@+id/type"
                             android:layout_width="match_parent"
                             android:layout_height="match_parent"
                             android:layout_alignParentRight="true"
-                            android:gravity="center_vertical|right"
-                            android:text="富赢人生（P2P）" />
+                            android:gravity="center_vertical|right"                            
+                            android:spinnerMode="dialog"
+                            android:background="@drawable/icon_bg"
+                            android:prompt="@string/select_type" />
                         
                     </RelativeLayout>
                     
@@ -208,6 +211,7 @@
 			            />
                 </RelativeLayout>
             </LinearLayout>
+            
             <LinearLayout 
                 android:layout_width="match_parent"
 	            android:layout_height="0dp"
@@ -233,12 +237,16 @@
 	                    android:layout_height="wrap_content"
                         >
                         
-                        <TextView
+                        <EditText
                             android:layout_width="match_parent"
                             android:layout_height="match_parent"
                             android:layout_alignParentRight="true"
                             android:gravity="center_vertical|right"
-                            android:text="100,000元" />
+                			android:inputType="numberSigned" 
+                			android:textSize="18sp"
+                			android:paddingRight="10dp"
+                            android:hint="请输入本金"
+                            android:background="@drawable/icon_bg" />
                         
                     </RelativeLayout>
                     
@@ -276,12 +284,15 @@
 	                    android:layout_height="wrap_content"
                         >
                         
-                        <TextView
+                        <Spinner
+                            android:id="@+id/earning_rate"
                             android:layout_width="match_parent"
                             android:layout_height="match_parent"
                             android:layout_alignParentRight="true"
                             android:gravity="center_vertical|right"
-                            android:text="5%~8%" />
+                            android:spinnerMode="dialog"
+                            android:background="@drawable/icon_bg"
+                            android:prompt="@string/select_earning" />
                         
                     </RelativeLayout>
                     
@@ -324,7 +335,9 @@
                             android:layout_height="match_parent"
                             android:layout_alignParentRight="true"
                             android:gravity="center_vertical|right"
-                            android:text="XXXXX" />
+                			android:textSize="18sp"
+                			android:paddingRight="10dp"
+                            android:text="5%~8%" />
                         
                     </RelativeLayout>
                     
@@ -362,12 +375,15 @@
 	                    android:layout_height="wrap_content"
                         >
                         
-                        <TextView
+                        <Spinner
+                            android:id="@+id/earning_method"
                             android:layout_width="match_parent"
                             android:layout_height="match_parent"
                             android:layout_alignParentRight="true"
                             android:gravity="center_vertical|right"
-                            android:text="2014-11-15" />
+                            android:spinnerMode="dialog"
+                            android:background="@drawable/icon_bg"
+                            android:prompt="@string/select_earning" />
                         
                     </RelativeLayout>
                     
@@ -406,10 +422,59 @@
                         >
                         
                         <TextView
+                            android:id="@+id/begin_time"
                             android:layout_width="match_parent"
                             android:layout_height="match_parent"
                             android:layout_alignParentRight="true"
                             android:gravity="center_vertical|right"
+                			android:textSize="18sp"
+                			android:paddingRight="10dp"
+                            android:text="2014-11-15" />
+                        
+                    </RelativeLayout>
+                    
+                    <ImageView 
+			            android:id="@+id/tab_line1"
+			            android:layout_width="match_parent"
+			            android:layout_height="1dp"
+			            android:background="@drawable/tab_line"
+			            android:layout_alignParentBottom="true"
+			            />
+                </RelativeLayout>
+            </LinearLayout>
+            <LinearLayout 
+                android:layout_width="match_parent"
+	            android:layout_height="0dp"
+	            android:layout_weight="1"
+	            android:orientation="horizontal"
+                >
+                
+                <TextView 
+                    android:layout_width="0dp"
+                    android:layout_height="match_parent"
+                    android:layout_weight="1"
+                    android:text="@string/new_item_info08"
+                    android:gravity="center_vertical|left"/>
+                
+                <RelativeLayout 
+                    android:layout_width="0dp"
+                    android:layout_height="match_parent"
+                    android:layout_weight="3"
+                    >
+                    
+                    <RelativeLayout 
+                        android:layout_width="match_parent"
+	                    android:layout_height="wrap_content"
+                        >
+                        
+                        <TextView
+                            android:id="@+id/end_time"
+                            android:layout_width="match_parent"
+                            android:layout_height="match_parent"
+                            android:layout_alignParentRight="true"
+                            android:gravity="center_vertical|right"
+                			android:textSize="18sp"
+                			android:paddingRight="10dp"
                             android:text="2014-11-20" />
                         
                     </RelativeLayout>
@@ -431,7 +496,7 @@
         <LinearLayout 
             android:layout_width="match_parent"
             android:layout_height="0dp"
-            android:layout_weight="2"
+            android:layout_weight="1"
             android:background="@color/tab_bg"
             ></LinearLayout>
     </LinearLayout>
