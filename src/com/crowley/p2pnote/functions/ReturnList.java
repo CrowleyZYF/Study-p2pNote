@@ -47,7 +47,7 @@ public class ReturnList {
 		R.drawable.company_icon09
 		};	
 
-	private int parseDay(String date){
+	public int parseDay(String date){
 		String[] time=date.split("-");
 		int year=Integer.parseInt(time[0]);
 		int month=Integer.parseInt(time[1]);

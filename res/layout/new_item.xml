@@ -52,7 +52,7 @@
             android:orientation="horizontal">
             
             <LinearLayout 
-	            android:id="@+id/tab_index"
+	            android:id="@+id/new_item_sure_button"
 	            android:orientation="vertical"
 	            android:layout_width="0dp"
 	            android:layout_height="match_parent"
@@ -76,7 +76,7 @@
                 android:src="@drawable/new_item_line"/>
 	        
 	        <LinearLayout 
-	            android:id="@+id/tab_water"
+	            android:id="@+id/new_item_cancel_button"
 	            android:orientation="vertical"
 	            android:layout_width="0dp"
 	            android:layout_height="match_parent"
@@ -238,6 +238,7 @@
                         >
                         
                         <EditText
+                            android:id="@+id/money"
                             android:layout_width="match_parent"
                             android:layout_height="match_parent"
                             android:layout_alignParentRight="true"

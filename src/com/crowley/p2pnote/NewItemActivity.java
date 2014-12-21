@@ -7,6 +7,7 @@ import java.util.List;
 import java.util.Map;
 
 import com.crowley.p2pnote.db.DBOpenHelper;
+import com.crowley.p2pnote.functions.ReturnList;
 
 import android.R.integer;
 import android.app.Activity;
@@ -14,10 +15,12 @@ import android.app.DatePickerDialog;
 import android.app.DatePickerDialog.OnDateSetListener;
 import android.content.ContentValues;
 import android.content.DialogInterface;
+import android.content.Intent;
 import android.content.DialogInterface.OnClickListener;
 import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
 import android.os.Bundle;
+import android.text.TextUtils;
 import android.util.Log;
 import android.view.View;
 import android.view.Window;
@@ -26,6 +29,7 @@ import android.widget.AdapterView.OnItemSelectedListener;
 import android.widget.ArrayAdapter;
 import android.widget.DatePicker;
 import android.widget.EditText;
+import android.widget.LinearLayout;
 import android.widget.SimpleAdapter;
 import android.widget.Spinner;
 import android.widget.TextView;
@@ -34,6 +38,7 @@ import android.widget.Toast;
 public class NewItemActivity extends Activity implements OnItemSelectedListener,android.view.View.OnClickListener{
 	
 	public static final String TABLENAME = "record";
+	private ReturnList returnList;
 	
 	//平台图标
 	public static final int[] PLATFORM_ICONS = {
@@ -98,6 +103,13 @@ public class NewItemActivity extends Activity implements OnItemSelectedListener,
 	private TextView end_time;
 	private boolean begin = true;
 	
+	//按钮
+	private LinearLayout new_item_sure;
+	private LinearLayout new_item_cancel;
+	
+	//其他
+	private EditText money;
+	
 	//数据库
 	
 	
@@ -110,8 +122,10 @@ public class NewItemActivity extends Activity implements OnItemSelectedListener,
 		//初始化
 		//DBOpenHelper helper = new DBOpenHelper(NewItemActivity.this, "record.db");
 		//SQLiteDatabase db = helper.getWritableDatabase();		
+		returnList = new ReturnList();
 		platformSpinner = (Spinner) findViewById(R.id.platform);
 		typeSpinner = (Spinner) findViewById(R.id.type);
+		money=(EditText) findViewById(R.id.money);
 		rateSpinner = (Spinner) findViewById(R.id.earning_rate);
 		methodSpinner = (Spinner) findViewById(R.id.earning_method);
 		minEditText = (EditText) findViewById(R.id.earning_min);
@@ -119,6 +133,8 @@ public class NewItemActivity extends Activity implements OnItemSelectedListener,
 		middle2TextView = (TextView) findViewById(R.id.middle2);
 		begin_time = (TextView) findViewById(R.id.begin_time);
 		end_time = (TextView) findViewById(R.id.end_time);
+		new_item_sure = (LinearLayout) findViewById(R.id.new_item_sure_button);
+		new_item_cancel = (LinearLayout) findViewById(R.id.new_item_cancel_button);
 		platformList = new ArrayList<Map<String,Object>>();
 		rateList = new ArrayList<Map<String,Object>>();
 		methodList = new ArrayList<Map<String,Object>>();
@@ -141,7 +157,10 @@ public class NewItemActivity extends Activity implements OnItemSelectedListener,
 		rateSpinner.setOnItemSelectedListener(this);
 		begin_time.setOnClickListener(this);
 		end_time.setOnClickListener(this);
+		new_item_sure.setOnClickListener(this);
+		new_item_cancel.setOnClickListener(this);
 		
+		/*
 		DBOpenHelper helper = new DBOpenHelper(NewItemActivity.this, "record.db");
 		SQLiteDatabase db = helper.getWritableDatabase();
 		Cursor cursor = db.rawQuery("select * from record", null);
@@ -161,6 +180,7 @@ public class NewItemActivity extends Activity implements OnItemSelectedListener,
 			cursor.close();
 		}
 		db.close();
+		*/
 		
 		/*SQLiteDatabase db = openOrCreateDatabase("record.db", MODE_PRIVATE, null);
 		db.execSQL("create table if not exists record (_id integer primary key autoincrement,platform text not null,type text not null,money real not null,earningMin real not null,earningMax real not null,method integer not null,timeBegin text not null,timeEnd text not null)");
@@ -238,8 +258,7 @@ public class NewItemActivity extends Activity implements OnItemSelectedListener,
     		List<Map<String, Object>> typesList = new ArrayList<Map<String, Object>>();
     		for(int j=0;j<8;j++){
     			Map<String, Object> map2=new HashMap<String, Object>();
-        		map2.put("company_icon", PLATFORM_ICONS[i]);
-        		map2.put("type_name", getResources().getString(PLATFORM_NAMES[i])+":投资项目"+j);
+        		map2.put("earning_rate_name", getResources().getString(PLATFORM_NAMES[i])+"项目"+j);
     			typesList.add(map2);
     			if(i==8){
     				j=100;
@@ -262,7 +281,7 @@ public class NewItemActivity extends Activity implements OnItemSelectedListener,
 			for(int i=0;i<typeMap.get(company_name).size();i++){
 				typeList.add(typeMap.get(company_name).get(i));
 			}
-			type_adapter=new SimpleAdapter(this, typeList, R.layout.select_type_item, new String[]{"company_icon","type_name"}, new int[]{R.id.company_icon,R.id.type_name});
+			type_adapter=new SimpleAdapter(this, typeList, R.layout.select_earning_item, new String[]{"earning_rate_name"}, new int[]{R.id.earning_rate_name});
 			typeSpinner.setAdapter(type_adapter);
 		}else{			
 			switch (parent.getId()) {
@@ -312,7 +331,15 @@ public class NewItemActivity extends Activity implements OnItemSelectedListener,
 				@Override
 				public void onDateSet(DatePicker view, int year, int monthOfYear, int dayOfMonth) {
 					// TODO Auto-generated method stub
-					begin_time.setText(year+"-"+(monthOfYear+1)+"-"+dayOfMonth);
+					String divide1="-";
+					String divide2="-";
+					if((monthOfYear+1)<10){
+						divide1="-0";
+					}
+					if((dayOfMonth)<10){
+						divide2="-0";
+					}
+					begin_time.setText(year+divide1+(monthOfYear+1)+divide2+dayOfMonth);
 				}
 			}, year, cal.get(Calendar.MONTH), day).show();
 			break;
@@ -323,9 +350,101 @@ public class NewItemActivity extends Activity implements OnItemSelectedListener,
 				@Override
 				public void onDateSet(DatePicker view, int year, int monthOfYear, int dayOfMonth) {
 					// TODO Auto-generated method stub
-					end_time.setText(year+"-"+(monthOfYear+1)+"-"+dayOfMonth);
+					String divide1="-";
+					String divide2="-";
+					if((monthOfYear+1)<10){
+						divide1="-0";
+					}
+					if((dayOfMonth)<10){
+						divide2="-0";
+					}
+					end_time.setText(year+divide1+(monthOfYear+1)+divide2+dayOfMonth);
 				}
 			}, year, cal.get(Calendar.MONTH), day).show();
+			break;
+		}
+		case R.id.new_item_sure_button:{
+			String errorString="";
+			Boolean erroredBoolean=false;
+			String company= ((Map<String, Object>) (platformSpinner.getSelectedItem())).get("company_name").toString();
+			String type = ((Map<String, Object>) (typeSpinner.getSelectedItem())).get("earning_rate_name").toString();
+			String rate = ((Map<String, Object>) (rateSpinner.getSelectedItem())).get("earning_rate_name").toString();
+			Float moneys=0.0f;
+			if(TextUtils.isEmpty(money.getText())){
+				erroredBoolean=true;
+				errorString="本金数目不得为空";	
+			}else{
+				moneys = Float.parseFloat(money.getText().toString());
+				if(moneys<=0){
+					erroredBoolean=true;
+					errorString="请输入大于0的本金数目";				
+				}
+			}			
+			Float min = 0.0f;
+			Float max = 0.0f;
+			if(rate.equals("浮动收益率")){
+				if(TextUtils.isEmpty(minEditText.getText())||TextUtils.isEmpty(maxEditText.getText())){
+					erroredBoolean=true;
+					errorString="收益率不得为空";	
+				}else{
+					min = Float.parseFloat(minEditText.getText().toString())/100;
+					if(min<0){
+						erroredBoolean=true;
+						errorString="请输入大于0的下限数目";				
+					}
+					max = Float.parseFloat(maxEditText.getText().toString())/100;
+					if(max<min){
+						erroredBoolean=true;
+						errorString="收益率上限应大于收益率下限";				
+					}
+				}				
+			}else{
+				if(TextUtils.isEmpty(maxEditText.getText())){
+					erroredBoolean=true;
+					errorString="收益率不得为空";	
+				}else{
+					max = Float.parseFloat(maxEditText.getText().toString())/100;
+					if(max<0){
+						erroredBoolean=true;
+						errorString="收益率不得为空";				
+					}
+				}
+			}			
+			String test = ((Map<String, Object>) (methodSpinner.getSelectedItem())).get("earning_rate_name").toString();
+			int method=0;
+			if (test.equals("到期还本息")) {
+				method=0;
+			}else if(test.equals("按月还本息")){
+				method=1;
+			}else{
+				method=2;
+			}
+			String begin_dayString=begin_time.getText().toString();
+			String end_dayString=end_time.getText().toString();
+			if(returnList.parseDay(begin_dayString)>returnList.parseDay(end_dayString)){
+				erroredBoolean=true;
+				errorString="结束时间应晚于计息时间";	
+			}
+			String sqlString="insert into record(platform,type,money,earningMin,earningMax,method,timeBegin,timeEnd) values('"+company+"','"+type+"',"+moneys+","+min+","+max+","+method+",'"+begin_dayString+"','"+end_dayString+"')";
+			/*DBOpenHelper helper = new DBOpenHelper(NewItemActivity.this, "record.db");
+			SQLiteDatabase db = helper.getWritableDatabase();
+			db.execSQL(sqlString);
+			Intent intent=new Intent(this,MainActivity.class);
+            startActivity(intent);*/
+			if (erroredBoolean) {
+				Toast.makeText(getApplicationContext(), errorString, Toast.LENGTH_SHORT).show();
+			}else{
+				DBOpenHelper helper = new DBOpenHelper(NewItemActivity.this, "record.db");
+				SQLiteDatabase db = helper.getWritableDatabase();
+				db.execSQL(sqlString);
+				Intent intent=new Intent(this,MainActivity.class);
+	            startActivity(intent);
+			}			
+			break;
+		}
+		case R.id.new_item_cancel_button:{
+			Intent intent=new Intent(this,MainActivity.class);
+            startActivity(intent);
 			break;
 		}
 		default:
