@@ -108,8 +108,8 @@ public class NewItemActivity extends Activity implements OnItemSelectedListener,
 		setContentView(R.layout.new_item);
 		
 		//≥ı ºªØ
-		DBOpenHelper helper = new DBOpenHelper(NewItemActivity.this, "record.db");
-		SQLiteDatabase db = helper.getWritableDatabase();		
+		//DBOpenHelper helper = new DBOpenHelper(NewItemActivity.this, "record.db");
+		//SQLiteDatabase db = helper.getWritableDatabase();		
 		platformSpinner = (Spinner) findViewById(R.id.platform);
 		typeSpinner = (Spinner) findViewById(R.id.type);
 		rateSpinner = (Spinner) findViewById(R.id.earning_rate);
@@ -142,7 +142,25 @@ public class NewItemActivity extends Activity implements OnItemSelectedListener,
 		begin_time.setOnClickListener(this);
 		end_time.setOnClickListener(this);
 		
-		
+		DBOpenHelper helper = new DBOpenHelper(NewItemActivity.this, "record.db");
+		SQLiteDatabase db = helper.getWritableDatabase();
+		Cursor cursor = db.rawQuery("select * from record", null);
+		if(cursor!=null){
+			while (cursor.moveToNext()) {
+				Log.i("m_info", "_id:"+cursor.getInt(cursor.getColumnIndex("_id")));
+				Log.i("m_info", "platform:"+cursor.getString(cursor.getColumnIndex("platform")));
+				Log.i("m_info", "type:"+cursor.getString(cursor.getColumnIndex("type")));
+				Log.i("m_info", "money:"+cursor.getFloat(cursor.getColumnIndex("money")));
+				Log.i("m_info", "earningMin:"+cursor.getFloat(cursor.getColumnIndex("earningMin")));
+				Log.i("m_info", "earningMax:"+cursor.getFloat(cursor.getColumnIndex("earningMax")));
+				Log.i("m_info", "method:"+cursor.getInt(cursor.getColumnIndex("method")));
+				Log.i("m_info", "timeBegin:"+cursor.getString(cursor.getColumnIndex("timeBegin")));
+				Log.i("m_info", "timeEnd:"+cursor.getString(cursor.getColumnIndex("timeEnd")));
+				Log.i("m_info", "!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!");
+			}
+			cursor.close();
+		}
+		db.close();
 		
 		/*SQLiteDatabase db = openOrCreateDatabase("record.db", MODE_PRIVATE, null);
 		db.execSQL("create table if not exists record (_id integer primary key autoincrement,platform text not null,type text not null,money real not null,earningMin real not null,earningMax real not null,method integer not null,timeBegin text not null,timeEnd text not null)");

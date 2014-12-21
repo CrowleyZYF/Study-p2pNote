@@ -1,21 +1,14 @@
 package com.crowley.p2pnote;
 
 import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-import com.crowley.p2pnote.db.DBOpenHelper;
 import com.crowley.p2pnote.functions.ReturnList;
 import com.crowley.p2pnote.ui.listAdapter;
 
-import android.R.integer;
 import android.app.Fragment;
-import android.content.ContentValues;
-import android.database.Cursor;
-import android.database.sqlite.SQLiteDatabase;
 import android.os.Bundle;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.View.OnClickListener;
@@ -26,14 +19,10 @@ import android.widget.RelativeLayout;
 import android.widget.TextView;
 
 public class WaterFragment extends Fragment implements OnClickListener{
-	
-	private View view;
-	
+		
 	private ListView listView;
 	private listAdapter list_adapter;
 	private List<Map<String, Object>> dataList;
-	
-	List list = new ArrayList();
 	
 	private ReturnList returnList;
 	

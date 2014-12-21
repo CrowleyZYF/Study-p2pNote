@@ -1,6 +1,7 @@
 package com.crowley.p2pnote.functions;
 
 import java.util.ArrayList;
+import java.util.Calendar;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -16,6 +17,11 @@ import com.crowley.p2pnote.R;
 import com.crowley.p2pnote.db.DBOpenHelper;
 
 public class ReturnList {
+	
+	private Calendar cal;
+	private int year;
+	private int month;
+	private int day;
 	
 	public static final int[] PLATFORM_NAMES = {
 		R.string.company_name01,
@@ -49,6 +55,7 @@ public class ReturnList {
 		return year*365+month*30+day;		
 	}
 	
+	//type为0表示时间，1表示金额，2表示收益率
 	public List<Map<String, Object>> waterSort(Context context,int type,boolean des){
 		DBOpenHelper helper = new DBOpenHelper(context, "record.db");
 		SQLiteDatabase db = helper.getWritableDatabase();
@@ -214,5 +221,109 @@ public class ReturnList {
 		}
 		db.close();
 		return dataList;		
+	}
+	
+	//type为0表示已经到期，1表示即将到期
+	public List<Map<String, Object>> indexList(Context context,int type){
+		cal=Calendar.getInstance();
+        year = cal.get(Calendar.YEAR);
+        month = cal.get(Calendar.MONTH)+1;
+        day = cal.get(Calendar.DAY_OF_MONTH);
+		DBOpenHelper helper = new DBOpenHelper(context, "record.db");
+		SQLiteDatabase db = helper.getWritableDatabase();
+		Cursor cursor = db.rawQuery("select * from record", null);
+		List<Map<String, Object>> dataList=new ArrayList<Map<String,Object>>();
+		if(cursor!=null){
+			while (cursor.moveToNext()) {
+				Map<String, Object> map=new HashMap<String, Object>();
+				switch (type) {
+				case 0:{
+					int nowDays=year*365+month*30+day;
+					if(parseDay(cursor.getString(cursor.getColumnIndex("timeEnd")))<=nowDays){
+						map.put("time", cursor.getString(cursor.getColumnIndex("timeEnd")));
+						int icon = PLATFORM_ICONS[0];
+						for(int i=0;i<9;i++){
+							if(cursor.getString(cursor.getColumnIndex("platform")).equals(context.getResources().getString(PLATFORM_NAMES[i]))){
+								icon=PLATFORM_ICONS[i];						
+							}
+						}
+						map.put("item_icon", icon);
+						map.put("item_name", cursor.getString(cursor.getColumnIndex("platform"))+"-"+cursor.getString(cursor.getColumnIndex("type")));
+						map.put("item_money", cursor.getFloat(cursor.getColumnIndex("money")));
+						if (cursor.getFloat(cursor.getColumnIndex("earningMin"))==0.0) {
+							map.put("item_profit", (cursor.getFloat(cursor.getColumnIndex("earningMax"))*100)+"%");					
+						}else{
+							map.put("item_profit", (cursor.getFloat(cursor.getColumnIndex("earningMin"))*100)+"%~"+(cursor.getFloat(cursor.getColumnIndex("earningMax"))*100)+"%");
+						}
+						dataList.add(map);						
+					}
+					break;
+				}
+				case 1:{
+					int daysLeft=parseDay(cursor.getString(cursor.getColumnIndex("timeEnd")))-(year*365+month*30+day);
+					if(daysLeft<100&&daysLeft>0){
+						map.put("time", cursor.getString(cursor.getColumnIndex("timeEnd")));
+						int icon = PLATFORM_ICONS[0];
+						for(int i=0;i<9;i++){
+							if(cursor.getString(cursor.getColumnIndex("platform")).equals(context.getResources().getString(PLATFORM_NAMES[i]))){
+								icon=PLATFORM_ICONS[i];						
+							}
+						}
+						map.put("item_icon", icon);
+						map.put("item_name", cursor.getString(cursor.getColumnIndex("platform"))+"-"+cursor.getString(cursor.getColumnIndex("type")));
+						map.put("item_money", cursor.getFloat(cursor.getColumnIndex("money")));
+						if (cursor.getFloat(cursor.getColumnIndex("earningMin"))==0.0) {
+							map.put("item_profit", (cursor.getFloat(cursor.getColumnIndex("earningMax"))*100)+"%");					
+						}else{
+							map.put("item_profit", (cursor.getFloat(cursor.getColumnIndex("earningMin"))*100)+"%~"+(cursor.getFloat(cursor.getColumnIndex("earningMax"))*100)+"%");
+						}
+						dataList.add(map);						
+					}
+					break;
+				}
+				default:
+					break;
+				}
+				
+			}
+		}
+		return dataList;		
+	}
+	
+	//type为0表示已经到期，1表示即将到期
+	public int indexCount(Context context,int type){
+		cal=Calendar.getInstance();
+        year = cal.get(Calendar.YEAR);
+        month = cal.get(Calendar.MONTH)+1;
+        day = cal.get(Calendar.DAY_OF_MONTH);
+		DBOpenHelper helper = new DBOpenHelper(context, "record.db");
+		SQLiteDatabase db = helper.getWritableDatabase();
+		Cursor cursor = db.rawQuery("select * from record", null);
+		int count=0;
+		if(cursor!=null){
+			while (cursor.moveToNext()) {
+				Map<String, Object> map=new HashMap<String, Object>();
+				switch (type) {
+				case 0:{
+					int nowDays=year*365+month*30+day;
+					if(parseDay(cursor.getString(cursor.getColumnIndex("timeEnd")))<=nowDays){
+						count++;						
+					}
+					break;
+				}
+				case 1:{
+					int daysLeft=parseDay(cursor.getString(cursor.getColumnIndex("timeEnd")))-(year*365+month*30+day);
+					if(daysLeft<100&&daysLeft>0){
+						count++;						
+					}
+					break;
+				}
+				default:
+					break;
+				}
+				
+			}
+		}
+		return count;		
 	}
 }
