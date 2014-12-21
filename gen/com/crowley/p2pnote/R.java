@@ -1046,10 +1046,12 @@ containing a value of this type.
         public static final int water=0x7f02007a;
         public static final int water_arrow_down=0x7f02007b;
         public static final int water_arrow_down_chosen=0x7f02007c;
-        public static final int water_focus=0x7f02007d;
-        public static final int water_small_line_gray=0x7f02007e;
-        public static final int water_small_line_white=0x7f02007f;
-        public static final int yellow=0x7f020080;
+        public static final int water_arrow_up=0x7f02007d;
+        public static final int water_arrow_up_chosen=0x7f02007e;
+        public static final int water_focus=0x7f02007f;
+        public static final int water_small_line_gray=0x7f020080;
+        public static final int water_small_line_white=0x7f020081;
+        public static final int yellow=0x7f020082;
     }
     public static final class id {
         public static final int action_bar=0x7f05001c;
@@ -1063,7 +1065,7 @@ containing a value of this type.
         public static final int action_menu_divider=0x7f050016;
         public static final int action_menu_presenter=0x7f050017;
         public static final int action_mode_close_button=0x7f050024;
-        public static final int action_settings=0x7f050091;
+        public static final int action_settings=0x7f050097;
         public static final int activity_chooser_view_content=0x7f050025;
         public static final int always=0x7f05000b;
         public static final int back=0x7f050065;
@@ -1108,9 +1110,15 @@ containing a value of this type.
         public static final int index_info_basic03_title=0x7f05004b;
         public static final int index_info_time=0x7f050041;
         public static final int index_items=0x7f05004d;
-        public static final int invest_money=0x7f05008e;
-        public static final int invest_profit=0x7f05008f;
+        public static final int invest_money=0x7f050090;
+        public static final int invest_money_icon=0x7f050092;
+        public static final int invest_money_text=0x7f050091;
+        public static final int invest_profit=0x7f050093;
+        public static final int invest_profit_icon=0x7f050095;
+        public static final int invest_profit_text=0x7f050094;
         public static final int invest_time=0x7f05008d;
+        public static final int invest_time_icon=0x7f05008f;
+        public static final int invest_time_text=0x7f05008e;
         public static final int item_icon=0x7f050057;
         public static final int item_money=0x7f05005a;
         public static final int item_name=0x7f050058;
@@ -1196,7 +1204,7 @@ containing a value of this type.
         public static final int type_name=0x7f05007d;
         public static final int up=0x7f050021;
         public static final int useLogo=0x7f050003;
-        public static final int water_list_view=0x7f050090;
+        public static final int water_list_view=0x7f050096;
         public static final int withText=0x7f05000c;
     }
     public static final class integer {
