@@ -2,6 +2,7 @@ package com.crowley.p2pnote;
 
 import java.util.ArrayList;
 
+import com.crowley.p2pnote.functions.ReturnList;
 import com.github.mikephil.charting.charts.PieChart;
 import com.github.mikephil.charting.data.Entry;
 import com.github.mikephil.charting.data.PieData;
@@ -22,13 +23,14 @@ import android.widget.TextView;
 public class AnalyzeFragment extends Fragment{
 	
 	private PieChart mChart;
+	private ReturnList returnList;
 	
 	@Override
 	public View onCreateView(LayoutInflater inflater, ViewGroup container,
 			Bundle savedInstanceState) {
 		// TODO Auto-generated method stub
 		View v = inflater.inflate(R.layout.analyze_fragment, container, false);
-		
+		returnList=new ReturnList();
 		mChart = (PieChart) v.findViewById(R.id.pieChart1);
         mChart.setDescription("");
         
@@ -59,27 +61,42 @@ public class AnalyzeFragment extends Fragment{
 	
 	protected PieData generatePieData() {
         
-        int count = 4;
+
+        ArrayList<String> xVals = returnList.analyzexVals(this.getActivity(), 0, "2015-12-01", "2015-12-31");
+        int count = xVals.size();
         
-        ArrayList<Entry> entries1 = new ArrayList<Entry>();
-        ArrayList<String> xVals = new ArrayList<String>();
-        
-        xVals.add("陆金所");
-        xVals.add("人人贷");
-        xVals.add("爱投资");
-        xVals.add("点融网");
+        ArrayList<Entry> entries1 = returnList.analyzeEntries(this.getActivity(), 0, "2015-12-01", "2015-12-31", xVals);       
         
         for(int i = 0; i < count; i++) {
             xVals.add("entry" + (i+1));    
-            entries1.add(new Entry((float) (Math.random() * 60) + 40, i));
+            //entries1.add(new Entry((float) (Math.random() * 60) + 40, i));
         }
         
-        PieDataSet ds1 = new PieDataSet(entries1, "投资平台占比");
+        PieDataSet ds1 = new PieDataSet(entries1, "");
+        //ds1.setColors(ColorTemplate.VORDIPLOM_COLORS);
         ds1.setColors(ColorTemplate.VORDIPLOM_COLORS);
         ds1.setSliceSpace(2f);
         
         PieData d = new PieData(xVals, ds1);
         return d;
+		/*int count = 1;
+        
+        ArrayList<Entry> entries1 = new ArrayList<Entry>();
+        ArrayList<String> xVals = new ArrayList<String>();
+        
+        xVals.add("该月没有投资记录");
+        
+        for(int i = 0; i < count; i++) {
+            xVals.add("entry" + (i+1));    
+            entries1.add(new Entry(100f, i));
+        }
+        
+        PieDataSet ds1 = new PieDataSet(entries1, "");
+        ds1.setColors(ColorTemplate.VORDIPLOM_COLORS);
+        ds1.setSliceSpace(2f);
+        
+        PieData d = new PieData(xVals, ds1);
+        return d;*/
     }
 
 }

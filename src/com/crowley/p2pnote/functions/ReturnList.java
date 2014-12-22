@@ -15,6 +15,7 @@ import android.database.sqlite.SQLiteDatabase;
 
 import com.crowley.p2pnote.R;
 import com.crowley.p2pnote.db.DBOpenHelper;
+import com.github.mikephil.charting.data.Entry;
 
 public class ReturnList {
 	
@@ -49,10 +50,11 @@ public class ReturnList {
 
 	public int parseDay(String date){
 		String[] time=date.split("-");
+		int[] months={0,31,28,31,30,31,30,31,31,30,31,30,31};
 		int year=Integer.parseInt(time[0]);
 		int month=Integer.parseInt(time[1]);
 		int day=Integer.parseInt(time[2]);	
-		return year*365+month*30+day;		
+		return year*365+month*months[month]+day;		
 	}
 	
 	//type为0表示时间，1表示金额，2表示收益率
@@ -287,6 +289,8 @@ public class ReturnList {
 				
 			}
 		}
+		cursor.close();
+		db.close();
 		return dataList;		
 	}
 	
@@ -324,6 +328,108 @@ public class ReturnList {
 				
 			}
 		}
+		cursor.close();
+		db.close();
 		return count;		
+	}
+
+	//type为0表示平台分析
+	public ArrayList<String> analyzexVals(Context context,int type,String beginTimeString,String endTimeString){
+		int begin=parseDay(beginTimeString);
+		int end=parseDay(endTimeString);
+		DBOpenHelper helper = new DBOpenHelper(context, "record.db");
+		SQLiteDatabase db = helper.getWritableDatabase();
+		Cursor cursor = db.rawQuery("select * from record", null);
+        ArrayList<String> xVals = new ArrayList<String>();
+		if(cursor!=null){
+			while (cursor.moveToNext()) {
+				switch (type) {
+				case 0:{
+					int time=parseDay(cursor.getString(cursor.getColumnIndex("timeEnd")));
+					if(time<=end&&time>=begin){
+						if(xVals.size()==0){
+							xVals.add(cursor.getString(cursor.getColumnIndex("platform")));
+						}else{
+							int count=0;
+							for(int i=0;i<xVals.size();i++){
+								if(cursor.getString(cursor.getColumnIndex("platform"))!=xVals.get(i)){
+									count++;																		
+								}
+							}
+							if(count==xVals.size()){
+								xVals.add(cursor.getString(cursor.getColumnIndex("platform")));
+							}
+						}
+					}
+					break;
+				}
+				case 1:{
+					int daysLeft=parseDay(cursor.getString(cursor.getColumnIndex("timeEnd")))-(year*365+month*30+day);
+					if(daysLeft<100&&daysLeft>0){
+						//count++;						
+					}
+					break;
+				}
+				default:
+					break;
+				}
+				
+			}
+		}
+		cursor.close();
+		db.close();
+		return xVals;
+	}
+	
+	
+	//type为0表示平台分析
+	public ArrayList<Entry> analyzeEntries(Context context,int type,String beginTimeString,String endTimeString,ArrayList<String> xVals){
+		int begin=parseDay(beginTimeString);
+		int end=parseDay(endTimeString);
+		DBOpenHelper helper = new DBOpenHelper(context, "record.db");
+		SQLiteDatabase db = helper.getWritableDatabase();
+		Cursor cursor = db.rawQuery("select * from record", null);
+		ArrayList<Entry> entries1 = new ArrayList<Entry>();
+		ArrayList<Integer> counts = new ArrayList<Integer>();
+		int amount=0;
+		for(int i=0;i<xVals.size();i++){
+			counts.add(0);
+		}
+		if(cursor!=null){
+			while (cursor.moveToNext()) {
+				switch (type) {
+				case 0:{
+					int time=parseDay(cursor.getString(cursor.getColumnIndex("timeEnd")));
+					if(time<=end&&time>=begin){
+						for(int i=0;i<xVals.size();i++){
+							String platformString=cursor.getString(cursor.getColumnIndex("platform"));
+							if(platformString.equals(xVals.get(i))){
+								counts.set(i, counts.get(i)+1);
+								amount++;
+							}
+						}
+					}
+					break;
+				}
+				case 1:{
+					int daysLeft=parseDay(cursor.getString(cursor.getColumnIndex("timeEnd")))-(year*365+month*30+day);
+					if(daysLeft<100&&daysLeft>0){
+						//count++;						
+					}
+					break;
+				}
+				default:
+					break;
+				}
+					
+			}
+		}
+		for(int i = 0; i < xVals.size(); i++) {
+			float result=100f*counts.get(i)/amount;
+            entries1.add(new Entry(result, i));
+        }
+		cursor.close();
+		db.close();
+		return entries1;
 	}
 }
