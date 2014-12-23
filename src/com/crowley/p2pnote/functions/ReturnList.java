@@ -47,6 +47,42 @@ public class ReturnList {
 		this.day = this.cal.get(Calendar.DAY_OF_MONTH);
 		this.days=this.year*365+this.month*this.months[this.month]+this.day;
 	}	
+	
+	public String getTime(){
+		String monthString;
+		String dayString;
+		if (month<10) {
+			monthString="-0"+month;			
+		}else{
+			monthString="-"+month;
+		}
+		if (day<10) {
+			dayString="-0"+day;
+		}else{
+			dayString="-"+day;
+		}
+		return year+monthString+dayString;
+	}
+	
+	public String getBaseInfo01Number01(){
+		return "20.95";
+	}
+	
+	public String getBaseInfo01Number02(){
+		return "1";
+	}
+	
+	public String getBaseInfo02Number01(){
+		return "8.5";
+	}
+	
+	public String getBaseInfo02Number02(){
+		return "1.2 %";
+	}
+	
+	public String getBaseInfo03(){
+		return "135600.58";
+	}
 
 	public int parseDay(String date){
 		String[] time=date.split("-");
@@ -56,7 +92,7 @@ public class ReturnList {
 		return year*365+month*this.months[month]+day;		
 	}
 	
-	//type为0表示时间，1表示金额，2表示收益率
+	//type为0表示到期时间，1表示金额，2表示收益率
 	public List<Map<String, Object>> waterSort(int type,boolean des){
 		List<Map<String, Object>> dataList=new ArrayList<Map<String,Object>>();
 		List<Map<String, Object>> temp=new ArrayList<Map<String,Object>>();
@@ -65,7 +101,7 @@ public class ReturnList {
 				temp.clear();
 				Map<String, Object> map=new HashMap<String, Object>();
 				RecordModel record=new RecordModel(allRecords);
-				map.put("time", record.getTimeEnd());
+				map.put("time", record.getTimeBegin()+" 至 "+record.getTimeEnd());
 				int icon = DBOpenHelper.PLATFORM_ICONS[0];
 				for(int i=0;i<9;i++){
 					if((record.getPlatform()).equals(context.getResources().getString(DBOpenHelper.PLATFORM_NAMES[i]))){
@@ -90,7 +126,9 @@ public class ReturnList {
 						boolean judge=false;
 						switch (type) {
 							case 0:{
-								if(parseDay((String) map.get("time"))>(parseDay((String) (dataList.get(i)).get("time")))){
+								String mapString=(((String) map.get("time")).split(" "))[(((String) map.get("time")).split(" ")).length-1];
+								String compareString=(((String) (dataList.get(i)).get("time")).split(" "))[(((String) (dataList.get(i)).get("time")).split(" ")).length-1];
+								if(parseDay(mapString)>(parseDay(compareString))){
 									judge=true;
 								}							
 								break;							
@@ -112,6 +150,14 @@ public class ReturnList {
 									judge=true;
 								}						
 								break;							
+							}
+							case 3:{
+								String mapString=(((String) map.get("time")).split(" "))[0];
+								String compareString=(((String) (dataList.get(i)).get("time")).split(" "))[0];
+								if(parseDay(mapString)>(parseDay(compareString))){
+									judge=true;
+								}							
+								break;
 							}
 							default:
 								break;
@@ -177,7 +223,7 @@ public class ReturnList {
 						break;
 				}
 				if (judge) {
-					map.put("time", record.getTimeEnd());
+					map.put("time", record.getTimeBegin()+" 至 "+record.getTimeEnd());
 					int icon = DBOpenHelper.PLATFORM_ICONS[0];
 					for(int i=0;i<9;i++){
 						if(record.getPlatform().equals(context.getResources().getString(DBOpenHelper.PLATFORM_NAMES[i]))){
