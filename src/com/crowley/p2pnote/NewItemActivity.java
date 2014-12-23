@@ -122,7 +122,7 @@ public class NewItemActivity extends Activity implements OnItemSelectedListener,
 		//初始化
 		//DBOpenHelper helper = new DBOpenHelper(NewItemActivity.this, "record.db");
 		//SQLiteDatabase db = helper.getWritableDatabase();		
-		returnList = new ReturnList();
+		returnList = new ReturnList(this);
 		platformSpinner = (Spinner) findViewById(R.id.platform);
 		typeSpinner = (Spinner) findViewById(R.id.type);
 		money=(EditText) findViewById(R.id.money);
@@ -160,65 +160,7 @@ public class NewItemActivity extends Activity implements OnItemSelectedListener,
 		new_item_sure.setOnClickListener(this);
 		new_item_cancel.setOnClickListener(this);
 		
-		/*
-		DBOpenHelper helper = new DBOpenHelper(NewItemActivity.this, "record.db");
-		SQLiteDatabase db = helper.getWritableDatabase();
-		Cursor cursor = db.rawQuery("select * from record", null);
-		if(cursor!=null){
-			while (cursor.moveToNext()) {
-				Log.i("m_info", "_id:"+cursor.getInt(cursor.getColumnIndex("_id")));
-				Log.i("m_info", "platform:"+cursor.getString(cursor.getColumnIndex("platform")));
-				Log.i("m_info", "type:"+cursor.getString(cursor.getColumnIndex("type")));
-				Log.i("m_info", "money:"+cursor.getFloat(cursor.getColumnIndex("money")));
-				Log.i("m_info", "earningMin:"+cursor.getFloat(cursor.getColumnIndex("earningMin")));
-				Log.i("m_info", "earningMax:"+cursor.getFloat(cursor.getColumnIndex("earningMax")));
-				Log.i("m_info", "method:"+cursor.getInt(cursor.getColumnIndex("method")));
-				Log.i("m_info", "timeBegin:"+cursor.getString(cursor.getColumnIndex("timeBegin")));
-				Log.i("m_info", "timeEnd:"+cursor.getString(cursor.getColumnIndex("timeEnd")));
-				Log.i("m_info", "!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!");
-			}
-			cursor.close();
-		}
-		db.close();
-		*/
 		
-		/*SQLiteDatabase db = openOrCreateDatabase("record.db", MODE_PRIVATE, null);
-		db.execSQL("create table if not exists record (_id integer primary key autoincrement,platform text not null,type text not null,money real not null,earningMin real not null,earningMax real not null,method integer not null,timeBegin text not null,timeEnd text not null)");
-		//db.execSQL("insert into record(platform,type,money,earningMin,earningMax,method,timeBegin,timeEnd) values('陆金所','富赢人生',10000.00,0.05,0.08,0,'2014-12-16','2015-12-16')");
-		//db.execSQL("insert into record(platform,type,money,earningMin,earningMax,method,timeBegin,timeEnd) values('陆金所','富赢人生',10000.00,0.05,0.08,0,'2014-12-17','2015-12-17')");
-		//db.execSQL("insert into record(platform,type,money,earningMin,earningMax,method,timeBegin,timeEnd) values('陆金所','富赢人生',10000.00,0.05,0.08,0,'2014-12-18','2015-12-18')");
-		ContentValues values = new ContentValues();
-		values.put("platform", "陆金所");
-		values.put("type", "富赢人生");
-		values.put("money", 10000.00);
-		values.put("earningMin", 0.01);
-		values.put("earningMax", 0.09);
-		values.put("method", 0);
-		values.put("timeBegin", "2014-12-16");
-		values.put("timeEnd", "2015-12-16");
-		long rowId = db.insert(TABLENAME, null, values);
-		values.clear();
-		values.put("type", "富赢人生123");
-		db.update(TABLENAME, values, "_id>?", new String[]{"3"});
-		//db.delete(TABLENAME, "_id>?", new String[]{"4"});
-		Cursor cursor = db.rawQuery("select * from record", null);
-		
-		if(cursor!=null){
-			while (cursor.moveToNext()) {
-				Log.i("m_info", "_id:"+cursor.getInt(cursor.getColumnIndex("_id")));
-				Log.i("m_info", "platform:"+cursor.getString(cursor.getColumnIndex("platform")));
-				Log.i("m_info", "type:"+cursor.getString(cursor.getColumnIndex("type")));
-				Log.i("m_info", "money:"+cursor.getFloat(cursor.getColumnIndex("money")));
-				Log.i("m_info", "earningMin:"+cursor.getFloat(cursor.getColumnIndex("earningMin")));
-				Log.i("m_info", "earningMax:"+cursor.getFloat(cursor.getColumnIndex("earningMax")));
-				Log.i("m_info", "method:"+cursor.getInt(cursor.getColumnIndex("method")));
-				Log.i("m_info", "timeBegin:"+cursor.getString(cursor.getColumnIndex("timeBegin")));
-				Log.i("m_info", "timeEnd:"+cursor.getString(cursor.getColumnIndex("timeEnd")));
-				Log.i("m_info", "!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!");
-			}
-			cursor.close();
-		}
-		db.close();*/
 	}
 	
 	private void initData(){
@@ -426,11 +368,6 @@ public class NewItemActivity extends Activity implements OnItemSelectedListener,
 				errorString="结束时间应晚于计息时间";	
 			}
 			String sqlString="insert into record(platform,type,money,earningMin,earningMax,method,timeBegin,timeEnd) values('"+company+"','"+type+"',"+moneys+","+min+","+max+","+method+",'"+begin_dayString+"','"+end_dayString+"')";
-			/*DBOpenHelper helper = new DBOpenHelper(NewItemActivity.this, "record.db");
-			SQLiteDatabase db = helper.getWritableDatabase();
-			db.execSQL(sqlString);
-			Intent intent=new Intent(this,MainActivity.class);
-            startActivity(intent);*/
 			if (erroredBoolean) {
 				Toast.makeText(getApplicationContext(), errorString, Toast.LENGTH_SHORT).show();
 			}else{
