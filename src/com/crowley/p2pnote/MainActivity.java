@@ -63,6 +63,19 @@ public class MainActivity extends Activity implements OnClickListener{
         
     }
     
+    @Override
+    protected void onStart() {
+    	// TODO Auto-generated method stub
+    	SharedPreferences preferences=getSharedPreferences("user", MODE_PRIVATE);
+		boolean isLogined = preferences.getBoolean("isLogined", false);
+		if(isLogined){
+			login.setText(preferences.getString("account", "³ö´íÀ²"));
+		}else{
+			login.setText("µã»÷µÇÂ¼");
+		}
+    	super.onStart();
+    }
+    
     public void toggleMenu(View view){
     	mLeftMenu.toggle();
     }
@@ -210,12 +223,13 @@ public class MainActivity extends Activity implements OnClickListener{
 		newItem.setOnClickListener(this);
 		login.setOnClickListener(this);
 		
-		//SharedPreferences preferences=PreferenceManager.getDefaultSharedPreferences(MainActivity.this);
-		/*SharedPreferences preferences=getSharedPreferences("user", MODE_PRIVATE);
-		Editor editor = preferences.edit();
-		editor.putBoolean("isLogined", false);
-		editor.putString("account", "castiel.zyf@gmail.com");
-		editor.putString("password", "123456789");*/
+		SharedPreferences preferences=getSharedPreferences("user", MODE_PRIVATE);
+		boolean isLogined = preferences.getBoolean("isLogined", false);
+		if(isLogined){
+			login.setText(preferences.getString("account", "³ö´íÀ²"));
+		}else{
+			login.setText("µã»÷µÇÂ¼");
+		}
 	}
 
 
