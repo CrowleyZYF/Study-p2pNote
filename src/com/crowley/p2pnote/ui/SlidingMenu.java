@@ -29,6 +29,8 @@ public class SlidingMenu extends HorizontalScrollView {
 	
 	private boolean once = false;
 	
+	private boolean isOpen = false;
+	
 	public SlidingMenu(Context context, AttributeSet attrs, int defStyle) {
 		super(context, attrs, defStyle);
 		// TODO Auto-generated constructor stub
@@ -106,8 +108,10 @@ public class SlidingMenu extends HorizontalScrollView {
 			
 			if(scrollX>mMenuWidth/2){
 				this.smoothScrollTo(mMenuWidth, 0);
+				isOpen = false;
 			}else{
 				this.smoothScrollTo(0, 0);
+				isOpen = true;
 			}
 			return true;
 		default:
@@ -137,5 +141,25 @@ public class SlidingMenu extends HorizontalScrollView {
 		ViewHelper.setPivotY(mContent, mContent.getHeight()/2);
 		ViewHelper.setScaleX(mContent, rightScale);
 		ViewHelper.setScaleY(mContent, rightScale);*/
+	}
+	
+	public void openMenu(){
+		if(isOpen) return;
+		this.smoothScrollTo(0, 0);
+		isOpen = true;
+	}
+	
+	public void closeMenu(){
+		if(!isOpen) return;
+		this.smoothScrollTo(mMenuWidth, 0);
+		isOpen = false;
+	}
+	
+	public void toggle(){
+		if(isOpen){
+			closeMenu();
+		}else{
+			openMenu();
+		}
 	}
 }

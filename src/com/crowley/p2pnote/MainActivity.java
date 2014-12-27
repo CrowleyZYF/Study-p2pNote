@@ -1,5 +1,7 @@
 package com.crowley.p2pnote;
 
+import com.crowley.p2pnote.ui.SlidingMenu;
+
 import android.support.v7.app.ActionBarActivity;
 import android.support.v7.app.ActionBar;
 import android.support.v4.app.Fragment;
@@ -7,6 +9,8 @@ import android.app.Activity;
 import android.app.FragmentManager;
 import android.app.FragmentTransaction;
 import android.content.Intent;
+import android.content.SharedPreferences;
+import android.content.SharedPreferences.Editor;
 import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.Menu;
@@ -23,6 +27,7 @@ import android.widget.RadioGroup;
 import android.widget.RadioGroup.OnCheckedChangeListener;
 import android.widget.TextView;
 import android.os.Build;
+import android.preference.PreferenceManager;
 
 public class MainActivity extends Activity implements OnClickListener{
 	
@@ -38,21 +43,28 @@ public class MainActivity extends Activity implements OnClickListener{
     private LinearLayout tabPlatform;
     private LinearLayout tabMore;
     
+    private SlidingMenu mLeftMenu;
+    
     private FragmentManager fragmentManager;
     
     private TextView title;
     
     private Button newItem;
+    private TextView login;
 	
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         requestWindowFeature(Window.FEATURE_NO_TITLE);
-        setContentView(R.layout.activity_main);
+        setContentView(R.layout.activity_main);        
         initViews();  
         fragmentManager = getFragmentManager();  
         setTabSelection(0);
         
+    }
+    
+    public void toggleMenu(View view){
+    	mLeftMenu.toggle();
     }
 
 	private void setTabSelection(int index) {
@@ -185,7 +197,10 @@ public class MainActivity extends Activity implements OnClickListener{
 		
 		newItem = (Button) findViewById(R.id.new_item);
 		
-		title = (TextView) findViewById(R.id.main_tab_banner_title);
+		title = (TextView) findViewById(R.id.main_tab_banner_title);		
+
+        mLeftMenu=(SlidingMenu) findViewById(R.id.id_menu);
+        login=(TextView) findViewById(R.id.login);        
 		
 		tabIndex.setOnClickListener(this);
 		tabWater.setOnClickListener(this);
@@ -193,6 +208,14 @@ public class MainActivity extends Activity implements OnClickListener{
 		tabPlatform.setOnClickListener(this);
 		tabMore.setOnClickListener(this);
 		newItem.setOnClickListener(this);
+		login.setOnClickListener(this);
+		
+		//SharedPreferences preferences=PreferenceManager.getDefaultSharedPreferences(MainActivity.this);
+		/*SharedPreferences preferences=getSharedPreferences("user", MODE_PRIVATE);
+		Editor editor = preferences.edit();
+		editor.putBoolean("isLogined", false);
+		editor.putString("account", "castiel.zyf@gmail.com");
+		editor.putString("password", "123456789");*/
 	}
 
 
@@ -201,24 +224,36 @@ public class MainActivity extends Activity implements OnClickListener{
 		// TODO Auto-generated method stub
 		switch (v.getId())  
         {  
-        case R.id.tab_index:  
+        case R.id.tab_index:{
             setTabSelection(0);  
-            break;  
-        case R.id.tab_water:  
+            break;       	
+        }
+        case R.id.tab_water:{
             setTabSelection(1);  
-            break;  
-        case R.id.tab_analyze:  
-            setTabSelection(2);  
-            break;  
-        case R.id.tab_platform:  
-            setTabSelection(3);  
-            break; 
-        case R.id.tab_more:  
-            setTabSelection(4);  
-            break;             
-        case R.id.new_item:
+            break;        	
+        } 
+        case R.id.tab_analyze:{
+        	setTabSelection(2);  
+            break;        	
+        }             
+        case R.id.tab_platform:{
+        	setTabSelection(3);  
+            break;
+        }             
+        case R.id.tab_more:{
+        	setTabSelection(4);  
+            break;        	
+        }                         
+        case R.id.new_item:{
         	Intent intent=new Intent(this,NewItemActivity.class);
             startActivity(intent);
+            break;        	
+        }        	
+        case R.id.login:{
+        	Intent intent2=new Intent(this,LoginActivity.class);
+            startActivity(intent2);
+            break;
+        }        	
         default:  
             break;  
         }  

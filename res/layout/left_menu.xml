@@ -35,10 +35,11 @@
                 android:background="@drawable/icon_bg" />
             
             <TextView 
+                android:id="@+id/login"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_toRightOf="@id/left_menu_00"
-                android:text="庄奕峰"
+                android:text="点击登录"
                 android:textColor="@color/white"
                 android:layout_marginLeft="20dp"
                 android:textSize="20sp"

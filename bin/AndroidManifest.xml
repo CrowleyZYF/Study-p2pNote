@@ -25,6 +25,12 @@
         <activity
             android:name="com.crowley.p2pnote.NewItemActivity" >
         </activity>
+        <activity
+            android:name="com.crowley.p2pnote.LoginActivity" >
+        </activity>
+        <activity
+            android:name="com.crowley.p2pnote.RegisterActivity" >
+        </activity>
     </application>
 
 </manifest>

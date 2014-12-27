@@ -1,0 +1,136 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="vertical" >
+    
+    <RelativeLayout 
+        android:id="@+id/banner"
+        android:layout_width="fill_parent"
+        android:layout_height="50dp"
+        android:layout_alignParentTop="true"
+        android:background="@color/banner_bg">
+        
+        <ImageButton 
+            android:id="@+id/back"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:background="@drawable/back"
+            android:layout_alignParentLeft="true"
+        	android:layout_centerVertical="true" 
+        	android:layout_marginLeft="15dp"/>
+        
+        <TextView 
+            android:id="@+id/main_tab_banner_title"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="@string/login_title"
+            android:textSize="25sp"
+            android:textColor="#ffffff"
+			android:layout_centerInParent="true"/>
+    </RelativeLayout>
+    <LinearLayout 
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:orientation="vertical"
+	    android:background="@color/tab_bg">
+        
+        <LinearLayout 
+            android:layout_width="match_parent"
+        	android:layout_height="wrap_content"
+        	android:orientation="vertical"
+        	android:background="@drawable/radis_border"
+        	android:layout_marginTop="35dp"
+        	android:layout_marginBottom="15dp"
+        	android:layout_marginLeft="10dp"
+        	android:layout_marginRight="10dp"
+            >
+            
+            <LinearLayout 
+	            android:layout_width="match_parent"
+	        	android:layout_height="wrap_content"
+	        	android:orientation="horizontal">
+            
+		            <ImageView 
+		                android:src="@drawable/account"
+		                android:layout_width="32dp"
+		                android:layout_height="32dp"
+		                />
+		            
+		            <EditText 
+		                android:layout_width="match_parent"
+		                android:layout_height="match_parent"
+		                android:background="@drawable/select_bg"
+		                android:hint="@string/account_hint"
+		                android:layout_marginLeft="15dp"
+		                />	            
+	       </LinearLayout>
+	       <ImageView
+				android:id="@+id/tab_line"
+				android:layout_width="match_parent"
+				android:layout_height="wrap_content"
+				android:background="@drawable/tab_line"
+				android:layout_marginTop="10dp"
+				android:layout_marginBottom="10dp"
+				/>
+	       <LinearLayout 
+	            android:layout_width="match_parent"
+	        	android:layout_height="wrap_content"
+	        	android:orientation="horizontal">
+            
+		            <ImageView 
+		                android:src="@drawable/password"
+		                android:layout_width="32dp"
+		                android:layout_height="32dp"
+		                />
+		            
+		            <EditText 
+		                android:layout_width="match_parent"
+		                android:layout_height="match_parent"
+		                android:background="@drawable/select_bg"
+		                android:hint="@string/password_hint"
+		                android:layout_marginLeft="15dp"
+		                />	            
+	       </LinearLayout>
+	       <ImageView
+				android:id="@+id/tab_line"
+				android:layout_width="match_parent"
+				android:layout_height="wrap_content"
+				android:background="@drawable/tab_line"
+				android:layout_marginTop="10dp"
+				android:layout_marginBottom="10dp"
+				/>
+	       <LinearLayout 
+	            android:layout_width="match_parent"
+	        	android:layout_height="wrap_content"
+	        	android:orientation="horizontal">
+            
+		            <ImageView 
+		                android:src="@drawable/password"
+		                android:layout_width="32dp"
+		                android:layout_height="32dp"
+		                />
+		            
+		            <EditText 
+		                android:layout_width="match_parent"
+		                android:layout_height="match_parent"
+		                android:background="@drawable/select_bg"
+		                android:hint="@string/register_hint"
+		                android:layout_marginLeft="15dp"
+		                />	            
+	       </LinearLayout>
+		</LinearLayout>
+
+        <Button
+            android:id="@+id/register_button"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="@string/register_button"
+            android:textColor="@color/white"
+        	android:layout_marginLeft="10dp"
+        	android:layout_marginRight="10dp"
+        	android:layout_marginTop="20dp"
+        	android:background="#ec971f" />
+
+	</LinearLayout>
+</LinearLayout>
