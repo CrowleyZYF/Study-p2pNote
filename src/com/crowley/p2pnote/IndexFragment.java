@@ -58,7 +58,7 @@ public class IndexFragment extends Fragment implements OnClickListener{
         dataList=new ArrayList<Map<String,Object>>();
         listView=(ListView) view.findViewById(R.id.list_view);
         getData(1);
-        list_adapter=new listAdapter(this.getActivity(), dataList, R.layout.index_listview_item, new String[]{"time","item_icon","item_name","item_money","item_profit"}, new int[]{R.id.time,R.id.item_icon,R.id.item_name,R.id.item_money,R.id.item_profit});
+        list_adapter=new listAdapter(this.getActivity(), dataList, R.layout.index_listview_item, new String[]{"timeBegin","timeEnd","item_icon","item_name","item_money","item_profit"}, new int[]{R.id.timeBegin,R.id.timeEnd,R.id.item_icon,R.id.item_name,R.id.item_money,R.id.item_profit});
         listView.setAdapter(list_adapter);
         
         tab_button01 = (LinearLayout) view.findViewById(R.id.tab_button01);
@@ -89,7 +89,7 @@ public class IndexFragment extends Fragment implements OnClickListener{
 	}
 
 	//private List<Map<String, Object>> getData(int index){
-	//0´ú±íÒÑ¾­¹ýÆÚ£¬1´ú±í¼´½«¹ýÆÚ
+	//0ï¿½ï¿½ï¿½ï¿½ï¿½Ñ¾ï¿½ï¿½ï¿½ï¿½Ú£ï¿½1ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½
 	private void getData(int type){
 		dataList.clear();
 		List<Map<String, Object>> temp=new ArrayList<Map<String,Object>>();

@@ -96,7 +96,7 @@ public class WaterFragment extends Fragment implements OnClickListener{
         begin_invest_icon=(ImageView) view.findViewById(R.id.begin_invest_icon);
         
         getData(3,begin_des);
-        list_adapter=new listAdapter(this.getActivity(), dataList, R.layout.index_listview_item, new String[]{"time","item_icon","item_name","item_money","item_profit"}, new int[]{R.id.time,R.id.item_icon,R.id.item_name,R.id.item_money,R.id.item_profit});
+        list_adapter=new listAdapter(this.getActivity(), dataList, R.layout.index_listview_item, new String[]{"timeBegin","timeEnd","item_icon","item_name","item_money","item_profit"}, new int[]{R.id.timeBegin,R.id.timeEnd,R.id.item_icon,R.id.item_name,R.id.item_money,R.id.item_profit});
         
                
         listView.setAdapter(list_adapter);

@@ -101,7 +101,8 @@ public class ReturnList {
 				temp.clear();
 				Map<String, Object> map=new HashMap<String, Object>();
 				RecordModel record=new RecordModel(allRecords);
-				map.put("time", record.getTimeBegin()+" 至 "+record.getTimeEnd());
+				map.put("timeBegin", record.getTimeBegin());
+				map.put("timeEnd", "至 "+record.getTimeEnd());
 				int icon = DBOpenHelper.PLATFORM_ICONS[0];
 				for(int i=0;i<9;i++){
 					if((record.getPlatform()).equals(context.getResources().getString(DBOpenHelper.PLATFORM_NAMES[i]))){
@@ -126,8 +127,8 @@ public class ReturnList {
 						boolean judge=false;
 						switch (type) {
 							case 0:{
-								String mapString=(((String) map.get("time")).split(" "))[(((String) map.get("time")).split(" ")).length-1];
-								String compareString=(((String) (dataList.get(i)).get("time")).split(" "))[(((String) (dataList.get(i)).get("time")).split(" ")).length-1];
+								String mapString=record.getTimeEnd();
+								String compareString=(((String) (dataList.get(i)).get("timeEnd")).split(" "))[(((String) (dataList.get(i)).get("timeEnd")).split(" ")).length-1];
 								if(parseDay(mapString)>(parseDay(compareString))){
 									judge=true;
 								}							
@@ -152,8 +153,8 @@ public class ReturnList {
 								break;							
 							}
 							case 3:{
-								String mapString=(((String) map.get("time")).split(" "))[0];
-								String compareString=(((String) (dataList.get(i)).get("time")).split(" "))[0];
+								String mapString=record.getTimeBegin();;
+								String compareString=((String) (dataList.get(i)).get("timeBegin"));
 								if(parseDay(mapString)>(parseDay(compareString))){
 									judge=true;
 								}							
@@ -223,7 +224,8 @@ public class ReturnList {
 						break;
 				}
 				if (judge) {
-					map.put("time", record.getTimeBegin()+" 至 "+record.getTimeEnd());
+					map.put("timeBegin", record.getTimeBegin());
+					map.put("timeEnd", "至 "+record.getTimeEnd());
 					int icon = DBOpenHelper.PLATFORM_ICONS[0];
 					for(int i=0;i<9;i++){
 						if(record.getPlatform().equals(context.getResources().getString(DBOpenHelper.PLATFORM_NAMES[i]))){
