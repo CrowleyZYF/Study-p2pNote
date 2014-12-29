@@ -55,6 +55,9 @@ public class MainActivity extends Activity implements OnClickListener{
     private TextView checkTextView;
     private TextView backupTextView;
     private TextView adviceTextView;
+    private TextView aboutTextView;
+    private TextView securityTextView;
+    private TextView shareTextView;
     
 	
     @Override
@@ -222,6 +225,9 @@ public class MainActivity extends Activity implements OnClickListener{
         backupTextView=(TextView) findViewById(R.id.backup);
         checkTextView=(TextView) findViewById(R.id.check_update);
         adviceTextView=(TextView) findViewById(R.id.advice);
+        aboutTextView=(TextView) findViewById(R.id.about);
+        securityTextView=(TextView) findViewById(R.id.security);
+        shareTextView=(TextView) findViewById(R.id.share);
         
 		
 		tabIndex.setOnClickListener(this);
@@ -234,6 +240,9 @@ public class MainActivity extends Activity implements OnClickListener{
 		backupTextView.setOnClickListener(this);
 		checkTextView.setOnClickListener(this);
 		adviceTextView.setOnClickListener(this);
+		aboutTextView.setOnClickListener(this);
+		securityTextView.setOnClickListener(this);
+		shareTextView.setOnClickListener(this);
 		
 		SharedPreferences preferences=getSharedPreferences("user", MODE_PRIVATE);
 		boolean isLogined = preferences.getBoolean("isLogined", false);
@@ -296,6 +305,19 @@ public class MainActivity extends Activity implements OnClickListener{
         case R.id.advice:{
         	Intent intent=new Intent(this,AdviceActivity.class);
             startActivity(intent);
+        	break;
+        }
+        case R.id.about:{
+        	Intent intent=new Intent(this,AboutActivity.class);
+            startActivity(intent);
+        	break;
+        }
+        case R.id.security:{
+        	Toast.makeText(getApplicationContext(),"功能还在开发中 敬请期待  ∩_∩ ",Toast.LENGTH_SHORT).show();
+        	break;
+        }
+        case R.id.share:{
+        	Toast.makeText(getApplicationContext(),"功能还在开发中 敬请期待  ∩_∩ ",Toast.LENGTH_SHORT).show();
         	break;
         }
         default:  
