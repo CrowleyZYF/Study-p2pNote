@@ -24,6 +24,7 @@ import android.widget.ImageButton;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.RadioGroup;
+import android.widget.Toast;
 import android.widget.RadioGroup.OnCheckedChangeListener;
 import android.widget.TextView;
 import android.os.Build;
@@ -51,6 +52,10 @@ public class MainActivity extends Activity implements OnClickListener{
     
     private Button newItem;
     private TextView login;
+    private TextView checkTextView;
+    private TextView backupTextView;
+    private TextView adviceTextView;
+    
 	
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -213,7 +218,11 @@ public class MainActivity extends Activity implements OnClickListener{
 		title = (TextView) findViewById(R.id.main_tab_banner_title);		
 
         mLeftMenu=(SlidingMenu) findViewById(R.id.id_menu);
-        login=(TextView) findViewById(R.id.login);        
+        login=(TextView) findViewById(R.id.login);   
+        backupTextView=(TextView) findViewById(R.id.backup);
+        checkTextView=(TextView) findViewById(R.id.check_update);
+        adviceTextView=(TextView) findViewById(R.id.advice);
+        
 		
 		tabIndex.setOnClickListener(this);
 		tabWater.setOnClickListener(this);
@@ -222,6 +231,9 @@ public class MainActivity extends Activity implements OnClickListener{
 		tabMore.setOnClickListener(this);
 		newItem.setOnClickListener(this);
 		login.setOnClickListener(this);
+		backupTextView.setOnClickListener(this);
+		checkTextView.setOnClickListener(this);
+		adviceTextView.setOnClickListener(this);
 		
 		SharedPreferences preferences=getSharedPreferences("user", MODE_PRIVATE);
 		boolean isLogined = preferences.getBoolean("isLogined", false);
@@ -264,10 +276,28 @@ public class MainActivity extends Activity implements OnClickListener{
             break;        	
         }        	
         case R.id.login:{
-        	Intent intent2=new Intent(this,LoginActivity.class);
-            startActivity(intent2);
+        	if(login.getText().toString().equals("点击登录")){
+            	Intent intent2=new Intent(this,LoginActivity.class);
+                startActivity(intent2);
+        	}else{
+        		Intent intent=new Intent(this,UserActivity.class);
+                startActivity(intent);
+        	}
             break;
-        }        	
+        }
+        case R.id.backup:{
+        	Toast.makeText(getApplicationContext(),"同步成功",Toast.LENGTH_SHORT).show();
+            break;
+        }
+        case R.id.check_update:{
+        	Toast.makeText(getApplicationContext(),"当前网贷篮子的版本已为最新版本",Toast.LENGTH_SHORT).show();
+        	break;
+        }
+        case R.id.advice:{
+        	Intent intent=new Intent(this,AdviceActivity.class);
+            startActivity(intent);
+        	break;
+        }
         default:  
             break;  
         }  

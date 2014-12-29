@@ -31,6 +31,12 @@
         <activity
             android:name="com.crowley.p2pnote.RegisterActivity" >
         </activity>
+        <activity
+            android:name="com.crowley.p2pnote.UserActivity" >
+        </activity>
+        <activity
+            android:name="com.crowley.p2pnote.AdviceActivity" >
+        </activity>
     </application>
 
 </manifest>

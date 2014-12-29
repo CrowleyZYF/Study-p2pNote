@@ -65,6 +65,7 @@
                 android:layout_marginLeft="10dp"
                 android:src="@drawable/left_menu_01" />
             <TextView 
+                android:id="@+id/backup"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_toRightOf="@id/left_menu_01"
@@ -95,6 +96,7 @@
                 android:src="@drawable/left_menu_02"
                 />            
             <TextView 
+                android:id="@+id/check_update"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_toRightOf="@id/left_menu_02"
@@ -125,6 +127,7 @@
                 android:src="@drawable/left_menu_03"
                 />            
             <TextView 
+                android:id="@+id/advice"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_toRightOf="@id/left_menu_03"

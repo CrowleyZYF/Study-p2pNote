@@ -58,6 +58,7 @@
 		                />
 		            
 		            <EditText 
+		                android:id="@+id/account"
 		                android:layout_width="match_parent"
 		                android:layout_height="match_parent"
 		                android:background="@drawable/select_bg"
@@ -84,12 +85,14 @@
 		                android:layout_height="32dp"
 		                />
 		            
-		            <EditText 
+		            <EditText
+		                android:id="@+id/password" 
 		                android:layout_width="match_parent"
 		                android:layout_height="match_parent"
 		                android:background="@drawable/select_bg"
 		                android:hint="@string/password_hint"
 		                android:layout_marginLeft="15dp"
+            			android:inputType="textPassword"
 		                />	            
 	       </LinearLayout>
 	       <ImageView
@@ -112,11 +115,13 @@
 		                />
 		            
 		            <EditText 
+		                android:id="@+id/password_repeat"
 		                android:layout_width="match_parent"
 		                android:layout_height="match_parent"
 		                android:background="@drawable/select_bg"
 		                android:hint="@string/register_hint"
 		                android:layout_marginLeft="15dp"
+            			android:inputType="textPassword"
 		                />	            
 	       </LinearLayout>
 		</LinearLayout>

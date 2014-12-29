@@ -83,7 +83,17 @@
     <string name="register_button">注 册</string>    
     <string name="account_hint">输入您的邮箱账号</string>        
     <string name="password_hint">输入您的密码</string>          
-    <string name="register_hint">重复输入密码</string>    
+    <string name="register_hint">重复输入密码</string> 
+                 
+    <string name="user_title">账号信息</string>                 
+    <string name="user_item_01">头像:</string>                 
+    <string name="user_item_02">账号:</string>                 
+    <string name="user_item_03">登录天数:</string>                 
+    <string name="user_login_out">注销</string>                       
+    <string name="user_banner">云备份记录</string>    
+    
+    <string name="advice_title">意见反馈</string> 
+    <string name="advice_button">发送</string> 
     
     <string name="sure">确认</string>
     <string name="cancel">取消</string>

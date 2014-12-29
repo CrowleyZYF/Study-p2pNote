@@ -1,0 +1,180 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="vertical" >
+    
+    <RelativeLayout 
+        android:id="@+id/banner"
+        android:layout_width="fill_parent"
+        android:layout_height="50dp"
+        android:layout_alignParentTop="true"
+        android:background="@color/banner_bg">
+        
+        <ImageButton 
+            android:id="@+id/back"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:background="@drawable/back"
+            android:layout_alignParentLeft="true"
+        	android:layout_centerVertical="true" 
+        	android:layout_marginLeft="15dp"/>
+        
+        <TextView 
+            android:id="@+id/main_tab_banner_title"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="@string/user_title"
+            android:textSize="25sp"
+            android:textColor="#ffffff"
+			android:layout_centerInParent="true"/>
+        
+        <TextView 
+            android:id="@+id/login_out"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="@string/user_login_out"
+            android:textSize="15sp"
+            android:textColor="#ffffff"
+			android:layout_alignParentRight="true"
+			android:layout_centerVertical="true"
+			android:layout_marginRight="15dp"/>
+    </RelativeLayout>
+    <LinearLayout 
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:orientation="vertical"
+	    android:background="@color/tab_bg">
+        
+        <LinearLayout 
+            android:layout_width="match_parent"
+        	android:layout_height="wrap_content"
+        	android:orientation="vertical"
+        	android:background="@color/light_gray"
+            >
+            
+            <RelativeLayout 
+	            android:layout_width="match_parent"
+	        	android:layout_height="50dp"
+	        	android:layout_marginTop="5dp"
+	        	android:orientation="horizontal">
+            
+		            <TextView 
+		                android:layout_width="wrap_content"
+		                android:layout_height="wrap_content"
+		                android:text="@string/user_item_01"
+		                android:textSize="20sp"
+		                android:textColor="@color/light_black"
+		                android:layout_alignParentLeft="true"
+		                android:layout_marginLeft="10dp"
+		                android:layout_centerVertical="true"		                
+		                />
+		            
+		            <ImageView
+		                android:layout_width="40dp"
+		                android:layout_height="40dp"
+						android:layout_alignParentRight="true"
+						android:layout_marginRight="10dp"
+		                android:src="@drawable/head"
+		                android:background="@drawable/icon_bg"
+		                android:layout_centerVertical="true"
+		                 />           
+	       </RelativeLayout>
+	       <ImageView
+				android:layout_width="match_parent"
+				android:layout_height="wrap_content"
+				android:background="@drawable/tab_line"
+				android:layout_marginTop="5dp"
+				android:layout_marginBottom="5dp"
+				/>
+	       <RelativeLayout 
+	            android:layout_width="match_parent"
+	        	android:layout_height="50dp"
+	        	android:orientation="horizontal">
+            
+		            <TextView 
+		                android:layout_width="wrap_content"
+		                android:layout_height="wrap_content"
+		                android:text="@string/user_item_02"
+		                android:textSize="20sp"
+		                android:textColor="@color/light_black"
+		                android:layout_alignParentLeft="true"
+		                android:layout_marginLeft="10dp"
+		                android:layout_centerVertical="true"		                
+		                />
+		            
+		            <TextView
+		                android:id="@+id/account"
+		                android:layout_width="wrap_content"
+		                android:layout_height="wrap_content"
+						android:layout_alignParentRight="true"
+						android:layout_marginRight="10dp"
+						android:text="castiel.zyf@gmail.com"
+						android:textSize="18sp"
+		                android:layout_centerVertical="true"
+		                 />           
+	       </RelativeLayout>
+	       <ImageView
+				android:layout_width="match_parent"
+				android:layout_height="wrap_content"
+				android:background="@drawable/tab_line"
+				android:layout_marginTop="5dp"
+				android:layout_marginBottom="5dp"
+				/>
+	       <RelativeLayout 
+	            android:layout_width="match_parent"
+	        	android:layout_height="50dp"
+	        	android:orientation="horizontal">
+            
+		            <TextView 
+		                android:layout_width="wrap_content"
+		                android:layout_height="wrap_content"
+		                android:text="@string/user_item_03"
+		                android:textSize="20sp"
+		                android:textColor="@color/light_black"
+		                android:layout_alignParentLeft="true"
+		                android:layout_marginLeft="10dp"
+		                android:layout_centerVertical="true"		                
+		                />
+		            
+		            <TextView
+		                android:layout_width="wrap_content"
+		                android:layout_height="wrap_content"
+						android:layout_alignParentRight="true"
+						android:layout_marginRight="10dp"
+						android:text="32天"
+						android:textSize="18sp"
+		                android:layout_centerVertical="true"
+		                 />           
+	       </RelativeLayout>
+		</LinearLayout>
+		<LinearLayout 
+		    android:layout_width="match_parent"
+		    android:layout_height="30dp"
+		    android:background="@color/user_banner"
+		    >
+		    
+		    <TextView 
+		        android:layout_width="wrap_content"
+		        android:layout_height="wrap_content"
+		        android:gravity="left"
+		        android:layout_gravity="center_vertical"
+		        android:layout_marginLeft="10dp"
+		        android:text="@string/user_banner"
+		        android:textSize="15sp"
+		        android:textColor="@color/light_black"
+		        />		    
+		</LinearLayout>
+		
+		<ListView 
+		    android:id="@+id/backup_record"
+		    android:layout_width="match_parent"
+		    android:layout_height="match_parent"
+		    android:background="@color/user_bg"
+		    android:scrollbars="none"
+		    ></ListView>
+		
+	</LinearLayout>
+
+        
+</LinearLayout>
