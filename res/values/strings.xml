@@ -3,6 +3,8 @@
 
     <string name="app_name">网贷篮子</string>
     
+    <string name="default_progressbar">Default Progressbar:</string>
+    
     <string name="new_item">新的投资</string>
     <string name="basic_info01">当日收益</string>
     <string name="basic_info02">均年化收益</string>

@@ -1,5 +1,7 @@
 package com.crowley.p2pnote;
 
+import cn.pedant.SweetAlert.SweetAlertDialog;
+
 import com.crowley.p2pnote.ui.SlidingMenu;
 
 import android.support.v7.app.ActionBarActivity;
@@ -11,7 +13,9 @@ import android.app.FragmentTransaction;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.content.SharedPreferences.Editor;
+import android.graphics.Color;
 import android.os.Bundle;
+import android.os.CountDownTimer;
 import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuItem;
@@ -31,6 +35,8 @@ import android.os.Build;
 import android.preference.PreferenceManager;
 
 public class MainActivity extends Activity implements OnClickListener{
+	
+	private int iCount = -1;
 	
 	private IndexFragment indexFragment;  
     private WaterFragment waterFragment;  
@@ -295,11 +301,72 @@ public class MainActivity extends Activity implements OnClickListener{
             break;
         }
         case R.id.backup:{
-        	Toast.makeText(getApplicationContext(),"同步成功",Toast.LENGTH_SHORT).show();
+        	final SweetAlertDialog pDialog = new SweetAlertDialog(this, SweetAlertDialog.PROGRESS_TYPE);
+        	pDialog.setTitleText("正在备份中...");
+        	pDialog.show();
+            pDialog.setCancelable(false);
+            new CountDownTimer(800 * 7, 800) {
+                public void onTick(long millisUntilFinished) {
+                    // you can change the progress bar color by ProgressHelper every 800 millis
+                	iCount++;
+                    switch (iCount){
+                        case 0:
+                            pDialog.getProgressHelper().setBarColor(getResources().getColor(R.color.blue_btn_bg_color));
+                            break;
+                        case 1:
+                            pDialog.getProgressHelper().setBarColor(getResources().getColor(R.color.material_deep_teal_50));
+                            break;
+                        case 2:
+                            pDialog.getProgressHelper().setBarColor(getResources().getColor(R.color.success_stroke_color));
+                            break;
+                        case 3:
+                            pDialog.getProgressHelper().setBarColor(getResources().getColor(R.color.material_deep_teal_20));
+                            break;
+                        case 4:
+                            pDialog.getProgressHelper().setBarColor(getResources().getColor(R.color.material_blue_grey_80));
+                            break;
+                        case 5:
+                            pDialog.getProgressHelper().setBarColor(getResources().getColor(R.color.warning_stroke_color));
+                            break;
+                        case 6:
+                            pDialog.getProgressHelper().setBarColor(getResources().getColor(R.color.success_stroke_color));
+                            break;
+                    }
+                }
+                public void onFinish() {
+                	iCount = -1;
+                    pDialog.setTitleText("备份完成!")
+                            .setConfirmText("确定")
+                            .changeAlertType(SweetAlertDialog.SUCCESS_TYPE);
+                }
+            }.start();
             break;
         }
         case R.id.check_update:{
-        	Toast.makeText(getApplicationContext(),"当前网贷篮子的版本已为最新版本",Toast.LENGTH_SHORT).show();
+        	final SweetAlertDialog pDialog = new SweetAlertDialog(this, SweetAlertDialog.PROGRESS_TYPE);
+        	pDialog.setTitleText("检查更新...");
+        	pDialog.show();
+            pDialog.setCancelable(false);
+            new CountDownTimer(800 * 2, 800) {
+                public void onTick(long millisUntilFinished) {
+                    // you can change the progress bar color by ProgressHelper every 800 millis
+                	iCount++;
+                    switch (iCount){
+                        case 0:
+                            pDialog.getProgressHelper().setBarColor(getResources().getColor(R.color.blue_btn_bg_color));
+                            break;
+                        case 1:
+                            pDialog.getProgressHelper().setBarColor(getResources().getColor(R.color.success_stroke_color));
+                            break;
+                    }
+                }
+                public void onFinish() {
+                	iCount = -1;
+                    pDialog.setTitleText("当前已为最新版本!")
+                            .setConfirmText("确定")
+                            .changeAlertType(SweetAlertDialog.SUCCESS_TYPE);
+                }
+            }.start();
         	break;
         }
         case R.id.advice:{
@@ -313,11 +380,21 @@ public class MainActivity extends Activity implements OnClickListener{
         	break;
         }
         case R.id.security:{
-        	Toast.makeText(getApplicationContext(),"功能还在开发中 敬请期待  ∩_∩ ",Toast.LENGTH_SHORT).show();
+        	new SweetAlertDialog(this, SweetAlertDialog.CUSTOM_IMAGE_TYPE)
+	            .setTitleText("功能还在开发中")
+	            .setContentText("敬请期待  ∩_∩")
+                .setConfirmText("确定")
+	            .setCustomImage(R.drawable.logo)
+	            .show();
         	break;
         }
         case R.id.share:{
-        	Toast.makeText(getApplicationContext(),"功能还在开发中 敬请期待  ∩_∩ ",Toast.LENGTH_SHORT).show();
+        	new SweetAlertDialog(this, SweetAlertDialog.CUSTOM_IMAGE_TYPE)
+	            .setTitleText("功能还在开发中")
+	            .setContentText("敬请期待  ∩_∩")
+	            .setConfirmText("确定")
+	            .setCustomImage(R.drawable.logo)
+	            .show();
         	break;
         }
         default:  
