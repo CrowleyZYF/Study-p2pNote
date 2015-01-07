@@ -7,7 +7,6 @@ import java.util.List;
 import com.crowley.p2pnote.db.DBOpenHelper;
 import com.crowley.p2pnote.ui.HorizontalScrollViewAdapter;
 import com.crowley.p2pnote.ui.MyHorizontalScrollView;
-import com.crowley.p2pnote.ui.MyHorizontalScrollView.CurrentImageChangeListener;
 import com.crowley.p2pnote.ui.MyHorizontalScrollView.OnItemClickListener;
 
 import android.app.Fragment;
@@ -29,7 +28,7 @@ public class PlatformFragment extends Fragment{
 	
 	private MyHorizontalScrollView mHorizontalScrollView;  
     private HorizontalScrollViewAdapter mAdapter;  
-    private ImageView mImg; 
+    private TextView textView; 
     private List<Integer> mDatas = new ArrayList<Integer>(Arrays.asList(  
     		R.drawable.company_icon01, R.drawable.company_icon02, R.drawable.company_icon03,  
             R.drawable.company_icon04, R.drawable.company_icon05, R.drawable.company_icon06, R.drawable.company_icon07,
@@ -57,7 +56,7 @@ public class PlatformFragment extends Fragment{
 		// TODO Auto-generated method stub
 		View view = inflater.inflate(R.layout.platform_fragment, container, false);
 		
-		mImg = (ImageView) view.findViewById(R.id.id_content);
+		textView = (TextView) view.findViewById(R.id.platform_tab_name);
 		mHorizontalScrollView = (MyHorizontalScrollView) view.findViewById(R.id.scroll_view);
 		mAdapter = new HorizontalScrollViewAdapter(this.getActivity(), mDatas, mDatas2);
 		
@@ -78,9 +77,9 @@ public class PlatformFragment extends Fragment{
 		{  
 		
 		    @Override  
-		    public void onClick(View view, int position)  
+		    public void onClick(View view, int position)
 		    {  
-		        mImg.setImageResource(mDatas.get(position));  
+		    	textView.setText(view.getResources().getString(mDatas2.get(position)));  
 		        //view.setBackgroundColor(Color.parseColor("#AA024DA4")); 
 		        ((ImageView)(((RelativeLayout) view).getChildAt(1))).setImageResource(R.drawable.platform_arrow_grey);
 		    }  
