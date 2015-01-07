@@ -14,13 +14,15 @@ import android.widget.TextView;
 public class HorizontalScrollViewAdapter {
 	private Context mContext;  
     private LayoutInflater mInflater;  
-    private List<Integer> mDatas;  
+    private List<Integer> mDatas;
+    private List<Integer> mDatas2;
   
-    public HorizontalScrollViewAdapter(Context context, List<Integer> mDatas)  
+    public HorizontalScrollViewAdapter(Context context, List<Integer> mDatas, List<Integer> mDatas2)  
     {  
         this.mContext = context;  
         mInflater = LayoutInflater.from(context);  
-        this.mDatas = mDatas;  
+        this.mDatas = mDatas; 
+        this.mDatas2 = mDatas2; 
     }  
   
     public int getCount()  
@@ -56,7 +58,7 @@ public class HorizontalScrollViewAdapter {
             viewHolder = (ViewHolder) convertView.getTag();  
         }  
         viewHolder.mImg.setImageResource(mDatas.get(position));  
-        viewHolder.mText.setText("some info ");  
+        viewHolder.mText.setText(this.mContext.getResources().getString(mDatas2.get(position)));
   
         return convertView;  
     }  

@@ -3,8 +3,12 @@ package com.crowley.p2pnote.ui;
 import java.util.HashMap;
 import java.util.Map;
 
+import com.crowley.p2pnote.R;
+
 import android.widget.HorizontalScrollView;
+import android.widget.ImageView;
 import android.widget.LinearLayout;
+import android.widget.RelativeLayout;
 import android.content.Context;
 import android.graphics.Color;
 import android.util.AttributeSet;
@@ -25,7 +29,7 @@ public class MyHorizontalScrollView extends HorizontalScrollView implements OnCl
 	*/  
 	public interface CurrentImageChangeListener  
 	{  
-		void onCurrentImgChanged(int position, View viewIndicator);  
+		void onCurrentImgChanged(int position, View viewIndicator);
 	}  
 	
 	/** 
@@ -87,14 +91,13 @@ public class MyHorizontalScrollView extends HorizontalScrollView implements OnCl
 	/** 
 	* 保存View与位置的键值对 
 	*/  
-	private Map<View, Integer> mViewPos = new HashMap<View, Integer>();  
+	private Map<View, Integer> mViewPos = new HashMap<View, Integer>();   
 	
 	public MyHorizontalScrollView(Context context, AttributeSet attrs)  
 	{  
 		super(context, attrs);  
 		// 获得屏幕宽度  
-		WindowManager wm = (WindowManager) context  
-		        .getSystemService(Context.WINDOW_SERVICE);  
+		WindowManager wm = (WindowManager) context.getSystemService(Context.WINDOW_SERVICE);  
 		DisplayMetrics outMetrics = new DisplayMetrics();  
 		wm.getDefaultDisplay().getMetrics(outMetrics);  
 		mScreenWitdh = outMetrics.widthPixels;  
@@ -179,10 +182,12 @@ public class MyHorizontalScrollView extends HorizontalScrollView implements OnCl
 	*/  
 	public void notifyCurrentImgChanged()  
 	{  
-	//先清除所有的背景色，点击时会设置为蓝色  
+		//先清除所有的背景色，点击时会设置为蓝色  
 		for (int i = 0; i < mContainer.getChildCount(); i++)  
 		{  
-		    mContainer.getChildAt(i).setBackgroundColor(Color.WHITE);  
+		    //mContainer.getChildAt(i).setBackgroundColor(Color.WHITE); 
+		    RelativeLayout tempLayout = (RelativeLayout) mContainer.getChildAt(i);
+	        ((ImageView)tempLayout.getChildAt(1)).setImageResource(R.drawable.platform_arrow_white);
 		}  
 		  
 		mListener.onCurrentImgChanged(mFristIndex, mContainer.getChildAt(0));  
@@ -217,6 +222,10 @@ public class MyHorizontalScrollView extends HorizontalScrollView implements OnCl
 		    mChildHeight = view.getMeasuredHeight();  
 		    // 计算每次加载多少个View  
 		    mCountOneScreen = mScreenWitdh / mChildWidth+2;  
+		    
+		    if(mCountOneScreen>=mAdapter.getCount()){
+		    	mCountOneScreen=mAdapter.getCount();
+		    }
 		
 		    Log.e(TAG, "mCountOneScreen = " + mCountOneScreen  
 		            + " ,mChildWidth = " + mChildWidth);  
@@ -238,7 +247,8 @@ public class MyHorizontalScrollView extends HorizontalScrollView implements OnCl
 		mContainer.removeAllViews();  
 		mViewPos.clear();  
 		
-		for (int i = 0; i < mCountOneScreen; i++)  
+		//for (int i = 0; i < mCountOneScreen; i++)
+		for (int i = 0; i < mAdapter.getCount(); i++)
 		{  
 		    View view = mAdapter.getView(i, null, mContainer);  
 		    view.setOnClickListener(this);  
@@ -257,14 +267,13 @@ public class MyHorizontalScrollView extends HorizontalScrollView implements OnCl
 	@Override  
 	public boolean onTouchEvent(MotionEvent ev)  
 	{  
-		Log.i("m_info", "123");
-		switch (ev.getAction())  
+		/*switch (ev.getAction())  
 		{  
 		case MotionEvent.ACTION_MOVE:  
 		//  Log.e(TAG, getScrollX() + "");  
 		
 		    int scrollX = getScrollX();  
-		    Log.i("m_info", ":"+scrollX);
+		    Log.i("scrollX", ":"+scrollX);
 		    // 如果当前scrollX为view的宽度，加载下一张，移除第一张  
 		    if (scrollX >= mChildWidth)  
 		    {  
@@ -276,7 +285,7 @@ public class MyHorizontalScrollView extends HorizontalScrollView implements OnCl
 		        loadPreImg();  
 		    }  
 		    break;  
-		}  
+		}*/  
 		return super.onTouchEvent(ev);
 	}  
 	
@@ -284,13 +293,12 @@ public class MyHorizontalScrollView extends HorizontalScrollView implements OnCl
 	
 	public void setOnItemClickListener(OnItemClickListener mOnClickListener)  
 	{  
-	this.mOnClickListener = mOnClickListener;  
+		this.mOnClickListener = mOnClickListener;  
 	}  
 	
-	public void setCurrentImageChangeListener(  
-	    CurrentImageChangeListener mListener)  
+	public void setCurrentImageChangeListener(CurrentImageChangeListener mListener)  
 	{  
-	this.mListener = mListener;  
+		this.mListener = mListener;  
 	}
 
 	@Override
@@ -300,7 +308,9 @@ public class MyHorizontalScrollView extends HorizontalScrollView implements OnCl
 		{  
 		    for (int i = 0; i < mContainer.getChildCount(); i++)  
 		    {  
-		        mContainer.getChildAt(i).setBackgroundColor(Color.WHITE);  
+		        //mContainer.getChildAt(i).setBackgroundColor(Color.WHITE);
+		        RelativeLayout tempLayout = (RelativeLayout) mContainer.getChildAt(i);
+		        ((ImageView)tempLayout.getChildAt(1)).setImageResource(R.drawable.platform_arrow_white);
 		    }  
 		    mOnClickListener.onClick(arg0, mViewPos.get(arg0));  
 		}
