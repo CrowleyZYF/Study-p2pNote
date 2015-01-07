@@ -1,5 +1,9 @@
 package com.crowley.p2pnote;
 
+import java.util.HashMap;
+import java.util.Map;
+
+import com.crowley.p2pnote.db.HttpUtils;
 import com.crowley.p2pnote.functions.ReturnList;
 
 import android.app.Activity;
@@ -52,7 +56,12 @@ public class LoginActivity extends Activity implements OnClickListener {
 	
 	public boolean login(String account,String password){
 		if(returnList.isEmail(account)){
-			return true;			
+			Map<String, String> params = new HashMap<String, String>();
+			params.put("user_name", account);
+			params.put("password", password);
+			//mTextView_result.setText(HttpUtils.submitPostData("http://128.199.226.246/beerich/index.php/login", params, "utf-8"));
+			Toast.makeText(getApplicationContext(),HttpUtils.submitPostData("http://128.199.226.246/beerich/index.php/login", params, "utf-8"),Toast.LENGTH_SHORT).show();
+			return false;			
 		}else {
 			Toast.makeText(getApplicationContext(),"” œ‰∏Ò Ω”–ŒÛ",Toast.LENGTH_SHORT).show();
 			return false;
