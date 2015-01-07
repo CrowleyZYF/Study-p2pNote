@@ -4,11 +4,28 @@
     android:layout_height="match_parent"
     android:orientation="vertical" >
     
-    <TextView 
-        android:id="@+id/test"
-        android:layout_width="wrap_content"
+    <com.crowley.p2pnote.ui.MyHorizontalScrollView  
+        android:id="@+id/scroll_view"
+        android:layout_width="wrap_content"  
+        android:layout_height="80dp"  
+        android:layout_gravity="center_vertical"
+        android:background="@color/light_gray"
+        android:scrollbars="none" >  
+  
+        <LinearLayout  
+            android:id="@+id/id_gallery"  
+            android:layout_width="wrap_content"  
+            android:layout_height="match_parent"  
+            android:layout_gravity="center_vertical"  
+            android:orientation="horizontal" >           
+        </LinearLayout>  
+    </com.crowley.p2pnote.ui.MyHorizontalScrollView>
+    <ImageView
+        android:id="@+id/tab_line"
+        android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:text="rty"/>
+        android:background="@drawable/tab_line"
+        />
     
 
 </LinearLayout>

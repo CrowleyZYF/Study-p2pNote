@@ -8,6 +8,7 @@ import android.content.Context;
 import android.content.res.TypedArray;
 import android.util.AttributeSet;
 import android.util.DisplayMetrics;
+import android.util.Log;
 import android.util.TypedValue;
 import android.view.MotionEvent;
 import android.view.ViewGroup;
@@ -51,7 +52,7 @@ public class SlidingMenu extends HorizontalScrollView {
 		DisplayMetrics outMetrics = new DisplayMetrics();
 		wm.getDefaultDisplay().getMetrics(outMetrics);
 		
-		mScreenWidth=outMetrics.widthPixels;		
+		mScreenWidth=outMetrics.widthPixels;
 	}
 
 
@@ -98,14 +99,32 @@ public class SlidingMenu extends HorizontalScrollView {
 		}
 	}
 	
+	private boolean askChild(Object v,MotionEvent ev){
+	       ViewGroup vg = null;
+	      if(v instanceof ViewGroup){
+	           vg = (ViewGroup)v;
+	       }else{
+	           return false;
+	       }
+	   for(int i=0;i<vg.getChildCount();i++){
+	          if (vg.getChildAt(i) instanceof HorizontalScrollView) {//(这是以HorizontalScrollView为例,其它可以自行加判断)
+	                   return ((ViewGroup)vg.getChildAt(i)).onInterceptTouchEvent(ev);
+	            }
+	 
+	           if(askChild(vg.getChildAt(i), ev)){
+	                return true;
+	           }
+	     }
+	    return false;
+	}
+	
 	@Override
 	public boolean onTouchEvent(MotionEvent ev) {
 		// TODO Auto-generated method stub
 		int action = ev.getAction();
 		switch (action) {
 		case MotionEvent.ACTION_UP:
-			int scrollX=getScrollX();
-			
+			int scrollX=getScrollX();			
 			if(scrollX>mMenuWidth/2){
 				this.smoothScrollTo(mMenuWidth, 0);
 				isOpen = false;
@@ -117,9 +136,22 @@ public class SlidingMenu extends HorizontalScrollView {
 		default:
 			break;
 		}
-		
+		Log.i("m_info", "321");
 		return super.onTouchEvent(ev);
+		
+		//return false;
 	}
+	
+	@Override
+	public boolean onInterceptTouchEvent(MotionEvent ev) {
+		if(askChild(this,ev)){
+		    return false;
+		}else{
+			return super.onInterceptTouchEvent(ev);
+		}
+		
+	}
+	
 	
 	@Override
 	protected void onScrollChanged(int l, int t, int oldl, int oldt) {
