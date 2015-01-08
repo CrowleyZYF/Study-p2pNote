@@ -3,14 +3,25 @@ package com.crowley.p2pnote;
 import java.util.HashMap;
 import java.util.Map;
 
+import org.json.JSONArray;
+import org.json.JSONException;
+import org.json.JSONObject;
+
+import cn.pedant.SweetAlert.SweetAlertDialog;
+
 import com.crowley.p2pnote.db.HttpUtils;
 import com.crowley.p2pnote.functions.ReturnList;
 
 import android.app.Activity;
+import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.content.SharedPreferences.Editor;
+import android.net.ConnectivityManager;
 import android.os.Bundle;
+import android.os.Handler;
+import android.os.Message;
+import android.util.Log;
 import android.view.View;
 import android.view.View.OnClickListener;
 import android.view.Window;
@@ -29,15 +40,56 @@ public class LoginActivity extends Activity implements OnClickListener {
 	
 	private ReturnList returnList;
 	
+	private int error_code = 2;
+	private final int LOGIN_SUCCESS = 0;
+	private final int NOT_EXIST = 1;
+	private final int PASS_ERROR = 2;
+	
+	private String accountString;
+	private Context nowContext=this;
+	
+	private Handler handler = new Handler(){
+		public void handleMessage(Message msg){
+			if(msg.what==0x123){
+				switch (error_code) {
+				case LOGIN_SUCCESS:{
+					SharedPreferences preferences=getSharedPreferences("user", MODE_PRIVATE);
+					Editor editor = preferences.edit();
+					editor.putBoolean("isLogined", true);
+					editor.putString("account", accountString);
+					editor.commit();
+					finish();										
+					break;					
+				}
+				case NOT_EXIST:{
+					new SweetAlertDialog(nowContext, SweetAlertDialog.ERROR_TYPE)
+	                    .setTitleText("登陆失败")
+	                    .setContentText("不存在该账号！")
+	                    .setConfirmText("确定")
+	                    .show();
+					break;
+				}
+				case PASS_ERROR:{
+					new SweetAlertDialog(nowContext, SweetAlertDialog.ERROR_TYPE)
+	                    .setTitleText("登陆失败")
+	                    .setContentText("密码错误！")
+	                    .setConfirmText("确定")
+	                    .show();
+					break;
+				}
+				default:
+					break;
+				}				
+			}
+		}		
+	};
+	
 	protected void onCreate(Bundle savedInstanceState) {
 		// TODO Auto-generated method stub
 		super.onCreate(savedInstanceState);
         requestWindowFeature(Window.FEATURE_NO_TITLE);
-		setContentView(R.layout.login);
-		
-		initView();
-		
-		
+		setContentView(R.layout.login);		
+		initView();		
 	}
 
 	public void initView() {
@@ -54,17 +106,46 @@ public class LoginActivity extends Activity implements OnClickListener {
 		backButton.setOnClickListener(this);
 	}
 	
-	public boolean login(String account,String password){
-		if(returnList.isEmail(account)){
-			Map<String, String> params = new HashMap<String, String>();
+	public void login(String account,String password){
+		if(!isOpenNetwork()){
+			new SweetAlertDialog(nowContext, SweetAlertDialog.ERROR_TYPE)
+	            .setTitleText("登陆失败")
+	            .setContentText("网络未链接")
+                .setConfirmText("确定")
+	            .show();
+		}else if(account==""){
+			new SweetAlertDialog(nowContext, SweetAlertDialog.ERROR_TYPE)
+	            .setTitleText("登陆失败")
+	            .setContentText("账号不得为空")
+                .setConfirmText("确定")
+	            .show();
+		}else if(password==""){
+			new SweetAlertDialog(nowContext, SweetAlertDialog.ERROR_TYPE)
+	            .setTitleText("登陆失败")
+	            .setContentText("密码不得为空")
+	            .setConfirmText("确定")
+	            .show();
+		}else if(returnList.isEmail(account)){
+			final Map<String, String> params = new HashMap<String, String>();
 			params.put("user_name", account);
 			params.put("password", password);
-			//mTextView_result.setText(HttpUtils.submitPostData("http://128.199.226.246/beerich/index.php/login", params, "utf-8"));
-			Toast.makeText(getApplicationContext(),HttpUtils.submitPostData("http://128.199.226.246/beerich/index.php/login", params, "utf-8"),Toast.LENGTH_SHORT).show();
-			return false;			
+			new Thread(){
+				public void run(){String teString=HttpUtils.submitPostData("http://128.199.226.246/beerich/index.php/login", params, "utf-8");
+					try {
+						JSONObject object=new JSONObject(teString);
+						error_code = (Integer) object.get("error_code");
+						handler.sendEmptyMessage(0x123);
+					} catch (JSONException e) {
+						e.printStackTrace();
+					}
+				}
+			}.start();		
 		}else {
-			Toast.makeText(getApplicationContext(),"邮箱格式有误",Toast.LENGTH_SHORT).show();
-			return false;
+			new SweetAlertDialog(nowContext, SweetAlertDialog.ERROR_TYPE)
+	            .setTitleText("登陆失败")
+	            .setContentText("邮箱格式有误！")
+                .setConfirmText("确定")
+	            .show();
 		}
 	}
 
@@ -73,16 +154,9 @@ public class LoginActivity extends Activity implements OnClickListener {
 		// TODO Auto-generated method stub
 		switch (v.getId()) {
 		case R.id.login_button:{
-			String accountString=accountEditText.getText().toString();
+			accountString=accountEditText.getText().toString();
 			String passwordString=passwordEditText.getText().toString();
-			if(login(accountString, passwordString)){
-				SharedPreferences preferences=getSharedPreferences("user", MODE_PRIVATE);
-				Editor editor = preferences.edit();
-				editor.putBoolean("isLogined", true);
-				editor.putString("account", accountString);
-				editor.commit();
-				finish();
-			}
+			login(accountString, passwordString);
 			break;
 		}
 		case R.id.register_button:{
@@ -96,8 +170,14 @@ public class LoginActivity extends Activity implements OnClickListener {
 		}
 		default:
 			break;
-		}
-		
+		}		
 	}
-
+	
+	private boolean isOpenNetwork() {  
+	    ConnectivityManager connManager = (ConnectivityManager)getSystemService(Context.CONNECTIVITY_SERVICE);  
+	    if(connManager.getActiveNetworkInfo() != null) {  
+	        return connManager.getActiveNetworkInfo().isAvailable();  
+	    }	  
+	    return false;  
+	}
 }
