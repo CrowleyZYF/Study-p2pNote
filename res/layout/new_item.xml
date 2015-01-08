@@ -8,7 +8,7 @@
         android:layout_width="fill_parent"
         android:layout_height="50dp"
         android:layout_alignParentTop="true"
-        android:background="@color/banner_bg">
+        android:background="@color/banner_bg_light">
         
         <ImageButton 
             android:id="@+id/back"
@@ -65,7 +65,7 @@
 		            android:layout_height="match_parent"
 		            android:gravity="center_horizontal|center_vertical"
 		            android:text="@string/sure"
-		            android:textSize="20sp"
+		            android:textSize="16sp"
 		            android:textColor="@color/tab_text_chosen"/>            
 	            
 	        </LinearLayout>
@@ -89,7 +89,7 @@
 		            android:layout_height="match_parent"
 		            android:gravity="center_horizontal|center_vertical"
 		            android:text="@string/cancel"
-		            android:textSize="20sp"
+		            android:textSize="16sp"
 		            android:textColor="@color/light_black"/>           
 	            
 	        </LinearLayout>        

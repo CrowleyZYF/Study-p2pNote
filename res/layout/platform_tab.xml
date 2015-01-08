@@ -1,33 +1,17 @@
 <?xml version="1.0" encoding="utf-8"?>
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    android:layout_width="80dp"
+    android:layout_width="110dp"
 	android:layout_height="match_parent"
 	android:orientation="vertical" >
 	
-	<RelativeLayout
-	    android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_centerInParent="true">
-        
-        <ImageView
-            android:id="@+id/platform_tab_img"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_centerHorizontal="true"
-            android:src="@drawable/company_icon01"
-            />
-        
-        <TextView
-            android:id="@+id/platform_tab_text"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_marginTop="5dp"
-            android:layout_below="@id/platform_tab_img"
-            android:gravity="center_horizontal"
-            android:layout_centerHorizontal="true"
-            android:text="@string/company_name01"
-            />
-	</RelativeLayout>
+	<ImageView
+	    android:id="@+id/platform_tab_img"
+	    android:layout_width="100dp"
+	    android:layout_height="100dp"
+	    android:layout_centerInParent="true"
+	    android:src="@drawable/company_icon01"
+	    />
+	
 	<ImageView
 	    android:id="@+id/platform_tab_arrow"
 	    android:layout_width="wrap_content"

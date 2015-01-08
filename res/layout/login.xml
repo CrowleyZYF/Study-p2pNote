@@ -9,7 +9,7 @@
         android:layout_width="fill_parent"
         android:layout_height="50dp"
         android:layout_alignParentTop="true"
-        android:background="@color/banner_bg">
+        android:background="@color/banner_bg_light">
         
         <ImageButton 
             android:id="@+id/back"

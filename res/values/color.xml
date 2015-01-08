@@ -13,6 +13,7 @@
     <color name="tab_text_chosen">#7fc0e9</color>
     <color name="tab_text">#A1A1A1</color>
     <color name="tab_bg">#F7F7F7</color>
+    <color name="banner_bg_light">#4a90e2</color>
     <color name="banner_bg">#232736</color>
     <color name="index_info_bg">#46527B</color>
     <color name="company01">#E94F0F</color>
@@ -24,6 +25,9 @@
     <color name="company07">#EC7B00</color>
     <color name="company08">#D4180F</color>
     <color name="company09">#689F38</color>
+    <color name="platform_chosen">#f4613b</color>
+    <color name="platform_in">#3ea907</color>
+    <color name="platform_out">#f4613b</color>
     
     
 </resources>

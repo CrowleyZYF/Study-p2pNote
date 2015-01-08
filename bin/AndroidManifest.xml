@@ -42,6 +42,9 @@
         <activity
             android:name="com.crowley.p2pnote.AboutActivity" >
         </activity>
+        <activity
+            android:name="com.crowley.p2pnote.RecordActivity" >
+        </activity>
     </application>
 
 </manifest>

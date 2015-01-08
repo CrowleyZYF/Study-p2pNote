@@ -15,14 +15,12 @@ public class HorizontalScrollViewAdapter {
 	private Context mContext;  
     private LayoutInflater mInflater;  
     private List<Integer> mDatas;
-    private List<Integer> mDatas2;
   
-    public HorizontalScrollViewAdapter(Context context, List<Integer> mDatas, List<Integer> mDatas2)  
+    public HorizontalScrollViewAdapter(Context context, List<Integer> mDatas)  
     {  
         this.mContext = context;  
         mInflater = LayoutInflater.from(context);  
         this.mDatas = mDatas; 
-        this.mDatas2 = mDatas2; 
     }  
   
     public int getCount()  
@@ -50,15 +48,15 @@ public class HorizontalScrollViewAdapter {
                     R.layout.platform_tab, parent, false);  
             viewHolder.mImg = (ImageView) convertView  
                     .findViewById(R.id.platform_tab_img);  
-            viewHolder.mText = (TextView) convertView  
-                    .findViewById(R.id.platform_tab_text);  
+            /*viewHolder.mText = (TextView) convertView  
+                    .findViewById(R.id.platform_tab_text);*/  
             convertView.setTag(viewHolder);  
         } else  
         {  
             viewHolder = (ViewHolder) convertView.getTag();  
         }  
         viewHolder.mImg.setImageResource(mDatas.get(position));  
-        viewHolder.mText.setText(this.mContext.getResources().getString(mDatas2.get(position)));
+        //viewHolder.mText.setText(this.mContext.getResources().getString(mDatas2.get(position)));
   
         return convertView;  
     }  
@@ -66,6 +64,6 @@ public class HorizontalScrollViewAdapter {
     private class ViewHolder  
     {  
         ImageView mImg;  
-        TextView mText;  
+        //TextView mText;  
     } 
 }
