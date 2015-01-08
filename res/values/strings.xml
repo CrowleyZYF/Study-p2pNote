@@ -10,6 +10,8 @@
     <string name="basic_info02">均年化收益</string>
     <string name="basic_info03">在投总额</string>
     <string name="addMinus">±</string>
+    <string name="add">+</string>
+    <string name="minus">-</string>
     <string name="tab_button01">已经到期</string>
     <string name="tab_button02">即将到期</string>
     
@@ -112,5 +114,7 @@
     <string name="platform_in">收益</string>
     <string name="platform_out">取出</string>    
     <string name="platform_invest">投资</string>
+    
+    <string name="record_title">成交记录</string>
 
 </resources>
