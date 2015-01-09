@@ -30,6 +30,15 @@ public class RecordModel {
 	private String timeBeginString;
 	private String timeEndString;
 	
+	private String timeStamp;
+	private int state;
+	private int isDeleted;
+	private String userName;
+	private Float restBegin;
+	private Float restEnd;
+ 
+	private String timeStampEnd;
+	
 	public RecordModel(){
 		this.id=0;
 		this.platformString="";
@@ -40,9 +49,20 @@ public class RecordModel {
 		this.methodInteger=0;
 		this.timeBeginString="";
 		this.timeEndString="";	
+		
+		this.timeStamp="";
+		this.state=0;
+		this.isDeleted=0;
+		this.userName="";
+		this.restBegin=0.0f;
+		this.restEnd=0.0f;
+		
+		this.timeStampEnd="";
 	}
 	
-	public RecordModel(Integer id,String platform,String type,Float money,Float earningMin,Float earningMax,Integer method,String timeBegin,String timeEnd){
+	public RecordModel(Integer id,String platform,String type,Float money,Float earningMin,Float earningMax,Integer method,String timeBegin,String timeEnd,
+			String timeStamp,int state,int isDeleted,String userName,Float restBegin,Float restEnd,
+			String timeStampEnd){
 		this.id=id;
 		this.platformString=platform;
 		this.typeString=type;
@@ -51,7 +71,16 @@ public class RecordModel {
 		this.earningMaxFloat=earningMax;
 		this.methodInteger=method;
 		this.timeBeginString=timeBegin;
-		this.timeEndString=timeEnd;	
+		this.timeEndString=timeEnd;
+		
+		this.timeStamp=timeStamp;
+		this.state=state;
+		this.isDeleted=isDeleted;
+		this.userName=userName;
+		this.restBegin=restBegin;
+		this.restEnd=restEnd;
+		
+		this.timeStampEnd=timeStampEnd;
 	}
 	
 	public RecordModel(Cursor cursor){
@@ -63,7 +92,16 @@ public class RecordModel {
 		this.earningMaxFloat=cursor.getFloat(cursor.getColumnIndex("earningMax"));
 		this.methodInteger=cursor.getInt(cursor.getColumnIndex("method"));
 		this.timeBeginString=cursor.getString(cursor.getColumnIndex("timeBegin"));
-		this.timeEndString=cursor.getString(cursor.getColumnIndex("timeEnd"));	
+		this.timeEndString=cursor.getString(cursor.getColumnIndex("timeEnd"));
+		
+		this.timeStamp=cursor.getString(cursor.getColumnIndex("timeStamp"));
+		this.state=cursor.getInt(cursor.getColumnIndex("state"));
+		this.isDeleted=cursor.getInt(cursor.getColumnIndex("isDeleted"));
+		this.userName=cursor.getString(cursor.getColumnIndex("userName"));
+		this.restBegin=cursor.getFloat(cursor.getColumnIndex("restBegin"));
+		this.restEnd=cursor.getFloat(cursor.getColumnIndex("restEnd"));
+		
+		this.timeStampEnd=cursor.getString(cursor.getColumnIndex("timeStampEnd"));
 	}
 	
 	//get method
@@ -103,6 +141,34 @@ public class RecordModel {
 		return this.timeEndString;
 	}
 	
+	public String getTimeStamp(){
+		return this.timeStamp;
+	}
+	
+	public int getState(){
+		return this.state;
+	}
+	
+	public int getIsDeleted(){
+		return this.isDeleted;
+	}
+	
+	public String getUserName(){
+		return this.userName;
+	}
+	
+	public Float getRestBegin(){
+		return this.restBegin;
+	}
+	
+	public Float getRestEnd(){
+		return this.restEnd;
+	}
+	
+	public String getTimeStampEnd(){
+		return this.timeStampEnd;
+	}
+	
 	//set method	
 	public void setPlatform(String s){
 		this.platformString=s;
@@ -134,5 +200,33 @@ public class RecordModel {
 	
 	public void setTimeEnd(String s){
 		this.timeEndString=s;
+	}
+	
+	public void setTimeStamp(String s){
+		this.timeStamp=s;
+	}
+	
+	public void setState(int i){
+		this.state=i;
+	}
+	
+	public void setIsDeleted(int i){
+		this.isDeleted=i;
+	}
+	
+	public void setUserName(String s){
+		this.userName=s;
+	}
+	
+	public void setRestBegin(Float f){
+		this.restBegin=f;
+	}
+	
+	public void setRestEnd(Float f){
+		this.restEnd=f;
+	}
+	
+	public void setTimeStampEnd(String s){
+		this.timeStampEnd=s;
 	}
 }

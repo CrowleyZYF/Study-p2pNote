@@ -6,6 +6,8 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+import cn.pedant.SweetAlert.SweetAlertDialog;
+
 import com.crowley.p2pnote.db.DBOpenHelper;
 import com.crowley.p2pnote.functions.ReturnList;
 
@@ -37,35 +39,8 @@ import android.widget.Toast;
 
 public class NewItemActivity extends Activity implements OnItemSelectedListener,android.view.View.OnClickListener{
 	
-	public static final String TABLENAME = "record";
 	private ReturnList returnList;
-	
-	//平台图标
-	public static final int[] PLATFORM_ICONS = {
-		R.drawable.company_icon01,
-		R.drawable.company_icon02,
-		R.drawable.company_icon03,
-		R.drawable.company_icon04,
-		R.drawable.company_icon05,
-		R.drawable.company_icon06,
-		R.drawable.company_icon07,
-		R.drawable.company_icon08,
-		R.drawable.company_icon09
-		};
-	
-	//平台名称
-	public static final int[] PLATFORM_NAMES = {
-		R.string.company_name01,
-		R.string.company_name02,
-		R.string.company_name03,
-		R.string.company_name04,
-		R.string.company_name05,
-		R.string.company_name06,
-		R.string.company_name07,
-		R.string.company_name08,
-		R.string.company_name09
-		};
-	
+		
 	private boolean init = false;
 	
 	//平台下拉框
@@ -73,27 +48,34 @@ public class NewItemActivity extends Activity implements OnItemSelectedListener,
 	private SimpleAdapter platform_adapter;
 	private List<Map<String, Object>> platformList;
 	
-	//投资类型下拉框
+	//投资类型下拉框（如果选择已经录入的平台）
 	private Spinner typeSpinner;
-	private LinearLayout customLinearLayout;
 	private SimpleAdapter type_adapter;
 	private List<Map<String, Object>> typeList;
 	private Map<String, List<Map<String, Object>>> typeMap;
+	
+	//投资类型输入框（如果其他产品）
+	private LinearLayout customLinearLayout;
+	private EditText custom_platform;
+	private EditText custom_type;		
+	
+	//本金
+	private EditText money;
 	
 	//收益率类型
 	private Spinner rateSpinner;
 	private SimpleAdapter rate_Adapter;
 	private List<Map<String, Object>> rateList;
 	
-	//计息方式
-	private Spinner methodSpinner;
-	private SimpleAdapter method_Adapter;
-	private List<Map<String, Object>> methodList;
-	
 	//收益率
 	private EditText minEditText;
 	private EditText maxEditText;
 	private TextView middle2TextView;
+	
+	//计息方式
+	private Spinner methodSpinner;
+	private SimpleAdapter method_Adapter;
+	private List<Map<String, Object>> methodList;	
 	
 	//日期
 	private Calendar cal;
@@ -108,11 +90,6 @@ public class NewItemActivity extends Activity implements OnItemSelectedListener,
 	private LinearLayout new_item_sure;
 	private LinearLayout new_item_cancel;
 	
-	//其他
-	private EditText money;
-	
-	//数据库
-	
 	
 	protected void onCreate(Bundle savedInstanceState) {
 		// TODO Auto-generated method stub
@@ -120,29 +97,31 @@ public class NewItemActivity extends Activity implements OnItemSelectedListener,
         requestWindowFeature(Window.FEATURE_NO_TITLE);
 		setContentView(R.layout.new_item);
 		
-		//初始化
-		//DBOpenHelper helper = new DBOpenHelper(NewItemActivity.this, "record.db");
-		//SQLiteDatabase db = helper.getWritableDatabase();		
+		//初始化		
+		initView();		
+		initData();		
+		initEvent();		
+	}
+
+	private void initEvent() {
+		platformSpinner.setOnItemSelectedListener(this);
+		rateSpinner.setOnItemSelectedListener(this);
+		begin_time.setOnClickListener(this);
+		end_time.setOnClickListener(this);
+		new_item_sure.setOnClickListener(this);
+		new_item_cancel.setOnClickListener(this);
+	}
+
+	private void initData() {
 		returnList = new ReturnList(this);
-		platformSpinner = (Spinner) findViewById(R.id.platform);
-		typeSpinner = (Spinner) findViewById(R.id.type);
-		customLinearLayout=(LinearLayout) findViewById(R.id.custom);
-		money=(EditText) findViewById(R.id.money);
-		rateSpinner = (Spinner) findViewById(R.id.earning_rate);
-		methodSpinner = (Spinner) findViewById(R.id.earning_method);
-		minEditText = (EditText) findViewById(R.id.earning_min);
-		maxEditText = (EditText) findViewById(R.id.earning_max);
-		middle2TextView = (TextView) findViewById(R.id.middle2);
-		begin_time = (TextView) findViewById(R.id.begin_time);
-		end_time = (TextView) findViewById(R.id.end_time);
-		new_item_sure = (LinearLayout) findViewById(R.id.new_item_sure_button);
-		new_item_cancel = (LinearLayout) findViewById(R.id.new_item_cancel_button);
+		
 		platformList = new ArrayList<Map<String,Object>>();
 		rateList = new ArrayList<Map<String,Object>>();
 		methodList = new ArrayList<Map<String,Object>>();
 		typeList = new ArrayList<Map<String, Object>>();
 		typeMap = new HashMap<String, List<Map<String, Object>>>();
-		initData();
+		
+		getData();
 		
 		rate_Adapter = new SimpleAdapter(this, rateList, R.layout.select_earning_item, new String[]{"earning_rate_name"}, new int[]{R.id.earning_rate_name});
 		rateSpinner.setAdapter(rate_Adapter);
@@ -152,37 +131,62 @@ public class NewItemActivity extends Activity implements OnItemSelectedListener,
 		
 		platform_adapter=new SimpleAdapter(this, platformList, R.layout.select_platform_item, new String[]{"company_icon","company_name"}, new int[]{R.id.company_icon,R.id.company_name});
 		platformSpinner.setAdapter(platform_adapter);
+	}
+
+	private void initView() {
+		platformSpinner = (Spinner) findViewById(R.id.platform);
 		
+		typeSpinner = (Spinner) findViewById(R.id.type);		
+		customLinearLayout=(LinearLayout) findViewById(R.id.custom);
 		
+		money=(EditText) findViewById(R.id.money);
 		
-		platformSpinner.setOnItemSelectedListener(this);
-		rateSpinner.setOnItemSelectedListener(this);
-		begin_time.setOnClickListener(this);
-		end_time.setOnClickListener(this);
-		new_item_sure.setOnClickListener(this);
-		new_item_cancel.setOnClickListener(this);
+		rateSpinner = (Spinner) findViewById(R.id.earning_rate);		
+
+		minEditText = (EditText) findViewById(R.id.earning_min);
+		maxEditText = (EditText) findViewById(R.id.earning_max);		
+		middle2TextView = (TextView) findViewById(R.id.middle2);
 		
+		methodSpinner = (Spinner) findViewById(R.id.earning_method);
 		
+		begin_time = (TextView) findViewById(R.id.begin_time);
+		
+		end_time = (TextView) findViewById(R.id.end_time);
+		
+		new_item_sure = (LinearLayout) findViewById(R.id.new_item_sure_button);
+		new_item_cancel = (LinearLayout) findViewById(R.id.new_item_cancel_button);
 	}
 	
-	private void initData(){
-		
+	private void getData(){	
+		//初始化时间
 		cal=Calendar.getInstance();
         year = cal.get(Calendar.YEAR);
         month = cal.get(Calendar.MONTH)+1;
         day = cal.get(Calendar.DAY_OF_MONTH);
         
-        begin_time.setText(year+"-"+month+"-"+day);
-        end_time.setText(year+"-"+month+"-"+day);
+        if(month<10){
+        	if(day<10){
+        		begin_time.setText(year+"-0"+month+"-0"+day);
+                end_time.setText(year+"-0"+month+"-0"+day); 
+        	}else{
+        		begin_time.setText(year+"-0"+month+"-"+day);
+                end_time.setText(year+"-0"+month+"-"+day);
+        	}        	       	
+        }else if(day<10){
+        	begin_time.setText(year+"-"+month+"-0"+day);
+            end_time.setText(year+"-"+month+"-0"+day);        	
+        }      
         
+        //初始化收益率类型
         rateList.clear();
         Map<String, Object> map3=new HashMap<String, Object>();
 		map3.put("earning_rate_name", getResources().getString(R.string.select_earning_item01));
-		rateList.add(map3);
+		rateList.add(map3);		
 		Map<String, Object> map4=new HashMap<String, Object>();
 		map4.put("earning_rate_name", getResources().getString(R.string.select_earning_item02));
 		rateList.add(map4);
 		
+		//初始化计息方式
 		methodList.clear();
         Map<String, Object> map5=new HashMap<String, Object>();
 		map5.put("earning_rate_name", getResources().getString(R.string.select_method_item01));
@@ -194,32 +198,32 @@ public class NewItemActivity extends Activity implements OnItemSelectedListener,
 		map7.put("earning_rate_name", getResources().getString(R.string.select_method_item03));
 		methodList.add(map7);
 		
+		//初始化投资平台和类型
 		platformList.clear();
-    	for(int i=0;i<9;i++){
+    	for(int i=0;i<DBOpenHelper.PLATFORM_ICONS.length;i++){
     		Map<String, Object> map=new HashMap<String, Object>();
-    		map.put("company_icon", PLATFORM_ICONS[i]);
-    		map.put("company_name", getResources().getString(PLATFORM_NAMES[i]));
+    		map.put("company_icon", DBOpenHelper.PLATFORM_ICONS[i]);
+    		map.put("company_name", getResources().getString(DBOpenHelper.PLATFORM_NAMES[i]));
     		List<Map<String, Object>> typesList = new ArrayList<Map<String, Object>>();
     		for(int j=0;j<DBOpenHelper.PLATFORM_PRODUCT[i].length;j++){
     			if(i==8){
     				j=100;
     			}else{
     				Map<String, Object> map2=new HashMap<String, Object>();
-            		//map2.put("earning_rate_name", getResources().getString(PLATFORM_NAMES[i])+"项目"+j);
+    				//这里偷懒了 用了和收益率什么的一样的样式 所以字段是这个
         			map2.put("earning_rate_name", getResources().getString(DBOpenHelper.PLATFORM_PRODUCT[i][j]));
         			typesList.add(map2);
     			}    			    			
     		}
     		platformList.add(map);
-    		typeMap.put(getResources().getString(PLATFORM_NAMES[i]), typesList);    		
+    		typeMap.put(getResources().getString(DBOpenHelper.PLATFORM_NAMES[i]), typesList);    		
     	}		
 	}
 
 	@Override
 	public void onItemSelected(AdapterView<?> parent, View view, int position,
 			long id) {
-		//Toast.makeText(getApplicationContext(), "id:"+parent.getId(),Toast.LENGTH_SHORT).show();
-		//Log.i("m_info", "id:"+id);
+		//这个好像默认会调用一次 所以来了个初始化？
 		if(init==false){
 			Map<String, Object> map = platformList.get(position);
 			String company_name = (String) map.get("company_name");
@@ -231,12 +235,15 @@ public class NewItemActivity extends Activity implements OnItemSelectedListener,
 			typeSpinner.setAdapter(type_adapter);
 		}else{			
 			switch (parent.getId()) {
+			//如果是平台被点击了 检测是否是其他平台 如果是 则隐藏下拉框 改成编辑框 否则更换下拉框内容
 			case R.id.platform:{
 				Map<String, Object> map = platformList.get(position);
 				String company_name = (String) map.get("company_name");
+				//其他
 				if(company_name.equals(getResources().getString(R.string.company_name09))){
 					customLinearLayout.setVisibility(View.VISIBLE);	
 					typeSpinner.setVisibility(View.GONE);
+				//不是其他
 				}else{
 					customLinearLayout.setVisibility(View.GONE);	
 					typeSpinner.setVisibility(View.VISIBLE);
@@ -247,7 +254,8 @@ public class NewItemActivity extends Activity implements OnItemSelectedListener,
 					type_adapter.notifyDataSetChanged();
 				}								
 				break;			
-			}
+			}			
+			//如果是收益率类型被点击 则根据类型对收益率进行变化
 			case R.id.earning_rate:{
 				Map<String, Object> map = rateList.get(position);
 				String earning_rate_name = (String) map.get("earning_rate_name");
@@ -267,18 +275,12 @@ public class NewItemActivity extends Activity implements OnItemSelectedListener,
 			}
 		}				
 	}
-
-	@Override
-	public void onNothingSelected(AdapterView<?> arg0) {
-		// TODO Auto-generated method stub
-		
-	}
-
 	
 	@Override
 	public void onClick(View v) {
 		// TODO Auto-generated method stub
 		switch (v.getId()) {
+		//计息时间
 		case R.id.begin_time:{
 			new DatePickerDialog(this, new OnDateSetListener() {				
 				@Override
@@ -297,6 +299,7 @@ public class NewItemActivity extends Activity implements OnItemSelectedListener,
 			}, year, cal.get(Calendar.MONTH), day).show();
 			break;
 		}
+		//结束时间
 		case R.id.end_time:{
 			begin=false;
 			new DatePickerDialog(this, new OnDateSetListener() {				
@@ -316,13 +319,28 @@ public class NewItemActivity extends Activity implements OnItemSelectedListener,
 			}, year, cal.get(Calendar.MONTH), day).show();
 			break;
 		}
+		//新建投资
 		case R.id.new_item_sure_button:{
 			String errorString="";
 			Boolean erroredBoolean=false;
 			String company= ((Map<String, Object>) (platformSpinner.getSelectedItem())).get("company_name").toString();
-			String type = ((Map<String, Object>) (typeSpinner.getSelectedItem())).get("earning_rate_name").toString();
+			String type = "";
 			String rate = ((Map<String, Object>) (rateSpinner.getSelectedItem())).get("earning_rate_name").toString();
 			Float moneys=0.0f;
+			
+			//判断company是否为其他
+			if(company.equals(getResources().getString(DBOpenHelper.PLATFORM_NAMES[DBOpenHelper.PLATFORM_NAMES.length-1]))){
+				if(TextUtils.isEmpty(custom_platform.getText())||TextUtils.isEmpty(custom_type.getText())){
+					erroredBoolean=true;
+					errorString="收益率不得为空";	
+				}else{
+					company=custom_platform.getText().toString();
+					type=custom_type.getText().toString();
+				}				
+			}else{
+				type = ((Map<String, Object>) (typeSpinner.getSelectedItem())).get("earning_rate_name").toString();
+			}
+			
 			if(TextUtils.isEmpty(money.getText())){
 				erroredBoolean=true;
 				errorString="本金数目不得为空";	
@@ -330,9 +348,10 @@ public class NewItemActivity extends Activity implements OnItemSelectedListener,
 				moneys = Float.parseFloat(money.getText().toString());
 				if(moneys<=0){
 					erroredBoolean=true;
-					errorString="请输入大于0的本金数目";				
+					errorString="请输入大于0的本金数目";
 				}
-			}			
+			}
+			
 			Float min = 0.0f;
 			Float max = 0.0f;
 			if(rate.equals("浮动收益率")){
@@ -380,7 +399,12 @@ public class NewItemActivity extends Activity implements OnItemSelectedListener,
 			}
 			String sqlString="insert into record(platform,type,money,earningMin,earningMax,method,timeBegin,timeEnd) values('"+company+"','"+type+"',"+moneys+","+min+","+max+","+method+",'"+begin_dayString+"','"+end_dayString+"')";
 			if (erroredBoolean) {
-				Toast.makeText(getApplicationContext(), errorString, Toast.LENGTH_SHORT).show();
+				//Toast.makeText(getApplicationContext(), errorString, Toast.LENGTH_SHORT).show();
+				new SweetAlertDialog(this, SweetAlertDialog.ERROR_TYPE)
+	                .setTitleText("新建投资失败")
+	                .setContentText(errorString)
+	                .setConfirmText("确定")
+	                .show();
 			}else{
 				DBOpenHelper helper = new DBOpenHelper(NewItemActivity.this, "record.db");
 				SQLiteDatabase db = helper.getWritableDatabase();
@@ -390,6 +414,7 @@ public class NewItemActivity extends Activity implements OnItemSelectedListener,
 			}			
 			break;
 		}
+		//取消
 		case R.id.new_item_cancel_button:{
 			Intent intent=new Intent(this,MainActivity.class);
             startActivity(intent);
@@ -398,6 +423,12 @@ public class NewItemActivity extends Activity implements OnItemSelectedListener,
 		default:
 			break;
 		}
+		
+	}
+
+	@Override
+	public void onNothingSelected(AdapterView<?> arg0) {
+		// TODO Auto-generated method stub
 		
 	}
 
