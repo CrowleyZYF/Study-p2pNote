@@ -75,6 +75,7 @@ public class NewItemActivity extends Activity implements OnItemSelectedListener,
 	
 	//投资类型下拉框
 	private Spinner typeSpinner;
+	private LinearLayout customLinearLayout;
 	private SimpleAdapter type_adapter;
 	private List<Map<String, Object>> typeList;
 	private Map<String, List<Map<String, Object>>> typeMap;
@@ -125,6 +126,7 @@ public class NewItemActivity extends Activity implements OnItemSelectedListener,
 		returnList = new ReturnList(this);
 		platformSpinner = (Spinner) findViewById(R.id.platform);
 		typeSpinner = (Spinner) findViewById(R.id.type);
+		customLinearLayout=(LinearLayout) findViewById(R.id.custom);
 		money=(EditText) findViewById(R.id.money);
 		rateSpinner = (Spinner) findViewById(R.id.earning_rate);
 		methodSpinner = (Spinner) findViewById(R.id.earning_method);
@@ -198,13 +200,15 @@ public class NewItemActivity extends Activity implements OnItemSelectedListener,
     		map.put("company_icon", PLATFORM_ICONS[i]);
     		map.put("company_name", getResources().getString(PLATFORM_NAMES[i]));
     		List<Map<String, Object>> typesList = new ArrayList<Map<String, Object>>();
-    		for(int j=0;j<8;j++){
-    			Map<String, Object> map2=new HashMap<String, Object>();
-        		map2.put("earning_rate_name", getResources().getString(PLATFORM_NAMES[i])+"项目"+j);
-    			typesList.add(map2);
+    		for(int j=0;j<DBOpenHelper.PLATFORM_PRODUCT[i].length;j++){
     			if(i==8){
     				j=100;
-    			}
+    			}else{
+    				Map<String, Object> map2=new HashMap<String, Object>();
+            		//map2.put("earning_rate_name", getResources().getString(PLATFORM_NAMES[i])+"项目"+j);
+        			map2.put("earning_rate_name", getResources().getString(DBOpenHelper.PLATFORM_PRODUCT[i][j]));
+        			typesList.add(map2);
+    			}    			    			
     		}
     		platformList.add(map);
     		typeMap.put(getResources().getString(PLATFORM_NAMES[i]), typesList);    		
@@ -230,11 +234,18 @@ public class NewItemActivity extends Activity implements OnItemSelectedListener,
 			case R.id.platform:{
 				Map<String, Object> map = platformList.get(position);
 				String company_name = (String) map.get("company_name");
-				typeList.clear();
-				for(int i=0;i<typeMap.get(company_name).size();i++){
-					typeList.add(typeMap.get(company_name).get(i));
-				}
-				type_adapter.notifyDataSetChanged();				
+				if(company_name.equals(getResources().getString(R.string.company_name09))){
+					customLinearLayout.setVisibility(View.VISIBLE);	
+					typeSpinner.setVisibility(View.GONE);
+				}else{
+					customLinearLayout.setVisibility(View.GONE);	
+					typeSpinner.setVisibility(View.VISIBLE);
+					typeList.clear();
+					for(int i=0;i<typeMap.get(company_name).size();i++){
+						typeList.add(typeMap.get(company_name).get(i));
+					}
+					type_adapter.notifyDataSetChanged();
+				}								
 				break;			
 			}
 			case R.id.earning_rate:{

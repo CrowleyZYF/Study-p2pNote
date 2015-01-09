@@ -3,11 +3,13 @@ package com.crowley.p2pnote.db;
 
 import com.crowley.p2pnote.R;
 
+import android.R.integer;
 import android.content.Context;
 import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
 import android.database.sqlite.SQLiteDatabase.CursorFactory;
 import android.database.sqlite.SQLiteOpenHelper;
+import android.util.Log;
 
 public class DBOpenHelper extends SQLiteOpenHelper{
 	
@@ -23,6 +25,18 @@ public class DBOpenHelper extends SQLiteOpenHelper{
 		R.string.company_name08,
 		R.string.company_name09
 		};
+	
+	public static final int[][] PLATFORM_PRODUCT = {
+		{R.string.company_name01_product01,R.string.company_name01_product02,R.string.company_name01_product03,R.string.company_name01_product04,R.string.company_name01_product05},
+		{R.string.company_name02_product01,R.string.company_name02_product02,R.string.company_name02_product03,R.string.company_name02_product04,R.string.company_name02_product05},
+		{R.string.company_name03_product01,R.string.company_name03_product02,R.string.company_name03_product03,R.string.company_name03_product04,R.string.company_name03_product05},
+		{R.string.company_name04_product01,R.string.company_name04_product02,R.string.company_name04_product03,R.string.company_name04_product04,R.string.company_name04_product05},
+		{R.string.company_name05_product01,R.string.company_name05_product02,R.string.company_name05_product03,R.string.company_name05_product04,R.string.company_name05_product05},
+		{R.string.company_name06_product01,R.string.company_name06_product02,R.string.company_name06_product03,R.string.company_name06_product04,R.string.company_name06_product05},
+		{R.string.company_name07_product01,R.string.company_name07_product02,R.string.company_name07_product03,R.string.company_name07_product04,R.string.company_name07_product05},
+		{R.string.company_name08_product01,R.string.company_name08_product02,R.string.company_name08_product03,R.string.company_name08_product04,R.string.company_name08_product05},
+		{}
+	};
 	
 	public static final int[] PLATFORM_ICONS = {
 		R.drawable.company_icon01,
@@ -53,7 +67,7 @@ public class DBOpenHelper extends SQLiteOpenHelper{
 		};
 
 	public DBOpenHelper(Context context, String name) {
-		super(context, name, null, 1);
+		super(context, name, null, 2);
 		// TODO Auto-generated constructor stub
 	}
 
@@ -72,17 +86,61 @@ public class DBOpenHelper extends SQLiteOpenHelper{
 		 * method:计息方式 0为到期还本息 1为 按月还本息 2为按月只还息
 		 * timeBegin:计息时间 格式为2014-12-26的字符串
 		 * timeEnd:到期时间 格式为2014-12-26的字符串	 
+		 * 
+		 * version 2:
+		 * 增加字段
+		 * 
+		 * timeStamp:创建记录时的时间戳
+		 * state:到期后是否处理,0为未处理，1为已处理
+		 * isDeleted:是否已被删除，0为未删除，1为已删除
+		 * userName:用户名，登陆后用登陆的用户名，未登录的时候默认为not_login
+		 * restBegin:创建这笔投资后，平台的所剩的余额
+		 * restEnd:处理这笔投资后，平台的所剩的余额
+		 * 
 		 */
+		//db.execSQL("DROP TABLE record");
 		db.execSQL("create table if not exists record (_id integer primary key autoincrement,platform text not null,type text not null,money real not null,earningMin real not null,earningMax real not null,method integer not null,timeBegin text not null,timeEnd text not null)");		
 	}
 
 	@Override
-	public void onUpgrade(SQLiteDatabase arg0, int arg1, int arg2) {
+	public void onUpgrade(SQLiteDatabase db, int oldVersion, int newVersion) {
 		// TODO Auto-generated method stub
-		
+		for(int i = oldVersion;i<=newVersion;i++){
+			switch (i) {
+			case 2:{
+				db.execSQL("ALTER TABLE record ADD COLUMN timeStamp text not null DEFAULT ''");
+				db.execSQL("ALTER TABLE record ADD COLUMN state integer not null DEFAULT 0");
+				db.execSQL("ALTER TABLE record ADD COLUMN isDeleted integer not null DEFAULT 0");
+				db.execSQL("ALTER TABLE record ADD COLUMN userName text not null DEFAULT ''");
+				db.execSQL("ALTER TABLE record ADD COLUMN restBegin real not null DEFAULT 0.00");
+				db.execSQL("ALTER TABLE record ADD COLUMN restEnd real not null DEFAULT 0.00");
+				
+				Cursor allRecords = db.rawQuery("select * from record", null);
+				while (allRecords.moveToNext()) {
+					Long tsLong = System.currentTimeMillis();
+					String ts = tsLong.toString();
+					int id=allRecords.getInt(allRecords.getColumnIndex("_id"));
+					db.execSQL("UPDATE record SET timeStamp = "+ts+", state = 0, isDeleted = 0, userName = 'not_login', restBegin = 0.00, restEnd = 0.00 WHERE _id = "+id);
+					Log.i("m_info",ts);
+				}
+			}
+			default:
+				break;
+			}
+		}
 	}
 	
 	public Cursor returALLRecords(SQLiteDatabase db){
+		Cursor allRecords = db.rawQuery("select * from record", null);
+		while (allRecords.moveToNext()) {
+			/*Long tsLong = System.currentTimeMillis();
+			String ts = tsLong.toString();
+			int id=allRecords.getInt(allRecords.getColumnIndex("_id"));
+			db.execSQL("UPDATE record SET timeStamp = "+ts+", state = 0, isDeleted = 0, userName = 'not_login', restBegin = 0.00, restEnd = 0.00 WHERE _id = "+id);*/
+			Log.i("m_info","id:"+allRecords.getInt(allRecords.getColumnIndex("_id")));
+			Log.i("m_info","timeStamp:"+allRecords.getString(allRecords.getColumnIndex("timeStamp")));
+			Log.i("m_info","-----------------");
+		}
 		return db.rawQuery("select * from record", null);
 	}
 	

@@ -20,6 +20,7 @@ public class RecordModel {
 	 * 
 	 */
 	
+	private int id;
 	private String platformString;
 	private String typeString;
 	private Float moneyFloat;
@@ -30,39 +31,46 @@ public class RecordModel {
 	private String timeEndString;
 	
 	public RecordModel(){
-		platformString="";
-		typeString="";
-		moneyFloat=0.0f;
-		earningMinFloat=0.0f;
-		earningMaxFloat=0.0f;
-		methodInteger=0;
-		timeBeginString="";
-		timeEndString="";	
+		this.id=0;
+		this.platformString="";
+		this.typeString="";
+		this.moneyFloat=0.0f;
+		this.earningMinFloat=0.0f;
+		this.earningMaxFloat=0.0f;
+		this.methodInteger=0;
+		this.timeBeginString="";
+		this.timeEndString="";	
 	}
 	
-	public RecordModel(String platform,String type,Float money,Float earningMin,Float earningMax,Integer method,String timeBegin,String timeEnd){
-		platformString=platform;
-		typeString=type;
-		moneyFloat=money;
-		earningMinFloat=earningMin;
-		earningMaxFloat=earningMax;
-		methodInteger=method;
-		timeBeginString=timeBegin;
-		timeEndString=timeEnd;	
+	public RecordModel(Integer id,String platform,String type,Float money,Float earningMin,Float earningMax,Integer method,String timeBegin,String timeEnd){
+		this.id=id;
+		this.platformString=platform;
+		this.typeString=type;
+		this.moneyFloat=money;
+		this.earningMinFloat=earningMin;
+		this.earningMaxFloat=earningMax;
+		this.methodInteger=method;
+		this.timeBeginString=timeBegin;
+		this.timeEndString=timeEnd;	
 	}
 	
 	public RecordModel(Cursor cursor){
-		platformString=cursor.getString(cursor.getColumnIndex("platform"));
-		typeString=cursor.getString(cursor.getColumnIndex("type"));
-		moneyFloat=cursor.getFloat(cursor.getColumnIndex("money"));
-		earningMinFloat=cursor.getFloat(cursor.getColumnIndex("earningMin"));
-		earningMaxFloat=cursor.getFloat(cursor.getColumnIndex("earningMax"));
-		methodInteger=cursor.getInt(cursor.getColumnIndex("method"));
-		timeBeginString=cursor.getString(cursor.getColumnIndex("timeBegin"));
-		timeEndString=cursor.getString(cursor.getColumnIndex("timeEnd"));	
+		this.id=cursor.getInt(cursor.getColumnIndex("_id"));
+		this.platformString=cursor.getString(cursor.getColumnIndex("platform"));
+		this.typeString=cursor.getString(cursor.getColumnIndex("type"));
+		this.moneyFloat=cursor.getFloat(cursor.getColumnIndex("money"));
+		this.earningMinFloat=cursor.getFloat(cursor.getColumnIndex("earningMin"));
+		this.earningMaxFloat=cursor.getFloat(cursor.getColumnIndex("earningMax"));
+		this.methodInteger=cursor.getInt(cursor.getColumnIndex("method"));
+		this.timeBeginString=cursor.getString(cursor.getColumnIndex("timeBegin"));
+		this.timeEndString=cursor.getString(cursor.getColumnIndex("timeEnd"));	
 	}
 	
-	//get method	
+	//get method
+	public int getID(){
+		return this.id;
+	}
+	
 	public String getPlatform(){
 		return this.platformString;
 	}

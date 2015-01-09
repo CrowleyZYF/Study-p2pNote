@@ -200,6 +200,38 @@
                             android:background="@drawable/icon_bg"
                             android:prompt="@string/select_type" />
                         
+                        <LinearLayout 
+                            android:id="@+id/custom"
+                            android:visibility="gone"
+                            android:layout_width="match_parent"
+                            android:layout_height="match_parent"
+                            android:orientation="horizontal"
+                            >
+                            
+                            <EditText 
+                                android:id="@+id/custom_platform"
+                                android:layout_width="0dp"
+                                android:layout_height="match_parent"
+                                android:layout_weight="1"
+                                android:paddingRight="5dp"
+                                android:hint="平台名称"
+                				android:textSize="18sp"                                
+                            	android:background="@drawable/icon_bg"
+                                />
+                            
+                            <EditText 
+                                android:id="@+id/custom_type"
+                                android:layout_width="0dp"
+                                android:layout_height="match_parent"
+                                android:layout_weight="1"
+                                android:paddingRight="5dp"
+                                android:hint="平台项目"                                 
+                				android:textSize="18sp"                               
+                            	android:background="@drawable/icon_bg"
+                                />
+                            
+                        </LinearLayout>
+                        
                     </RelativeLayout>
                     
                     <ImageView 
