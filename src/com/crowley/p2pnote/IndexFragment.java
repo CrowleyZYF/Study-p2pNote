@@ -5,6 +5,8 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+import cn.pedant.SweetAlert.SweetAlertDialog;
+
 import com.crowley.p2pnote.db.DBOpenHelper;
 import com.crowley.p2pnote.functions.ReturnList;
 import com.crowley.p2pnote.ui.listAdapter;
@@ -20,12 +22,14 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.View.OnClickListener;
 import android.view.ViewGroup;
+import android.widget.AdapterView;
+import android.widget.AdapterView.OnItemLongClickListener;
 import android.widget.LinearLayout;
 import android.widget.ListView;
 import android.widget.SimpleAdapter;
 import android.widget.TextView;
 
-public class IndexFragment extends Fragment implements OnClickListener{	
+public class IndexFragment extends Fragment implements OnClickListener,OnItemLongClickListener{	
 
 	private View view;
 	private ReturnList returnList;
@@ -84,6 +88,7 @@ public class IndexFragment extends Fragment implements OnClickListener{
 		
         tab_button01.setOnClickListener(this);
         tab_button02.setOnClickListener(this);
+        listView.setOnItemLongClickListener(this);
         
         return view;
 	}
@@ -120,5 +125,38 @@ public class IndexFragment extends Fragment implements OnClickListener{
             break;  
         }
 		
+	}
+
+	@Override
+	public boolean onItemLongClick(AdapterView<?> arg0, View arg1, int arg2,
+			long arg3) {
+		// TODO Auto-generated method stub
+		switch (arg0.getId()) {
+		case R.id.list_view:{
+			new SweetAlertDialog(this.getActivity(), SweetAlertDialog.WARNING_TYPE)
+            .setTitleText("确定删除该条记录嘛?")
+            .setContentText("该记录将无法复原!")
+            .setCancelText("取消")
+            .setConfirmText("确定")
+            .showCancelButton(true)
+            .setConfirmClickListener(new SweetAlertDialog.OnSweetClickListener() {
+                @Override
+                public void onClick(SweetAlertDialog sDialog) {
+                    sDialog.setTitleText("记录已删除")
+                            .setConfirmText("确定")
+                            .showContentText(false)
+                            .showCancelButton(false)
+                            .setCancelClickListener(null)
+                            .setConfirmClickListener(null)
+                            .changeAlertType(SweetAlertDialog.SUCCESS_TYPE);
+                }
+            })
+            .show();			
+			break;			
+		}
+		default:
+			break;
+		}
+		return false;
 	}
 }
