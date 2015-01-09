@@ -14,6 +14,7 @@ import android.R.integer;
 import android.content.Context;
 import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
+import android.util.Log;
 
 import com.crowley.p2pnote.R;
 import com.crowley.p2pnote.db.DBOpenHelper;
@@ -49,6 +50,30 @@ public class ReturnList {
 		this.day = this.cal.get(Calendar.DAY_OF_MONTH);
 		this.days=this.year*365+this.month*this.months[this.month]+this.day;
 	}	
+	
+	public void logInfo(){
+		if(allRecords.moveToFirst()){
+			while (allRecords.moveToNext()) {
+				Log.i("m_info","id:"+allRecords.getInt(allRecords.getColumnIndex("_id")));
+				Log.i("m_info","platform:"+allRecords.getString(allRecords.getColumnIndex("platform")));
+				Log.i("m_info","type:"+allRecords.getString(allRecords.getColumnIndex("type")));
+				Log.i("m_info","money:"+allRecords.getFloat(allRecords.getColumnIndex("money")));
+				Log.i("m_info","earningMin:"+allRecords.getFloat(allRecords.getColumnIndex("earningMin")));
+				Log.i("m_info","earningMax:"+allRecords.getFloat(allRecords.getColumnIndex("earningMax")));
+				Log.i("m_info","method:"+allRecords.getInt(allRecords.getColumnIndex("method")));
+				Log.i("m_info","timeBegin:"+allRecords.getString(allRecords.getColumnIndex("timeBegin")));
+				Log.i("m_info","timeEnd:"+allRecords.getString(allRecords.getColumnIndex("timeEnd")));		
+				Log.i("m_info","timeStamp:"+allRecords.getString(allRecords.getColumnIndex("timeStamp")));
+				Log.i("m_info","state:"+allRecords.getInt(allRecords.getColumnIndex("state")));
+				Log.i("m_info","isDeleted:"+allRecords.getInt(allRecords.getColumnIndex("isDeleted")));
+				Log.i("m_info","userName:"+allRecords.getString(allRecords.getColumnIndex("userName")));
+				Log.i("m_info","restBegin:"+allRecords.getFloat(allRecords.getColumnIndex("restBegin")));
+				Log.i("m_info","restEnd:"+allRecords.getFloat(allRecords.getColumnIndex("restEnd")));		
+				Log.i("m_info","timeStampEnd:"+allRecords.getString(allRecords.getColumnIndex("timeStampEnd")));
+				Log.i("m_info","-----------------");				
+			}
+		}		
+	}
 	
 	public String getTime(){
 		String monthString;
@@ -114,10 +139,16 @@ public class ReturnList {
 				map.put("timeBegin", record.getTimeBegin());
 				map.put("timeEnd", "жа "+record.getTimeEnd());
 				int icon = DBOpenHelper.PLATFORM_ICONS[0];
-				for(int i=0;i<9;i++){
-					if((record.getPlatform()).equals(context.getResources().getString(DBOpenHelper.PLATFORM_NAMES[i]))){
-						icon=DBOpenHelper.PLATFORM_ICONS[i];						
-					}
+				boolean findIcon=false;
+				for(int i=0;i<DBOpenHelper.PLATFORM_NAMES.length-1&&(findIcon==false);i++){
+					if(record.getPlatform().equals(context.getResources().getString(DBOpenHelper.PLATFORM_NAMES[i]))){
+						icon=DBOpenHelper.PLATFORM_ICONS[i];
+						findIcon=true;
+					}						
+				}
+				if (!findIcon) {
+					icon=DBOpenHelper.PLATFORM_ICONS[DBOpenHelper.PLATFORM_NAMES.length-1];
+					findIcon=true;
 				}
 				map.put("item_icon", icon);
 				map.put("item_name", record.getPlatform()+"-"+record.getType());
@@ -237,10 +268,16 @@ public class ReturnList {
 					map.put("timeBegin", record.getTimeBegin());
 					map.put("timeEnd", "жа "+record.getTimeEnd());
 					int icon = DBOpenHelper.PLATFORM_ICONS[0];
-					for(int i=0;i<9;i++){
+					boolean findIcon=false;
+					for(int i=0;i<DBOpenHelper.PLATFORM_NAMES.length-1&&(findIcon==false);i++){
 						if(record.getPlatform().equals(context.getResources().getString(DBOpenHelper.PLATFORM_NAMES[i]))){
-							icon=DBOpenHelper.PLATFORM_ICONS[i];						
-						}
+							icon=DBOpenHelper.PLATFORM_ICONS[i];
+							findIcon=true;
+						}						
+					}
+					if (!findIcon) {
+						icon=DBOpenHelper.PLATFORM_ICONS[DBOpenHelper.PLATFORM_NAMES.length-1];
+						findIcon=true;
 					}
 					map.put("item_icon", icon);
 					map.put("item_name", record.getPlatform()+"-"+record.getType());

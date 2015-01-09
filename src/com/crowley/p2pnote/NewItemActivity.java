@@ -18,6 +18,7 @@ import android.app.DatePickerDialog.OnDateSetListener;
 import android.content.ContentValues;
 import android.content.DialogInterface;
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.content.DialogInterface.OnClickListener;
 import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
@@ -37,46 +38,36 @@ import android.widget.Spinner;
 import android.widget.TextView;
 import android.widget.Toast;
 
-public class NewItemActivity extends Activity implements OnItemSelectedListener,android.view.View.OnClickListener{
-	
-	private ReturnList returnList;
-		
-	private boolean init = false;
-	
+public class NewItemActivity extends Activity implements OnItemSelectedListener,android.view.View.OnClickListener{	
+	private ReturnList returnList;		
+	private boolean init = false;	
 	//平台下拉框
 	private Spinner platformSpinner;
 	private SimpleAdapter platform_adapter;
-	private List<Map<String, Object>> platformList;
-	
+	private List<Map<String, Object>> platformList;	
 	//投资类型下拉框（如果选择已经录入的平台）
 	private Spinner typeSpinner;
 	private SimpleAdapter type_adapter;
 	private List<Map<String, Object>> typeList;
-	private Map<String, List<Map<String, Object>>> typeMap;
-	
+	private Map<String, List<Map<String, Object>>> typeMap;	
 	//投资类型输入框（如果其他产品）
 	private LinearLayout customLinearLayout;
 	private EditText custom_platform;
-	private EditText custom_type;		
-	
+	private EditText custom_type;	
 	//本金
 	private EditText money;
-	
 	//收益率类型
 	private Spinner rateSpinner;
 	private SimpleAdapter rate_Adapter;
-	private List<Map<String, Object>> rateList;
-	
+	private List<Map<String, Object>> rateList;	
 	//收益率
 	private EditText minEditText;
 	private EditText maxEditText;
-	private TextView middle2TextView;
-	
+	private TextView middle2TextView;	
 	//计息方式
 	private Spinner methodSpinner;
 	private SimpleAdapter method_Adapter;
-	private List<Map<String, Object>> methodList;	
-	
+	private List<Map<String, Object>> methodList;		
 	//日期
 	private Calendar cal;
 	private int year;
@@ -84,19 +75,16 @@ public class NewItemActivity extends Activity implements OnItemSelectedListener,
 	private int day;
 	private TextView begin_time;
 	private TextView end_time;
-	private boolean begin = true;
-	
+	private boolean begin = true;	
 	//按钮
 	private LinearLayout new_item_sure;
-	private LinearLayout new_item_cancel;
-	
+	private LinearLayout new_item_cancel;	
 	
 	protected void onCreate(Bundle savedInstanceState) {
 		// TODO Auto-generated method stub
 		super.onCreate(savedInstanceState);
         requestWindowFeature(Window.FEATURE_NO_TITLE);
-		setContentView(R.layout.new_item);
-		
+		setContentView(R.layout.new_item);		
 		//初始化		
 		initView();		
 		initData();		
@@ -113,57 +101,61 @@ public class NewItemActivity extends Activity implements OnItemSelectedListener,
 	}
 
 	private void initData() {
+		//方法类
 		returnList = new ReturnList(this);
-		
+		//数据源
 		platformList = new ArrayList<Map<String,Object>>();
 		rateList = new ArrayList<Map<String,Object>>();
 		methodList = new ArrayList<Map<String,Object>>();
 		typeList = new ArrayList<Map<String, Object>>();
 		typeMap = new HashMap<String, List<Map<String, Object>>>();
-		
+		//得到数据
 		getData();
-		
+		//设置适配器
+		//收益率类型
 		rate_Adapter = new SimpleAdapter(this, rateList, R.layout.select_earning_item, new String[]{"earning_rate_name"}, new int[]{R.id.earning_rate_name});
 		rateSpinner.setAdapter(rate_Adapter);
-		
+		//计息方式
 		method_Adapter = new SimpleAdapter(this, methodList, R.layout.select_earning_item, new String[]{"earning_rate_name"}, new int[]{R.id.earning_rate_name});
 		methodSpinner.setAdapter(method_Adapter);
-		
+		//投资平台
 		platform_adapter=new SimpleAdapter(this, platformList, R.layout.select_platform_item, new String[]{"company_icon","company_name"}, new int[]{R.id.company_icon,R.id.company_name});
 		platformSpinner.setAdapter(platform_adapter);
 	}
 
 	private void initView() {
+		//平台
 		platformSpinner = (Spinner) findViewById(R.id.platform);
-		
+		//类型
 		typeSpinner = (Spinner) findViewById(R.id.type);		
 		customLinearLayout=(LinearLayout) findViewById(R.id.custom);
-		
+		custom_platform=(EditText) findViewById(R.id.custom_platform);
+		custom_type=(EditText) findViewById(R.id.custom_type);
+		//本金
 		money=(EditText) findViewById(R.id.money);
-		
+		//收益率类型
 		rateSpinner = (Spinner) findViewById(R.id.earning_rate);		
-
+		//收益率
 		minEditText = (EditText) findViewById(R.id.earning_min);
 		maxEditText = (EditText) findViewById(R.id.earning_max);		
 		middle2TextView = (TextView) findViewById(R.id.middle2);
-		
+		//计息方式
 		methodSpinner = (Spinner) findViewById(R.id.earning_method);
-		
+		//计息时间
 		begin_time = (TextView) findViewById(R.id.begin_time);
-		
+		//结束时间
 		end_time = (TextView) findViewById(R.id.end_time);
-		
+		//确认和取消
 		new_item_sure = (LinearLayout) findViewById(R.id.new_item_sure_button);
 		new_item_cancel = (LinearLayout) findViewById(R.id.new_item_cancel_button);
 	}
-	
+
 	private void getData(){	
 		//初始化时间
 		cal=Calendar.getInstance();
         year = cal.get(Calendar.YEAR);
         month = cal.get(Calendar.MONTH)+1;
-        day = cal.get(Calendar.DAY_OF_MONTH);
-        
+        day = cal.get(Calendar.DAY_OF_MONTH);        
         if(month<10){
         	if(day<10){
         		begin_time.setText(year+"-0"+month+"-0"+day);
@@ -175,8 +167,7 @@ public class NewItemActivity extends Activity implements OnItemSelectedListener,
         }else if(day<10){
         	begin_time.setText(year+"-"+month+"-0"+day);
             end_time.setText(year+"-"+month+"-0"+day);        	
-        }      
-        
+        }              
         //初始化收益率类型
         rateList.clear();
         Map<String, Object> map3=new HashMap<String, Object>();
@@ -184,8 +175,7 @@ public class NewItemActivity extends Activity implements OnItemSelectedListener,
 		rateList.add(map3);		
 		Map<String, Object> map4=new HashMap<String, Object>();
 		map4.put("earning_rate_name", getResources().getString(R.string.select_earning_item02));
-		rateList.add(map4);
-		
+		rateList.add(map4);		
 		//初始化计息方式
 		methodList.clear();
         Map<String, Object> map5=new HashMap<String, Object>();
@@ -196,8 +186,7 @@ public class NewItemActivity extends Activity implements OnItemSelectedListener,
 		methodList.add(map6);
 		Map<String, Object> map7=new HashMap<String, Object>();
 		map7.put("earning_rate_name", getResources().getString(R.string.select_method_item03));
-		methodList.add(map7);
-		
+		methodList.add(map7);		
 		//初始化投资平台和类型
 		platformList.clear();
     	for(int i=0;i<DBOpenHelper.PLATFORM_ICONS.length;i++){
@@ -219,7 +208,7 @@ public class NewItemActivity extends Activity implements OnItemSelectedListener,
     		typeMap.put(getResources().getString(DBOpenHelper.PLATFORM_NAMES[i]), typesList);    		
     	}		
 	}
-
+	
 	@Override
 	public void onItemSelected(AdapterView<?> parent, View view, int position,
 			long id) {
@@ -274,18 +263,16 @@ public class NewItemActivity extends Activity implements OnItemSelectedListener,
 				break;
 			}
 		}				
-	}
+	}	
 	
 	@Override
 	public void onClick(View v) {
-		// TODO Auto-generated method stub
 		switch (v.getId()) {
 		//计息时间
 		case R.id.begin_time:{
 			new DatePickerDialog(this, new OnDateSetListener() {				
 				@Override
 				public void onDateSet(DatePicker view, int year, int monthOfYear, int dayOfMonth) {
-					// TODO Auto-generated method stub
 					String divide1="-";
 					String divide2="-";
 					if((monthOfYear+1)<10){
@@ -305,7 +292,6 @@ public class NewItemActivity extends Activity implements OnItemSelectedListener,
 			new DatePickerDialog(this, new OnDateSetListener() {				
 				@Override
 				public void onDateSet(DatePicker view, int year, int monthOfYear, int dayOfMonth) {
-					// TODO Auto-generated method stub
 					String divide1="-";
 					String divide2="-";
 					if((monthOfYear+1)<10){
@@ -322,25 +308,23 @@ public class NewItemActivity extends Activity implements OnItemSelectedListener,
 		//新建投资
 		case R.id.new_item_sure_button:{
 			String errorString="";
-			Boolean erroredBoolean=false;
+			Boolean erroredBoolean=false;			
+			//判断company是否为其他			
 			String company= ((Map<String, Object>) (platformSpinner.getSelectedItem())).get("company_name").toString();
 			String type = "";
-			String rate = ((Map<String, Object>) (rateSpinner.getSelectedItem())).get("earning_rate_name").toString();
-			Float moneys=0.0f;
-			
-			//判断company是否为其他
 			if(company.equals(getResources().getString(DBOpenHelper.PLATFORM_NAMES[DBOpenHelper.PLATFORM_NAMES.length-1]))){
 				if(TextUtils.isEmpty(custom_platform.getText())||TextUtils.isEmpty(custom_type.getText())){
 					erroredBoolean=true;
-					errorString="收益率不得为空";	
+					errorString="自定义平台和其投资类型不得为空";
 				}else{
 					company=custom_platform.getText().toString();
 					type=custom_type.getText().toString();
 				}				
 			}else{
 				type = ((Map<String, Object>) (typeSpinner.getSelectedItem())).get("earning_rate_name").toString();
-			}
-			
+			}			
+			//判断本金
+			Float moneys=0.0f;
 			if(TextUtils.isEmpty(money.getText())){
 				erroredBoolean=true;
 				errorString="本金数目不得为空";	
@@ -350,14 +334,15 @@ public class NewItemActivity extends Activity implements OnItemSelectedListener,
 					erroredBoolean=true;
 					errorString="请输入大于0的本金数目";
 				}
-			}
-			
+			}			
+			//判断收益率
 			Float min = 0.0f;
 			Float max = 0.0f;
+			String rate = ((Map<String, Object>) (rateSpinner.getSelectedItem())).get("earning_rate_name").toString();
 			if(rate.equals("浮动收益率")){
 				if(TextUtils.isEmpty(minEditText.getText())||TextUtils.isEmpty(maxEditText.getText())){
 					erroredBoolean=true;
-					errorString="收益率不得为空";	
+					errorString="收益率不得为空";
 				}else{
 					min = Float.parseFloat(minEditText.getText().toString())/100;
 					if(min<0){
@@ -378,10 +363,11 @@ public class NewItemActivity extends Activity implements OnItemSelectedListener,
 					max = Float.parseFloat(maxEditText.getText().toString())/100;
 					if(max<0){
 						erroredBoolean=true;
-						errorString="收益率不得为空";				
+						errorString="收益率必须大于0";				
 					}
 				}
 			}			
+			//判断计息方式
 			String test = ((Map<String, Object>) (methodSpinner.getSelectedItem())).get("earning_rate_name").toString();
 			int method=0;
 			if (test.equals("到期还本息")) {
@@ -390,14 +376,28 @@ public class NewItemActivity extends Activity implements OnItemSelectedListener,
 				method=1;
 			}else{
 				method=2;
-			}
+			}			
+			//判断时间
 			String begin_dayString=begin_time.getText().toString();
 			String end_dayString=end_time.getText().toString();
 			if(returnList.parseDay(begin_dayString)>returnList.parseDay(end_dayString)){
 				erroredBoolean=true;
 				errorString="结束时间应晚于计息时间";	
+			}			
+			//创建时间戳
+			Long tsLong = System.currentTimeMillis();
+			String ts = tsLong.toString();			
+			//用户名
+			String userNameString="";			
+			SharedPreferences preferences=getSharedPreferences("user", MODE_PRIVATE);
+			boolean isLogined = preferences.getBoolean("isLogined", false);
+			if(isLogined){
+				userNameString=preferences.getString("account", "出错啦");
+			}else{
+				userNameString="not_login";
 			}
-			String sqlString="insert into record(platform,type,money,earningMin,earningMax,method,timeBegin,timeEnd) values('"+company+"','"+type+"',"+moneys+","+min+","+max+","+method+",'"+begin_dayString+"','"+end_dayString+"')";
+			String sqlString="insert into record(platform,type,money,earningMin,earningMax,method,timeBegin,timeEnd,timeStamp,state,isDeleted,userName,restBegin,restEnd,timeStampEnd) values('"+company+"','"+type+"',"+moneys+","+min+","+max+","+method+",'"+begin_dayString+"','"+end_dayString+"','"+ts+"',0,0,'"+userNameString+"',0.0,0.0,'')";
+			//如果出错则弹出提示
 			if (erroredBoolean) {
 				//Toast.makeText(getApplicationContext(), errorString, Toast.LENGTH_SHORT).show();
 				new SweetAlertDialog(this, SweetAlertDialog.ERROR_TYPE)
@@ -405,10 +405,12 @@ public class NewItemActivity extends Activity implements OnItemSelectedListener,
 	                .setContentText(errorString)
 	                .setConfirmText("确定")
 	                .show();
+			//如果成功则插入数据并返回
 			}else{
 				DBOpenHelper helper = new DBOpenHelper(NewItemActivity.this, "record.db");
 				SQLiteDatabase db = helper.getWritableDatabase();
 				db.execSQL(sqlString);
+				returnList.logInfo();
 				Intent intent=new Intent(this,MainActivity.class);
 	            startActivity(intent);
 			}			
@@ -422,14 +424,11 @@ public class NewItemActivity extends Activity implements OnItemSelectedListener,
 		}
 		default:
 			break;
-		}
-		
+		}		
 	}
-
+	
 	@Override
 	public void onNothingSelected(AdapterView<?> arg0) {
 		// TODO Auto-generated method stub
-		
 	}
-
 }

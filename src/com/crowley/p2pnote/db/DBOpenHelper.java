@@ -62,6 +62,22 @@ public class DBOpenHelper extends SQLiteOpenHelper{
 		R.drawable.company_icon09
 		};	
 	
+	/**
+	 * 平台颜色
+	 * 
+	 * */	
+	public static final int[] COLOR = {
+		R.color.company01,
+		R.color.company02,
+		R.color.company03,
+		R.color.company04,
+		R.color.company05,
+		R.color.company06,
+		R.color.company07,
+		R.color.company08,
+		R.color.company09
+		};
+	
 	
 	/**
 	 * 分析标题
@@ -108,6 +124,7 @@ public class DBOpenHelper extends SQLiteOpenHelper{
 		 * timeBegin:计息时间 格式为2014-12-26的字符串
 		 * timeEnd:到期时间 格式为2014-12-26的字符串	 
 		 * 
+		 * 
 		 * version 2:
 		 * 增加字段
 		 * 
@@ -118,10 +135,12 @@ public class DBOpenHelper extends SQLiteOpenHelper{
 		 * restBegin:利息，平台的所剩的余额 new
 		 * restEnd:取出，平台的所剩的余额 new
 		 * 
+		 * 
 		 * version 3:
 		 * 增加字段
 		 * 
 		 * timeStampEnd:结算记录时的时间戳 new
+		 * 
 		 * 
 		 * version 4:
 		 * 增加表rest
@@ -196,4 +215,6 @@ public class DBOpenHelper extends SQLiteOpenHelper{
 		}*/
 		return db.rawQuery("select * from record", null);
 	}
+	
+	
 }

@@ -7,6 +7,7 @@ import java.util.Map;
 import javax.security.auth.PrivateCredentialPermission;
 
 import com.crowley.p2pnote.R;
+import com.crowley.p2pnote.db.DBOpenHelper;
 
 import android.content.Context;
 import android.content.res.Resources;
@@ -18,30 +19,6 @@ import android.widget.SimpleAdapter;
 import android.widget.TextView;
 
 public class listAdapter extends SimpleAdapter{
-	
-	public static final int[] PLATFORM_NAMES = {
-		R.string.company_name01,
-		R.string.company_name02,
-		R.string.company_name03,
-		R.string.company_name04,
-		R.string.company_name05,
-		R.string.company_name06,
-		R.string.company_name07,
-		R.string.company_name08,
-		R.string.company_name09
-		};
-	
-	public static final int[] COLOR = {
-		R.color.company01,
-		R.color.company02,
-		R.color.company03,
-		R.color.company04,
-		R.color.company05,
-		R.color.company06,
-		R.color.company07,
-		R.color.company08,
-		R.color.company09
-		};
 	
 	private LayoutInflater inflater;
 	private List<Map<String, Object>> listItems;
@@ -72,10 +49,16 @@ public class listAdapter extends SimpleAdapter{
 		}
 		String nameString = ((TextView)convertView.findViewById(R.id.item_name)).getText().toString();
 		String[] strarray=nameString.split("-");
-		for(int i=0;i<9;i++){
-			if((strarray[0]).equals(this.context.getResources().getString(PLATFORM_NAMES[i]))){
-				((TextView)convertView.findViewById(R.id.item_name)).setTextColor(this.context.getResources().getColor(COLOR[i]));				
+		boolean findColor=false;
+		for(int i=0;i<DBOpenHelper.PLATFORM_NAMES.length-1&&findColor==false;i++){
+			if((strarray[0]).equals(this.context.getResources().getString(DBOpenHelper.PLATFORM_NAMES[i]))){
+				((TextView)convertView.findViewById(R.id.item_name)).setTextColor(this.context.getResources().getColor(DBOpenHelper.COLOR[i]));
+				findColor=true;
 			}			
+		}
+		if (!findColor) {
+			((TextView)convertView.findViewById(R.id.item_name)).setTextColor(this.context.getResources().getColor(DBOpenHelper.COLOR[DBOpenHelper.PLATFORM_NAMES.length-1]));
+			findColor=true;
 		}
 		return localView;
 	}
