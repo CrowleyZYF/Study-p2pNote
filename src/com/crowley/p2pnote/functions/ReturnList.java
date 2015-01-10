@@ -1,5 +1,6 @@
 package com.crowley.p2pnote.functions;
 
+import java.math.BigDecimal;
 import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.HashMap;
@@ -139,6 +140,66 @@ public class ReturnList {
 		Cursor tempCursor=this.db.rawQuery("select * from record WHERE _id = "+id, null);
 		tempCursor.moveToFirst();
 		return new RecordModel(tempCursor);
+	}
+	
+	public Float dealFloat(Float f){
+		int scale = 2;//设置位数  
+		int roundingMode = 4;//表示四舍五入，可以选择其他舍值方式，例如去尾，等等.  
+		BigDecimal bd = new BigDecimal((double)f);  
+		bd = bd.setScale(scale,roundingMode);  
+		return bd.floatValue();
+	}
+	
+	public String getEarning(String idString,int type){
+		Cursor tempCursor=this.db.rawQuery("select * from record WHERE _id = "+idString, null);
+		tempCursor.moveToFirst();
+		RecordModel tempRecordModel=new RecordModel(tempCursor);
+		switch (tempRecordModel.getMethod()) {
+		//到期还本息
+		case 0:{
+			if(tempRecordModel.getEarningMin()==0.0){
+				int days=parseDay(tempRecordModel.getTimeEnd())-parseDay(tempRecordModel.getTimeBegin());
+				if(type==0){
+					return Float.valueOf(dealFloat(tempRecordModel.getMoney()*tempRecordModel.getEarningMax()*days/365)).toString();
+				}else{
+					return Float.valueOf(tempRecordModel.getMoney()+dealFloat(tempRecordModel.getMoney()*tempRecordModel.getEarningMax()*days/365)).toString();
+				}				
+			}else{
+				int days=parseDay(tempRecordModel.getTimeEnd())-parseDay(tempRecordModel.getTimeBegin());
+				if(type==0){
+					return dealFloat(tempRecordModel.getMoney()*tempRecordModel.getEarningMin()*days/365)+"~"+dealFloat(tempRecordModel.getMoney()*tempRecordModel.getEarningMax()*days/365);
+				}else{
+					return (tempRecordModel.getMoney()+dealFloat(tempRecordModel.getMoney()*tempRecordModel.getEarningMin()*days/365))+
+							"~"+
+							(tempRecordModel.getMoney()+dealFloat(tempRecordModel.getMoney()*tempRecordModel.getEarningMax()*days/365));
+				}
+			}
+		}
+		case 1:{
+			return "123";
+		}
+		case 2:{
+			if(tempRecordModel.getEarningMin()==0.0){
+				int days=parseDay(tempRecordModel.getTimeEnd())-parseDay(tempRecordModel.getTimeBegin());
+				if(type==0){
+					return Float.valueOf(dealFloat(tempRecordModel.getMoney()*tempRecordModel.getEarningMax()*days/365)).toString();
+				}else{
+					return Float.valueOf(tempRecordModel.getMoney()+dealFloat(tempRecordModel.getMoney()*tempRecordModel.getEarningMax()*days/365)).toString();
+				}				
+			}else{
+				int days=parseDay(tempRecordModel.getTimeEnd())-parseDay(tempRecordModel.getTimeBegin());
+				if(type==0){
+					return dealFloat(tempRecordModel.getMoney()*tempRecordModel.getEarningMin()*days/365)+"~"+dealFloat(tempRecordModel.getMoney()*tempRecordModel.getEarningMax()*days/365);
+				}else{
+					return (tempRecordModel.getMoney()+dealFloat(tempRecordModel.getMoney()*tempRecordModel.getEarningMin()*days/365))+
+							"~"+
+							(tempRecordModel.getMoney()+dealFloat(tempRecordModel.getMoney()*tempRecordModel.getEarningMax()*days/365));
+				}
+			}			
+		}
+		default:
+			return "123";
+		}		
 	}
 	
 	//type为0表示到期时间，1表示金额，2表示收益率

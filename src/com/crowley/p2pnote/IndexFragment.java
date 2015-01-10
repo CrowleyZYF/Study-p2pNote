@@ -66,7 +66,6 @@ public class IndexFragment extends Fragment implements OnClickListener,OnItemLon
 	private TextView productTextView;
 	private TextView moneyTextView;
 	private TextView rateTextView;
-	private TextView restTextView;
 	private EditText earningText;
 	private EditText getOutText;
 	
@@ -115,7 +114,6 @@ public class IndexFragment extends Fragment implements OnClickListener,OnItemLon
         productTextView=(TextView) dialog.findViewById(R.id.item_name);
         moneyTextView=(TextView) dialog.findViewById(R.id.money_invest);
         rateTextView=(TextView) dialog.findViewById(R.id.invest_rate);
-        restTextView=(TextView) dialog.findViewById(R.id.rest_money);
         earningText=(EditText) dialog.findViewById(R.id.earning);
         getOutText=(EditText) dialog.findViewById(R.id.get_out);
         
@@ -235,6 +233,10 @@ public class IndexFragment extends Fragment implements OnClickListener,OnItemLon
 				moneyTextView.setText(((TextView)arg1.findViewById(R.id.item_money)).getText().toString());
 				String rateString=((TextView)arg1.findViewById(R.id.item_profit)).getText().toString();
 				rateTextView.setText(rateString.substring(0, rateString.length()-1));
+				earningText.setText("");
+				earningText.setHint(returnList.getEarning(id,0));
+				getOutText.setText("");
+				getOutText.setHint(returnList.getEarning(id,1));
                 dialog.show();
 				break;
 			}case 1:{
