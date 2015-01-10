@@ -8,6 +8,7 @@ import javax.security.auth.PrivateCredentialPermission;
 
 import com.crowley.p2pnote.R;
 import com.crowley.p2pnote.db.DBOpenHelper;
+import com.crowley.p2pnote.functions.ReturnList;
 
 import android.content.Context;
 import android.content.res.Resources;
@@ -15,6 +16,7 @@ import android.graphics.Color;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.ImageView;
 import android.widget.SimpleAdapter;
 import android.widget.TextView;
 
@@ -25,6 +27,7 @@ public class listAdapter extends SimpleAdapter{
 	private String[] from;
 	private int[] to;
 	private Context context;
+	private ReturnList returnList;
 
 	public listAdapter(Context context, List<Map<String, Object>> data,
 			int resource, String[] from, int[] to) {
@@ -34,6 +37,7 @@ public class listAdapter extends SimpleAdapter{
 		this.from=from;
 		this.to=to;
 		// TODO Auto-generated constructor stub
+		this.returnList=new ReturnList(context);
 	}
 	
 	@Override
@@ -46,6 +50,13 @@ public class listAdapter extends SimpleAdapter{
 			localView = super.getView(position, convertView, parent);			
 		}else{
 			localView = super.getView(position, convertView, parent);
+		}
+		String tempString=((TextView)convertView.findViewById(R.id.timeEnd)).getText().toString();
+		String[] time=tempString.split(" ");
+		if(returnList.parseDay(time[1])<returnList.daysNumber()){
+			((ImageView)convertView.findViewById(R.id.circle)).setImageResource(R.drawable.red_circle);
+		}else{
+			((ImageView)convertView.findViewById(R.id.circle)).setImageResource(R.drawable.white_circle);
 		}
 		String nameString = ((TextView)convertView.findViewById(R.id.item_name)).getText().toString();
 		String[] strarray=nameString.split("-");

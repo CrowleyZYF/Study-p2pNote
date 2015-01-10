@@ -49,7 +49,11 @@ public class ReturnList {
 		this.month = this.cal.get(Calendar.MONTH)+1;
 		this.day = this.cal.get(Calendar.DAY_OF_MONTH);
 		this.days=this.year*365+this.month*this.months[this.month]+this.day;
-	}	
+	}
+	
+	public int daysNumber(){
+		return this.days;
+	}
 	
 	public void logInfo(){
 		if(allRecords.moveToFirst()){
@@ -127,15 +131,31 @@ public class ReturnList {
 		return year*365+month*this.months[month]+day;		
 	}
 	
+	public void deleteItem(String id){
+		this.db.execSQL("UPDATE record SET isDeleted = 1 WHERE _id = "+id);
+	}
+	
+	public RecordModel getRecordModel(String id){
+		Cursor tempCursor=this.db.rawQuery("select * from record WHERE _id = "+id, null);
+		tempCursor.moveToFirst();
+		return new RecordModel(tempCursor);
+	}
+	
 	//type为0表示到期时间，1表示金额，2表示收益率
 	public List<Map<String, Object>> waterSort(int type,boolean des){
 		List<Map<String, Object>> dataList=new ArrayList<Map<String,Object>>();
 		List<Map<String, Object>> temp=new ArrayList<Map<String,Object>>();
+		this.allRecords = this.helper.returALLRecords(this.db);
 		if(allRecords.moveToFirst()){
 			while (allRecords.moveToNext()) {
 				temp.clear();
 				Map<String, Object> map=new HashMap<String, Object>();
 				RecordModel record=new RecordModel(allRecords);
+				//如果记录已经被删除 跳出本次循环
+				if(record.getIsDeleted()==1){
+					continue;
+				}
+				map.put("item_id", record.getID());
 				map.put("timeBegin", record.getTimeBegin());
 				map.put("timeEnd", "至 "+record.getTimeEnd());
 				int icon = DBOpenHelper.PLATFORM_ICONS[0];
@@ -241,10 +261,15 @@ public class ReturnList {
 	//type为0表示已经到期，1表示即将到期
 	public List<Map<String, Object>> indexList(int type){
 		List<Map<String, Object>> dataList=new ArrayList<Map<String,Object>>();
+		this.allRecords = this.helper.returALLRecords(this.db);
 		if(allRecords.moveToFirst()){
 			while (allRecords.moveToNext()) {
 				Map<String, Object> map=new HashMap<String, Object>();
 				RecordModel record=new RecordModel(allRecords);
+				//如果记录已经被删除 跳出本次循环
+				if(record.getIsDeleted()==1){
+					continue;
+				}
 				boolean judge=false;
 				switch (type) {
 					case 0:{
@@ -265,6 +290,7 @@ public class ReturnList {
 						break;
 				}
 				if (judge) {
+					map.put("item_id", record.getID());
 					map.put("timeBegin", record.getTimeBegin());
 					map.put("timeEnd", "至 "+record.getTimeEnd());
 					int icon = DBOpenHelper.PLATFORM_ICONS[0];
@@ -297,9 +323,14 @@ public class ReturnList {
 	//type为0表示已经到期，1表示即将到期
 	public int indexCount(int type){
 		int count=0;
+		this.allRecords = this.helper.returALLRecords(this.db);
 		if(allRecords.moveToFirst()){
 			while (allRecords.moveToNext()) {
 				RecordModel record=new RecordModel(allRecords);
+				//如果记录已经被删除 跳出本次循环
+				if(record.getIsDeleted()==1){
+					continue;
+				}
 				switch (type) {
 				case 0:{
 					if(parseDay(record.getTimeEnd())<=this.days){
@@ -326,9 +357,14 @@ public class ReturnList {
 	//type为0表示平台在投金额分析，4为平台余额分析
 	public ArrayList<String> analyzexVals(int type){
         ArrayList<String> xVals = new ArrayList<String>();
+		this.allRecords = this.helper.returALLRecords(this.db);
 		if(allRecords.moveToFirst()){
 			while (allRecords.moveToNext()) {
 				RecordModel record=new RecordModel(allRecords);
+				//如果记录已经被删除 跳出本次循环
+				if(record.getIsDeleted()==1){
+					continue;
+				}
 				switch (type) {
 					case 0:{
 						int time=parseDay(record.getTimeEnd());
@@ -372,9 +408,14 @@ public class ReturnList {
 		for(int i=0;i<xVals.size();i++){
 			counts.add(0.0f);
 		}
+		this.allRecords = this.helper.returALLRecords(this.db);
 		if(allRecords.moveToFirst()){
 			while (allRecords.moveToNext()) {
 				RecordModel record=new RecordModel(allRecords);
+				//如果记录已经被删除 跳出本次循环
+				if(record.getIsDeleted()==1){
+					continue;
+				}
 				int time=parseDay(record.getTimeEnd());
 				//如果没有到期
 				if(time>this.days){

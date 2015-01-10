@@ -1,6 +1,7 @@
 package com.crowley.p2pnote.db;
 
 import android.database.Cursor;
+import android.util.Log;
 
 
 public class RecordModel {

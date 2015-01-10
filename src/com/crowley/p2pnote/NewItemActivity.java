@@ -9,6 +9,7 @@ import java.util.Map;
 import cn.pedant.SweetAlert.SweetAlertDialog;
 
 import com.crowley.p2pnote.db.DBOpenHelper;
+import com.crowley.p2pnote.db.RecordModel;
 import com.crowley.p2pnote.functions.ReturnList;
 
 import android.R.integer;
@@ -78,17 +79,74 @@ public class NewItemActivity extends Activity implements OnItemSelectedListener,
 	private boolean begin = true;	
 	//按钮
 	private LinearLayout new_item_sure;
-	private LinearLayout new_item_cancel;	
+	private LinearLayout new_item_cancel;
+	//模式
+	private String modelString;
+	private String idString;
+	private String platformString;
+	//temp
+	private RecordModel tempModel;
+	//title
+	private TextView titleTextView;
 	
 	protected void onCreate(Bundle savedInstanceState) {
 		// TODO Auto-generated method stub
 		super.onCreate(savedInstanceState);
         requestWindowFeature(Window.FEATURE_NO_TITLE);
-		setContentView(R.layout.new_item);		
+		setContentView(R.layout.new_item);	
+		
+		Intent intent =getIntent();
+		modelString = intent.getStringExtra("model");
+        idString = intent.getStringExtra("id");
+        platformString = intent.getStringExtra("platform");
+		
 		//初始化		
 		initView();		
 		initData();		
-		initEvent();		
+		initEvent();	
+		
+
+		if(modelString.equals("1")){
+    		RecordModel itemModel=returnList.getRecordModel(idString);
+    		//检测平台是否为其他
+    		boolean isOther=true;
+    		for(int i=0;i<DBOpenHelper.PLATFORM_NAMES.length;i++){
+    			if(getResources().getString(DBOpenHelper.PLATFORM_NAMES[i]).equals(itemModel.getPlatform())){
+    				isOther=false;
+    				platformSpinner.setSelection(i);
+    				tempModel=itemModel;
+    			}
+    		}
+    		if(isOther){
+    			platformSpinner.setSelection(DBOpenHelper.PLATFORM_NAMES.length-1);
+    			customLinearLayout.setVisibility(View.VISIBLE);	
+				typeSpinner.setVisibility(View.GONE);
+				custom_platform.setText(itemModel.getPlatform());
+				custom_type.setText(itemModel.getType());
+    		}
+    		//本金
+    		money.setText(itemModel.getMoney().toString());
+    		//收益率类型
+    		if(itemModel.getEarningMin()==0.0){
+    			//固定收益率
+    			rateSpinner.setSelection(1);
+    			maxEditText.setText(Float.valueOf(itemModel.getEarningMax() * 100).toString());
+    		}else {
+				//浮动收益率
+    			minEditText.setText(Float.valueOf(itemModel.getEarningMin() * 100).toString());
+    			maxEditText.setText(Float.valueOf(itemModel.getEarningMax() * 100).toString());
+			}
+    		//计息方式
+    		methodSpinner.setSelection(itemModel.getMethod());
+    		//时间
+    		begin_time.setText(itemModel.getTimeBegin());
+    		end_time.setText(itemModel.getTimeEnd()); 
+    		//按钮
+    		((TextView) new_item_sure.findViewById(R.id.new_item_sure)).setText("确定修改");
+    		((TextView) new_item_cancel.findViewById(R.id.new_item_cancel)).setText("取消修改");
+    		//title
+    		titleTextView.setText("修改记录");
+    	}
 	}
 
 	private void initEvent() {
@@ -120,7 +178,7 @@ public class NewItemActivity extends Activity implements OnItemSelectedListener,
 		methodSpinner.setAdapter(method_Adapter);
 		//投资平台
 		platform_adapter=new SimpleAdapter(this, platformList, R.layout.select_platform_item, new String[]{"company_icon","company_name"}, new int[]{R.id.company_icon,R.id.company_name});
-		platformSpinner.setAdapter(platform_adapter);
+		platformSpinner.setAdapter(platform_adapter);		
 	}
 
 	private void initView() {
@@ -148,6 +206,8 @@ public class NewItemActivity extends Activity implements OnItemSelectedListener,
 		//确认和取消
 		new_item_sure = (LinearLayout) findViewById(R.id.new_item_sure_button);
 		new_item_cancel = (LinearLayout) findViewById(R.id.new_item_cancel_button);
+		//标题
+		titleTextView = (TextView) findViewById(R.id.main_tab_banner_title);
 	}
 
 	private void getData(){	
@@ -206,7 +266,7 @@ public class NewItemActivity extends Activity implements OnItemSelectedListener,
     		}
     		platformList.add(map);
     		typeMap.put(getResources().getString(DBOpenHelper.PLATFORM_NAMES[i]), typesList);    		
-    	}		
+    	}    	
 	}
 	
 	@Override
@@ -222,6 +282,24 @@ public class NewItemActivity extends Activity implements OnItemSelectedListener,
 			}
 			type_adapter=new SimpleAdapter(this, typeList, R.layout.select_earning_item, new String[]{"earning_rate_name"}, new int[]{R.id.earning_rate_name});
 			typeSpinner.setAdapter(type_adapter);
+			
+			if(modelString.equals("1")){
+				boolean isFound=false;
+				for(int j=0;j<DBOpenHelper.PLATFORM_PRODUCT[position].length;j++){
+					if(getResources().getString(DBOpenHelper.PLATFORM_PRODUCT[position][j]).equals(tempModel.getType())){
+						isFound=true;
+						typeSpinner.setSelection(j);
+					}
+				}
+				if (!isFound) {
+					platformSpinner.setClickable(false);
+					platformSpinner.setEnabled(false);
+					customLinearLayout.setVisibility(View.VISIBLE);	
+					typeSpinner.setVisibility(View.GONE);
+					custom_platform.setText(tempModel.getPlatform());
+					custom_type.setText(tempModel.getType());
+				}
+			}			
 		}else{			
 			switch (parent.getId()) {
 			//如果是平台被点击了 检测是否是其他平台 如果是 则隐藏下拉框 改成编辑框 否则更换下拉框内容
@@ -240,7 +318,7 @@ public class NewItemActivity extends Activity implements OnItemSelectedListener,
 					for(int i=0;i<typeMap.get(company_name).size();i++){
 						typeList.add(typeMap.get(company_name).get(i));
 					}
-					type_adapter.notifyDataSetChanged();
+					type_adapter.notifyDataSetChanged();				
 				}								
 				break;			
 			}			
@@ -309,17 +387,17 @@ public class NewItemActivity extends Activity implements OnItemSelectedListener,
 		case R.id.new_item_sure_button:{
 			String errorString="";
 			Boolean erroredBoolean=false;			
-			//判断company是否为其他			
+			//判断company是否为其他
 			String company= ((Map<String, Object>) (platformSpinner.getSelectedItem())).get("company_name").toString();
 			String type = "";
-			if(company.equals(getResources().getString(DBOpenHelper.PLATFORM_NAMES[DBOpenHelper.PLATFORM_NAMES.length-1]))){
+			if(typeSpinner.getVisibility()==View.GONE){
 				if(TextUtils.isEmpty(custom_platform.getText())||TextUtils.isEmpty(custom_type.getText())){
 					erroredBoolean=true;
 					errorString="自定义平台和其投资类型不得为空";
 				}else{
 					company=custom_platform.getText().toString();
 					type=custom_type.getText().toString();
-				}				
+				}
 			}else{
 				type = ((Map<String, Object>) (typeSpinner.getSelectedItem())).get("earning_rate_name").toString();
 			}			
@@ -396,7 +474,12 @@ public class NewItemActivity extends Activity implements OnItemSelectedListener,
 			}else{
 				userNameString="not_login";
 			}
-			String sqlString="insert into record(platform,type,money,earningMin,earningMax,method,timeBegin,timeEnd,timeStamp,state,isDeleted,userName,restBegin,restEnd,timeStampEnd) values('"+company+"','"+type+"',"+moneys+","+min+","+max+","+method+",'"+begin_dayString+"','"+end_dayString+"','"+ts+"',0,0,'"+userNameString+"',0.0,0.0,'')";
+			String sqlString="";
+			if(modelString.equals("1")){
+				sqlString="UPDATE record SET platform= '"+company+"', type= '"+type+"', money= "+moneys+" ,earningMin= "+min+" ,earningMax= "+max+" ,method= "+method+" ,timeBegin= '"+begin_dayString+"' ,timeEnd='"+end_dayString+"' WHERE _id="+idString+"";
+			}else{
+				sqlString="insert into record(platform,type,money,earningMin,earningMax,method,timeBegin,timeEnd,timeStamp,state,isDeleted,userName,restBegin,restEnd,timeStampEnd) values('"+company+"','"+type+"',"+moneys+","+min+","+max+","+method+",'"+begin_dayString+"','"+end_dayString+"','"+ts+"',0,0,'"+userNameString+"',0.0,0.0,'')";
+			}
 			//如果出错则弹出提示
 			if (erroredBoolean) {
 				//Toast.makeText(getApplicationContext(), errorString, Toast.LENGTH_SHORT).show();
@@ -411,15 +494,15 @@ public class NewItemActivity extends Activity implements OnItemSelectedListener,
 				SQLiteDatabase db = helper.getWritableDatabase();
 				db.execSQL(sqlString);
 				returnList.logInfo();
-				Intent intent=new Intent(this,MainActivity.class);
-	            startActivity(intent);
+				/*Intent intent=new Intent(this,MainActivity.class);
+	            startActivity(intent);*/
+				finish();
 			}			
 			break;
 		}
 		//取消
 		case R.id.new_item_cancel_button:{
-			Intent intent=new Intent(this,MainActivity.class);
-            startActivity(intent);
+			finish();
 			break;
 		}
 		default:

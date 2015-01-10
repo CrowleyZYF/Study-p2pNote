@@ -164,5 +164,12 @@
     <string name="platform_invest">投资</string>
     
     <string name="record_title">成交记录</string>
+    
+    <string name="dialog_title">确认投资</string>
+    <string name="dialog_item01">投资金额</string>
+    <string name="dialog_item02">预期收益率</string>
+    <string name="dialog_item03">结算后平台余额</string>
+    <string name="dialog_item04">收益确认</string>
+    <string name="dialog_item05">取出余额</string>
 
 </resources>

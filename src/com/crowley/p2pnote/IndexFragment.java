@@ -12,8 +12,10 @@ import com.crowley.p2pnote.functions.ReturnList;
 import com.crowley.p2pnote.ui.listAdapter;
 
 import android.R.integer;
+import android.app.Dialog;
 import android.app.Fragment;
 import android.content.ContentValues;
+import android.content.Intent;
 import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
 import android.os.Bundle;
@@ -23,13 +25,16 @@ import android.view.View;
 import android.view.View.OnClickListener;
 import android.view.ViewGroup;
 import android.widget.AdapterView;
+import android.widget.AdapterView.OnItemClickListener;
 import android.widget.AdapterView.OnItemLongClickListener;
+import android.widget.Button;
+import android.widget.EditText;
 import android.widget.LinearLayout;
 import android.widget.ListView;
 import android.widget.SimpleAdapter;
 import android.widget.TextView;
 
-public class IndexFragment extends Fragment implements OnClickListener,OnItemLongClickListener{	
+public class IndexFragment extends Fragment implements OnClickListener,OnItemLongClickListener,OnItemClickListener{	
 
 	private View view;
 	private ReturnList returnList;
@@ -50,6 +55,22 @@ public class IndexFragment extends Fragment implements OnClickListener,OnItemLon
 	private TextView index_info_basic02_float;
 	private TextView index_info_basic03_number;
 	
+	private Dialog dialog;
+	
+	private int nowState=0;
+	private String id="";
+	
+	private Button cancelButton;
+	private Button sureButton;
+	private TextView timeEndTextView;
+	private TextView productTextView;
+	private TextView moneyTextView;
+	private TextView rateTextView;
+	private TextView restTextView;
+	private EditText earningText;
+	private EditText getOutText;
+	
+	
 	
 	@Override
 	public View onCreateView(LayoutInflater inflater, ViewGroup container,
@@ -61,9 +82,10 @@ public class IndexFragment extends Fragment implements OnClickListener,OnItemLon
 		returnList = new ReturnList(this.getActivity());
         dataList=new ArrayList<Map<String,Object>>();
         listView=(ListView) view.findViewById(R.id.list_view);
-        getData(1);
-        list_adapter=new listAdapter(this.getActivity(), dataList, R.layout.index_listview_item, new String[]{"timeBegin","timeEnd","item_icon","item_name","item_money","item_profit"}, new int[]{R.id.timeBegin,R.id.timeEnd,R.id.item_icon,R.id.item_name,R.id.item_money,R.id.item_profit});
+        getData(0);
+        list_adapter=new listAdapter(this.getActivity(), dataList, R.layout.index_listview_item, new String[]{"item_id","timeBegin","timeEnd","item_icon","item_name","item_money","item_profit"}, new int[]{R.id.item_id,R.id.timeBegin,R.id.timeEnd,R.id.item_icon,R.id.item_name,R.id.item_money,R.id.item_profit});
         listView.setAdapter(list_adapter);
+        
         
         tab_button01 = (LinearLayout) view.findViewById(R.id.tab_button01);
         tab_button02 = (LinearLayout) view.findViewById(R.id.tab_button02);
@@ -85,12 +107,35 @@ public class IndexFragment extends Fragment implements OnClickListener,OnItemLon
     	index_info_basic02_number.setText(returnList.getBaseInfo02Number01());
     	index_info_basic02_float.setText(returnList.getBaseInfo02Number02());
     	index_info_basic03_number.setText(returnList.getBaseInfo03());
+    	
+    	dialog = new Dialog(this.getActivity(), R.style.MyDialog);
+        //设置它的ContentView
+        dialog.setContentView(R.layout.dialog);
+        timeEndTextView=(TextView) dialog.findViewById(R.id.end_time);
+        productTextView=(TextView) dialog.findViewById(R.id.item_name);
+        moneyTextView=(TextView) dialog.findViewById(R.id.money_invest);
+        rateTextView=(TextView) dialog.findViewById(R.id.invest_rate);
+        restTextView=(TextView) dialog.findViewById(R.id.rest_money);
+        earningText=(EditText) dialog.findViewById(R.id.earning);
+        getOutText=(EditText) dialog.findViewById(R.id.get_out);
+        
+        cancelButton = (Button) dialog.findViewById(R.id.cancel_button);
+        cancelButton.setOnClickListener(this);
+    	
 		
         tab_button01.setOnClickListener(this);
         tab_button02.setOnClickListener(this);
+        listView.setOnItemClickListener(this);
         listView.setOnItemLongClickListener(this);
         
         return view;
+	}
+	
+	@Override
+	public void onResume() {
+		// TODO Auto-generated method stub
+		super.onResume();
+		reflash();
 	}
 
 	//private List<Map<String, Object>> getData(int index){
@@ -113,14 +158,20 @@ public class IndexFragment extends Fragment implements OnClickListener,OnItemLon
             tab_button01.setBackgroundColor(getResources().getColor(R.color.white));  
             tab_button02.setBackgroundColor(getResources().getColor(R.color.tab_bg));
             getData(0);
+            nowState=0;
             list_adapter.notifyDataSetChanged();
             break;  
         case R.id.tab_button02:  
         	tab_button01.setBackgroundColor(getResources().getColor(R.color.tab_bg));  
             tab_button02.setBackgroundColor(getResources().getColor(R.color.white));
             getData(1);
+            nowState=1;
             list_adapter.notifyDataSetChanged();
-            break;   
+            break;  
+        case R.id.cancel_button:{
+        	dialog.dismiss();
+        	break;        	
+        }
         default:  
             break;  
         }
@@ -128,7 +179,7 @@ public class IndexFragment extends Fragment implements OnClickListener,OnItemLon
 	}
 
 	@Override
-	public boolean onItemLongClick(AdapterView<?> arg0, View arg1, int arg2,
+	public boolean onItemLongClick(AdapterView<?> arg0, final View arg1, int arg2,
 			long arg3) {
 		// TODO Auto-generated method stub
 		switch (arg0.getId()) {
@@ -142,6 +193,8 @@ public class IndexFragment extends Fragment implements OnClickListener,OnItemLon
             .setConfirmClickListener(new SweetAlertDialog.OnSweetClickListener() {
                 @Override
                 public void onClick(SweetAlertDialog sDialog) {
+                	returnList.deleteItem(((TextView)arg1.findViewById(R.id.item_id)).getText().toString());
+                	reflash();
                     sDialog.setTitleText("记录已删除")
                             .setConfirmText("确定")
                             .showContentText(false)
@@ -151,12 +204,55 @@ public class IndexFragment extends Fragment implements OnClickListener,OnItemLon
                             .changeAlertType(SweetAlertDialog.SUCCESS_TYPE);
                 }
             })
-            .show();			
-			break;			
+            .show();
+			return true;
+			//break;			
 		}
 		default:
-			break;
+			return false;	
+		}		
+	}
+	
+	public void reflash(){
+		getData(nowState);
+        list_adapter.notifyDataSetChanged();
+        tab_button01_number.setText(String.valueOf(returnList.indexCount(0)));
+        tab_button02_number.setText(String.valueOf(returnList.indexCount(1)));
+	}
+
+	@Override
+	public void onItemClick(AdapterView<?> arg0, View arg1, int arg2, long arg3) {
+		// TODO Auto-generated method stub
+		switch (arg0.getId()) {
+		case R.id.list_view:{
+			switch (nowState) {
+			case 0:{			
+				id=((TextView)arg1.findViewById(R.id.item_id)).getText().toString();
+				String tempString=((TextView)arg1.findViewById(R.id.timeEnd)).getText().toString();
+				String[] time=tempString.split(" ");
+				timeEndTextView.setText(time[1]);
+				productTextView.setText(((TextView)arg1.findViewById(R.id.item_name)).getText().toString());
+				moneyTextView.setText(((TextView)arg1.findViewById(R.id.item_money)).getText().toString());
+				String rateString=((TextView)arg1.findViewById(R.id.item_profit)).getText().toString();
+				rateTextView.setText(rateString.substring(0, rateString.length()-1));
+                dialog.show();
+				break;
+			}case 1:{
+				Intent intent=new Intent(this.getActivity(),NewItemActivity.class);
+				//模式1表示修改记录，需要传递修改的id值
+				intent.putExtra("model", "1");
+				intent.putExtra("id", ((TextView)arg1.findViewById(R.id.item_id)).getText().toString());
+				intent.putExtra("platform", "");
+	            startActivity(intent);
+				break;
+			}
+			default:
+				break;
+			}
+						
 		}
-		return false;
+		default:
+			break;		
+		}
 	}
 }

@@ -109,10 +109,11 @@ public class MainActivity extends Activity implements OnClickListener{
             if (indexFragment == null)  
             {   
             	indexFragment = new IndexFragment();  
-                transaction.add(R.id.content, indexFragment);  
+                transaction.add(R.id.content, indexFragment);
             } else  
             {   
-                transaction.show(indexFragment);  
+                transaction.show(indexFragment);
+                indexFragment.reflash();
             }  
             break;  
         case 1:  
@@ -126,7 +127,8 @@ public class MainActivity extends Activity implements OnClickListener{
                 transaction.add(R.id.content, waterFragment);  
             } else  
             {   
-                transaction.show(waterFragment);  
+                transaction.show(waterFragment); 
+                waterFragment.reflash();
             }  
             break;  
         case 2:  
@@ -287,6 +289,10 @@ public class MainActivity extends Activity implements OnClickListener{
         }                         
         case R.id.new_item:{
         	Intent intent=new Intent(this,NewItemActivity.class);
+        	//模式0表示新建记录
+			intent.putExtra("model", "0");
+			intent.putExtra("id", "");
+			intent.putExtra("platform", "");
             startActivity(intent);
             break;        	
         }        	
