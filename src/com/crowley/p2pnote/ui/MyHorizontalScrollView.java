@@ -9,6 +9,7 @@ import android.widget.HorizontalScrollView;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.RelativeLayout;
+import android.widget.TextView;
 import android.content.Context;
 import android.graphics.Color;
 import android.util.AttributeSet;
@@ -27,6 +28,8 @@ public class MyHorizontalScrollView extends HorizontalScrollView implements OnCl
 	* @author Crowley 
 	*  
 	*/  
+	
+	
 	public interface OnItemClickListener  
 	{  
 		void onClick(View view, int pos);  
@@ -52,14 +55,14 @@ public class MyHorizontalScrollView extends HorizontalScrollView implements OnCl
 	
 	public MyHorizontalScrollView(Context context, AttributeSet attrs)  
 	{  
-		super(context, attrs);  
+		super(context, attrs); 
 	}  
 	
 	@Override  
 	protected void onMeasure(int widthMeasureSpec, int heightMeasureSpec)  
 	{  
 		super.onMeasure(widthMeasureSpec, heightMeasureSpec);  
-		mContainer = (LinearLayout) getChildAt(0);  
+		mContainer = (LinearLayout) getChildAt(0);
 	}  
 	
 			
@@ -95,7 +98,7 @@ public class MyHorizontalScrollView extends HorizontalScrollView implements OnCl
 		    View view = mAdapter.getView(i, null, mContainer);  
 		    view.setOnClickListener(this);
 		    if (i==0) {
-		    	((ImageView)((RelativeLayout) view).getChildAt(1)).setImageResource(R.drawable.platform_arrow_grey);
+		    	((ImageView)((RelativeLayout) view).getChildAt(2)).setImageResource(R.drawable.platform_arrow_grey);
 			}
 		    mContainer.addView(view);  
 		    mViewPos.put(view, i); 
@@ -115,7 +118,7 @@ public class MyHorizontalScrollView extends HorizontalScrollView implements OnCl
 		    for (int i = 0; i < mContainer.getChildCount(); i++)  
 		    {  
 		        RelativeLayout tempLayout = (RelativeLayout) mContainer.getChildAt(i);
-		        ((ImageView)tempLayout.getChildAt(1)).setImageResource(R.drawable.platform_arrow_white);
+		        ((ImageView)tempLayout.getChildAt(2)).setImageResource(R.drawable.platform_arrow_white);
 		    }  
 		    mOnClickListener.onClick(arg0, mViewPos.get(arg0));
 		}

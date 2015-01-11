@@ -5,6 +5,7 @@ import java.util.Arrays;
 import java.util.List;
 
 import com.crowley.p2pnote.db.DBOpenHelper;
+import com.crowley.p2pnote.functions.ReturnList;
 import com.crowley.p2pnote.ui.HorizontalScrollViewAdapter;
 import com.crowley.p2pnote.ui.MyHorizontalScrollView;
 import com.crowley.p2pnote.ui.MyHorizontalScrollView.OnItemClickListener;
@@ -28,14 +29,20 @@ import android.widget.TextView;
 
 public class PlatformFragment extends Fragment implements OnClickListener{
 	
+	private ReturnList returnList;
+	
 	private MyHorizontalScrollView mHorizontalScrollView;  
     private HorizontalScrollViewAdapter mAdapter;  
     private LinearLayout recordsLinearLayout; 
-    private List<Integer> mDatas = new ArrayList<Integer>(Arrays.asList(  
+    /*private List<Integer> mDatas = new ArrayList<Integer>(Arrays.asList(  
     		R.drawable.company_icon01, R.drawable.company_icon02, R.drawable.company_icon03,  
             R.drawable.company_icon04, R.drawable.company_icon05, R.drawable.company_icon06, R.drawable.company_icon07,
             R.drawable.company_icon01, R.drawable.company_icon02, R.drawable.company_icon03,  
-            R.drawable.company_icon04, R.drawable.company_icon05, R.drawable.company_icon06, R.drawable.company_icon07));
+            R.drawable.company_icon04, R.drawable.company_icon05, R.drawable.company_icon06, R.drawable.company_icon07));*/
+    private List<Integer> mDatas;
+    private List<String> mDatas2;
+    private TextView title;
+    private TextView platform_earning;
    
     
 	@Override
@@ -46,24 +53,20 @@ public class PlatformFragment extends Fragment implements OnClickListener{
 		
 		mHorizontalScrollView = (MyHorizontalScrollView) view.findViewById(R.id.scroll_view);
 		recordsLinearLayout = (LinearLayout) view.findViewById(R.id.platform_record);
+		title = (TextView) this.getActivity().findViewById(R.id.main_tab_banner_title);
+		platform_earning = (TextView) view.findViewById(R.id.platform_earning);
 		
+		returnList=new ReturnList(this.getActivity());
+		mDatas=returnList.getPlatformsIcon();
+		mDatas2=returnList.getPlatformsName();
 		
-		mAdapter = new HorizontalScrollViewAdapter(this.getActivity(), mDatas);
+		if(!mDatas2.isEmpty()){
+			updatePlatform(mDatas2.get(0));
+		}	
+		
+		mAdapter = new HorizontalScrollViewAdapter(this.getActivity(), mDatas, mDatas2);
 		
 		recordsLinearLayout.setOnClickListener(this);
-		
-		/*mHorizontalScrollView  
-		        .setCurrentImageChangeListener(new CurrentImageChangeListener()  
-		        {  
-		            @Override  
-		            public void onCurrentImgChanged(int position,  
-		                    View viewIndicator)  
-		            {  
-		                mImg.setImageResource(mDatas.get(position));  
-		                //viewIndicator.setBackgroundColor(Color.parseColor("#AA024DA4"));
-				        ((ImageView)(((RelativeLayout) viewIndicator).getChildAt(1))).setImageResource(R.drawable.platform_arrow_grey);
-		            }  
-		        }); */ 
 		//添加点击回调  
 		mHorizontalScrollView.setOnItemClickListener(new OnItemClickListener()  
 		{  
@@ -71,14 +74,19 @@ public class PlatformFragment extends Fragment implements OnClickListener{
 		    @Override  
 		    public void onClick(View view, int position)
 		    {  
-		    	//textView.setText(view.getResources().getString(mDatas2.get(position)));  
-		        //view.setBackgroundColor(Color.parseColor("#AA024DA4")); 
-		        ((ImageView)(((RelativeLayout) view).getChildAt(1))).setImageResource(R.drawable.platform_arrow_grey);
+		        ((ImageView)(((RelativeLayout) view).getChildAt(2))).setImageResource(R.drawable.platform_arrow_grey);
+		        updatePlatform(((TextView)(((RelativeLayout) view).getChildAt(0))).getText().toString());
 		    }  
 		});  
 		
 		mHorizontalScrollView.initDatas(mAdapter); 
 		return view;
+	}
+
+
+	public void updatePlatform(String platformString) {
+		title.setText(platformString);
+		platform_earning.setText(Float.valueOf(returnList.getEarningAll(platformString)).toString());
 	}
 
 
@@ -95,6 +103,16 @@ public class PlatformFragment extends Fragment implements OnClickListener{
 			break;
 		}
 		
+	}
+	
+	public void reflash(){
+		mDatas=returnList.getPlatformsIcon();
+		mDatas2=returnList.getPlatformsName();
+		if(!mDatas2.isEmpty()){
+			updatePlatform(mDatas2.get(0));
+		}
+		mAdapter.notifyDataSetChanged();
+		mHorizontalScrollView.initFirstScreenChildren();
 	}
 
 	

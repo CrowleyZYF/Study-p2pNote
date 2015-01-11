@@ -203,11 +203,7 @@ public class IndexFragment extends Fragment implements OnClickListener,OnItemLon
 	                .show();
 			//如果成功则插入数据并返回
 			}else{
-				/*DBOpenHelper helper = new DBOpenHelper(NewItemActivity.this, "record.db");
-				SQLiteDatabase db = helper.getWritableDatabase();
-				db.execSQL(sqlString);
-				returnList.logInfo();*/
-				
+				returnList.dealRecord(id, earningFloat, getOutFloat);				
 				dialog.dismiss();
 				reflash();
 			}

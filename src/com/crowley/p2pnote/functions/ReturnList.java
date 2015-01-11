@@ -14,6 +14,7 @@ import java.util.regex.Pattern;
 import javax.crypto.spec.IvParameterSpec;
 
 import android.R.integer;
+import android.R.string;
 import android.content.Context;
 import android.content.SharedPreferences;
 import android.database.Cursor;
@@ -56,6 +57,14 @@ public class ReturnList {
 		this.day = this.cal.get(Calendar.DAY_OF_MONTH);
 		this.days=this.year*365+this.month*this.months[this.month]+this.day;
 		
+		updateLogin();
+	}
+	
+	public int daysNumber(){
+		return this.days;
+	}
+	
+	public void updateLogin(){
 		SharedPreferences preferences=context.getSharedPreferences("user", android.content.Context.MODE_PRIVATE);
 		boolean isLogined = preferences.getBoolean("isLogined", false);
 		if(isLogined){
@@ -65,11 +74,8 @@ public class ReturnList {
 		}
 	}
 	
-	public int daysNumber(){
-		return this.days;
-	}
-	
 	public void logInfo(){
+		this.allRecords = this.helper.returALLRecords(this.db);
 		if(allRecords.moveToFirst()){
 			while (allRecords.moveToNext()) {
 				Log.i("m_info","id:"+allRecords.getInt(allRecords.getColumnIndex("_id")));
@@ -87,7 +93,8 @@ public class ReturnList {
 				Log.i("m_info","userName:"+allRecords.getString(allRecords.getColumnIndex("userName")));
 				Log.i("m_info","restBegin:"+allRecords.getFloat(allRecords.getColumnIndex("restBegin")));
 				Log.i("m_info","restEnd:"+allRecords.getFloat(allRecords.getColumnIndex("restEnd")));		
-				Log.i("m_info","timeStampEnd:"+allRecords.getString(allRecords.getColumnIndex("timeStampEnd")));
+				Log.i("m_info","timeStampEnd:"+allRecords.getString(allRecords.getColumnIndex("timeStampEnd")));		
+				Log.i("m_info","rest:"+allRecords.getFloat(allRecords.getColumnIndex("rest")));
 				Log.i("m_info","-----------------");				
 			}
 		}		
@@ -169,11 +176,85 @@ public class ReturnList {
 		BigDecimal bd = new BigDecimal(d);  
 		bd = bd.setScale(scale,roundingMode);  
 		return bd.doubleValue();
+		
 	}
 	
 	public float getRest(String platform){
-		return 0.0f;
-		
+		updateLogin();
+		Cursor tempCursor=this.db.rawQuery("select * from record WHERE state=1 AND isDeleted=0 AND userName='"+loginString+"' AND platform = '"+platform+"' ORDER BY timeStampEnd ASC", null);
+		if(tempCursor.getCount()!=0){
+			if(tempCursor.moveToFirst()){
+				RecordModel tempRecordModel=new RecordModel(tempCursor);
+				return tempRecordModel.getRest();
+			}else{
+				return 0.0f;
+			}
+		}else{
+			return 0.0f;
+		}		
+	}
+	
+	public float getEarningAll(String platform){
+		updateLogin();
+		float earningAll=0.0f;
+		Cursor tempCursor=this.db.rawQuery("select * from record WHERE state=1 AND isDeleted=0 AND userName='"+loginString+"' AND platform = '"+platform+"' ORDER BY timeStampEnd ASC", null);
+		if(tempCursor.getCount()!=0){
+			while (tempCursor.moveToNext()) {
+				RecordModel tempRecordModel=new RecordModel(tempCursor);
+				earningAll+=tempRecordModel.getRestBegin();				
+			}
+			return earningAll;
+		}else{
+			return 0.0f;
+		}		
+	}
+	
+	public List<Integer> getPlatformsIcon(){
+		updateLogin();
+		List<Integer> mDatas=new ArrayList<Integer>();
+		logInfo();
+		Cursor tempCursor=this.db.rawQuery("select * from record WHERE state=1 AND isDeleted=0 AND userName='"+loginString+"'", null);
+		if(tempCursor.getCount()!=0){
+			while (tempCursor.moveToNext()){
+				RecordModel tempRecordModel=new RecordModel(tempCursor);
+				for(int i=0;i<DBOpenHelper.PLATFORM_NAMES.length;i++){
+					if(tempRecordModel.getPlatform().equals(context.getResources().getString(DBOpenHelper.PLATFORM_NAMES[i]))){
+						if(!mDatas.contains(DBOpenHelper.PLATFORM_ICONS_BIG[i])){
+							mDatas.add(DBOpenHelper.PLATFORM_ICONS_BIG[i]);
+							i=100;
+						}						
+					}
+				}
+			}
+			return mDatas;
+		}else{
+			mDatas.add(DBOpenHelper.PLATFORM_ICONS_BIG[(DBOpenHelper.PLATFORM_ICONS_BIG.length)-1]);
+			return mDatas;
+		}		
+	}
+	
+	public List<String> getPlatformsName(){
+		updateLogin();
+		List<String> mDatas=new ArrayList<String>();
+		logInfo();
+		Cursor tempCursor=this.db.rawQuery("select * from record WHERE state=1 AND isDeleted=0 AND userName='"+loginString+"'", null);
+		if(tempCursor.getCount()!=0){
+			while (tempCursor.moveToNext()){
+				RecordModel tempRecordModel=new RecordModel(tempCursor);
+				for(int i=0;i<DBOpenHelper.PLATFORM_NAMES.length;i++){
+					if(tempRecordModel.getPlatform().equals(context.getResources().getString(DBOpenHelper.PLATFORM_NAMES[i]))){
+						if(!mDatas.contains(tempRecordModel.getPlatform())){
+							mDatas.add(tempRecordModel.getPlatform());
+							i=100;
+						}						
+					}
+				}
+			}
+			return mDatas;
+		}else{
+			mDatas.add("暂无数据");
+			return mDatas;
+		}		
 	}
 	
 	/**
@@ -181,14 +262,23 @@ public class ReturnList {
 	 * 
 	 * */
 	public void dealRecord(String idString,Float earning,Float get_out){
+		updateLogin();
 		Long tsLong = System.currentTimeMillis();
 		String ts = tsLong.toString();
 		Cursor tempCursor=this.db.rawQuery("select * from record WHERE _id = "+idString, null);
 		tempCursor.moveToFirst();
 		RecordModel tempRecordModel=new RecordModel(tempCursor);
 		float rest = getRest(tempRecordModel.getPlatform());
-		rest=rest+earning-get_out;
-		this.db.execSQL("UPDATE record SET restBegin = "+earning+", state = 1, rest = "+rest+", timeStampEnd = '"+ts+"', restEnd = "+get_out+" WHERE _id = "+idString);
+		if (rest==0) {
+			rest=tempRecordModel.getMoney()+earning-get_out;
+		}else{
+			if(rest-tempRecordModel.getMoney()>=0){
+				rest=rest+earning-get_out;
+			}else{
+				rest=tempRecordModel.getMoney()+earning-get_out;
+			}
+		}
+		this.db.execSQL("UPDATE record SET userName='"+loginString+"', restBegin = "+earning+", state = 1, rest = "+rest+", timeStampEnd = '"+ts+"', restEnd = "+get_out+" WHERE _id = "+idString);
 	}
 	
 	/**
@@ -247,16 +337,18 @@ public class ReturnList {
 		List<Map<String, Object>> dataList=new ArrayList<Map<String,Object>>();
 		List<Map<String, Object>> temp=new ArrayList<Map<String,Object>>();
 		this.allRecords = this.helper.returALLRecords(this.db);
-		if(allRecords.moveToFirst()){
+		if(allRecords.getCount()!=0){
 			while (allRecords.moveToNext()) {
 				temp.clear();
 				Map<String, Object> map=new HashMap<String, Object>();
 				RecordModel record=new RecordModel(allRecords);
 				//如果记录已经被删除  或者不属于该账户 跳出本次循环
-				if(record.getIsDeleted()==1||record.getUserName().equals(loginString)){
+				int tempInt=record.getID();
+				if(record.getIsDeleted()==1||!record.getUserName().equals(loginString)){
 					continue;
 				}
 				map.put("item_id", record.getID());
+				map.put("item_state", record.getState());
 				map.put("timeBegin", record.getTimeBegin());
 				map.put("timeEnd", "至 "+record.getTimeEnd());
 				int icon = DBOpenHelper.PLATFORM_ICONS[0];
@@ -368,7 +460,7 @@ public class ReturnList {
 				Map<String, Object> map=new HashMap<String, Object>();
 				RecordModel record=new RecordModel(allRecords);
 				//如果记录已经被删除 不属于该用户 已经处理过 跳出本次循环
-				if(record.getIsDeleted()==1||record.getUserName().equals(loginString)||record.getState()==1){
+				if(record.getIsDeleted()==1||!record.getUserName().equals(loginString)||record.getState()==1){
 					continue;
 				}
 				boolean judge=false;
@@ -429,7 +521,7 @@ public class ReturnList {
 			while (allRecords.moveToNext()) {
 				RecordModel record=new RecordModel(allRecords);
 				//如果记录已经被删除 跳出本次循环
-				if(record.getIsDeleted()==1||record.getUserName().equals(loginString)||record.getState()==1){
+				if(record.getIsDeleted()==1||!record.getUserName().equals(loginString)||record.getState()==1){
 					continue;
 				}
 				switch (type) {
@@ -463,7 +555,7 @@ public class ReturnList {
 			while (allRecords.moveToNext()) {
 				RecordModel record=new RecordModel(allRecords);
 				//如果记录已经被删除 跳出本次循环
-				if(record.getIsDeleted()==1||record.getUserName().equals(loginString)||record.getState()==1){
+				if(record.getIsDeleted()==1||!record.getUserName().equals(loginString)||record.getState()==1){
 					continue;
 				}
 				switch (type) {
@@ -514,7 +606,7 @@ public class ReturnList {
 			while (allRecords.moveToNext()) {
 				RecordModel record=new RecordModel(allRecords);
 				//如果记录已经被删除 跳出本次循环
-				if(record.getIsDeleted()==1||record.getUserName().equals(loginString)||record.getState()==1){
+				if(record.getIsDeleted()==1||!record.getUserName().equals(loginString)||record.getState()==1){
 					continue;
 				}
 				int time=parseDay(record.getTimeEnd());

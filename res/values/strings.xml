@@ -171,5 +171,7 @@
     <string name="dialog_item03">结算后平台余额</string>
     <string name="dialog_item04">收益确认</string>
     <string name="dialog_item05">取出余额</string>
+    
+    <string name="without_data">暂无数据</string>
 
 </resources>

@@ -63,6 +63,38 @@ public class DBOpenHelper extends SQLiteOpenHelper{
 		};	
 	
 	/**
+	 * 平台大图标
+	 * 
+	 * */	
+	public static final int[] PLATFORM_ICONS_BIG = {
+		R.drawable.company_icon01_big,
+		R.drawable.company_icon02_big,
+		R.drawable.company_icon03_big,
+		R.drawable.company_icon04_big,
+		R.drawable.company_icon05_big,
+		R.drawable.company_icon06_big,
+		R.drawable.company_icon07_big,
+		R.drawable.company_icon08_big,
+		R.drawable.company_icon09_big
+		};
+	
+	/**
+	 * 平台灰图标
+	 * 
+	 * */	
+	public static final int[] PLATFORM_ICONS_GRAY = {
+		R.drawable.company_icon01_gray,
+		R.drawable.company_icon02_gray,
+		R.drawable.company_icon03_gray,
+		R.drawable.company_icon04_gray,
+		R.drawable.company_icon05_gray,
+		R.drawable.company_icon06_gray,
+		R.drawable.company_icon07_gray,
+		R.drawable.company_icon08_gray,
+		R.drawable.company_icon09_gray
+		};
+	
+	/**
 	 * 平台颜色
 	 * 
 	 * */	
@@ -78,6 +110,7 @@ public class DBOpenHelper extends SQLiteOpenHelper{
 		R.color.company09
 		};
 	
+	public static final int gray=R.color.font_gray;
 	
 	/**
 	 * 分析标题

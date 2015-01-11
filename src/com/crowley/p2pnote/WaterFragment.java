@@ -25,6 +25,7 @@ import android.widget.ListView;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
 import android.widget.AdapterView.OnItemLongClickListener;
+import android.widget.Toast;
 
 public class WaterFragment extends Fragment implements OnClickListener,OnItemLongClickListener,OnItemClickListener{
 		
@@ -84,7 +85,7 @@ public class WaterFragment extends Fragment implements OnClickListener,OnItemLon
         getData(3,begin_des);
         now_state=3;
         now_order=begin_des;
-        list_adapter=new listAdapter(this.getActivity(), dataList, R.layout.index_listview_item, new String[]{"item_id","timeBegin","timeEnd","item_icon","item_name","item_money","item_profit"}, new int[]{R.id.item_id,R.id.timeBegin,R.id.timeEnd,R.id.item_icon,R.id.item_name,R.id.item_money,R.id.item_profit});
+        list_adapter=new listAdapter(this.getActivity(), dataList, R.layout.index_listview_item, new String[]{"item_id","item_state","timeBegin","timeEnd","item_icon","item_name","item_money","item_profit"}, new int[]{R.id.item_id,R.id.item_state,R.id.timeBegin,R.id.timeEnd,R.id.item_icon,R.id.item_name,R.id.item_money,R.id.item_profit});
         
                
         listView.setAdapter(list_adapter);
@@ -221,27 +222,32 @@ public class WaterFragment extends Fragment implements OnClickListener,OnItemLon
 		// TODO Auto-generated method stub
 		switch (arg0.getId()) {
 		case R.id.water_list_view:{	
-			new SweetAlertDialog(this.getActivity(), SweetAlertDialog.WARNING_TYPE)
-            .setTitleText("确定删除该条记录嘛?")
-            .showContentText(false)
-            .setCancelText("取消")
-            .setConfirmText("确定")
-            .showCancelButton(true)
-            .setConfirmClickListener(new SweetAlertDialog.OnSweetClickListener() {
-                @Override
-                public void onClick(SweetAlertDialog sDialog) {
-                	returnList.deleteItem(((TextView)arg1.findViewById(R.id.item_id)).getText().toString());
-                	reflash();
-                    sDialog.setTitleText("记录已删除")
-                            .setConfirmText("确定")
-                            .showContentText(false)
-                            .showCancelButton(false)
-                            .setCancelClickListener(null)
-                            .setConfirmClickListener(null)
-                            .changeAlertType(SweetAlertDialog.SUCCESS_TYPE);
-                }
-            })
-            .show();
+			if((((TextView)arg1.findViewById(R.id.item_state)).getText().toString()).equals("0")){
+				new SweetAlertDialog(this.getActivity(), SweetAlertDialog.WARNING_TYPE)
+	            .setTitleText("确定删除该条记录嘛?")
+	            .showContentText(false)
+	            .setCancelText("取消")
+	            .setConfirmText("确定")
+	            .showCancelButton(true)
+	            .setConfirmClickListener(new SweetAlertDialog.OnSweetClickListener() {
+	                @Override
+	                public void onClick(SweetAlertDialog sDialog) {
+	                	returnList.deleteItem(((TextView)arg1.findViewById(R.id.item_id)).getText().toString());
+	                	reflash();
+	                    sDialog.setTitleText("记录已删除")
+	                            .setConfirmText("确定")
+	                            .showContentText(false)
+	                            .showCancelButton(false)
+	                            .setCancelClickListener(null)
+	                            .setConfirmClickListener(null)
+	                            .changeAlertType(SweetAlertDialog.SUCCESS_TYPE);
+	                }
+	            })
+	            .show();
+			}else{
+				Toast.makeText(this.getActivity(), "已结算项目暂不提供删除", Toast.LENGTH_SHORT).show();
+			}
+			
 			return true;
 			//break;			
 		}
@@ -256,12 +262,16 @@ public class WaterFragment extends Fragment implements OnClickListener,OnItemLon
 		// TODO Auto-generated method stub
 		switch (arg0.getId()) {
 		case R.id.water_list_view:{
-			Intent intent=new Intent(this.getActivity(),NewItemActivity.class);
-			//模式1表示修改记录，需要传递修改的id值
-			intent.putExtra("model", "1");
-			intent.putExtra("id", ((TextView)arg1.findViewById(R.id.item_id)).getText().toString());
-			intent.putExtra("platform", "");
-            startActivity(intent);
+			if((((TextView)arg1.findViewById(R.id.item_state)).getText().toString()).equals("0")){
+				Intent intent=new Intent(this.getActivity(),NewItemActivity.class);
+				//模式1表示修改记录，需要传递修改的id值
+				intent.putExtra("model", "1");
+				intent.putExtra("id", ((TextView)arg1.findViewById(R.id.item_id)).getText().toString());
+				intent.putExtra("platform", "");
+	            startActivity(intent);
+			}else{
+				Toast.makeText(this.getActivity(), "已结算项目暂不提供修改", Toast.LENGTH_SHORT).show();
+			}			
 			break;			
 		}
 		default:

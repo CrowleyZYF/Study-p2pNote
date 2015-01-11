@@ -40,6 +40,8 @@ public class RecordModel {
  
 	private String timeStampEnd;
 	
+	private Float rest;
+	
 	public RecordModel(){
 		this.id=0;
 		this.platformString="";
@@ -59,11 +61,13 @@ public class RecordModel {
 		this.restEnd=0.0f;
 		
 		this.timeStampEnd="";
+		
+		this.rest=0.0f;
 	}
 	
 	public RecordModel(Integer id,String platform,String type,Float money,Float earningMin,Float earningMax,Integer method,String timeBegin,String timeEnd,
 			String timeStamp,int state,int isDeleted,String userName,Float restBegin,Float restEnd,
-			String timeStampEnd){
+			String timeStampEnd,Float rest){
 		this.id=id;
 		this.platformString=platform;
 		this.typeString=type;
@@ -82,6 +86,8 @@ public class RecordModel {
 		this.restEnd=restEnd;
 		
 		this.timeStampEnd=timeStampEnd;
+		
+		this.rest=rest;
 	}
 	
 	public RecordModel(Cursor cursor){
@@ -103,6 +109,8 @@ public class RecordModel {
 		this.restEnd=cursor.getFloat(cursor.getColumnIndex("restEnd"));
 		
 		this.timeStampEnd=cursor.getString(cursor.getColumnIndex("timeStampEnd"));
+		
+		this.rest=cursor.getFloat(cursor.getColumnIndex("rest"));
 	}
 	
 	//get method
@@ -170,6 +178,10 @@ public class RecordModel {
 		return this.timeStampEnd;
 	}
 	
+	public Float getRest(){
+		return this.rest;
+	}
+	
 	//set method	
 	public void setPlatform(String s){
 		this.platformString=s;
@@ -229,5 +241,9 @@ public class RecordModel {
 	
 	public void setTimeStampEnd(String s){
 		this.timeStampEnd=s;
+	}
+	
+	public void setRest(Float f){
+		this.rest=f;
 	}
 }

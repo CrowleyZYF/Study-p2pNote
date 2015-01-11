@@ -43,7 +43,8 @@ public class listAdapter extends SimpleAdapter{
 	@Override
 	public View getView(int position, View convertView, ViewGroup parent) {
 		// TODO Auto-generated method stub
-		View localView = convertView ;
+		View localView = convertView;
+		int temp=0;
 		if(convertView==null){
 			this.inflater = (LayoutInflater) context.getSystemService(Context.LAYOUT_INFLATER_SERVICE);
 			convertView = inflater.inflate(R.layout.index_listview_item, null);
@@ -53,7 +54,8 @@ public class listAdapter extends SimpleAdapter{
 		}
 		String tempString=((TextView)convertView.findViewById(R.id.timeEnd)).getText().toString();
 		String[] time=tempString.split(" ");
-		if(returnList.parseDay(time[1])<returnList.daysNumber()){
+		String stateString=((TextView)convertView.findViewById(R.id.item_state)).getText().toString();
+		if(returnList.parseDay(time[1])<returnList.daysNumber()&&stateString.equals("0")){
 			((ImageView)convertView.findViewById(R.id.circle)).setImageResource(R.drawable.red_circle);
 		}else{
 			((ImageView)convertView.findViewById(R.id.circle)).setImageResource(R.drawable.white_circle);
@@ -64,12 +66,34 @@ public class listAdapter extends SimpleAdapter{
 		for(int i=0;i<DBOpenHelper.PLATFORM_NAMES.length-1&&findColor==false;i++){
 			if((strarray[0]).equals(this.context.getResources().getString(DBOpenHelper.PLATFORM_NAMES[i]))){
 				((TextView)convertView.findViewById(R.id.item_name)).setTextColor(this.context.getResources().getColor(DBOpenHelper.COLOR[i]));
+				temp=i;
 				findColor=true;
-			}			
+				if (stateString.equals("1")) {
+					((TextView)convertView.findViewById(R.id.item_name)).setTextColor(this.context.getResources().getColor(DBOpenHelper.gray));
+				}
+			}
 		}
 		if (!findColor) {
 			((TextView)convertView.findViewById(R.id.item_name)).setTextColor(this.context.getResources().getColor(DBOpenHelper.COLOR[DBOpenHelper.PLATFORM_NAMES.length-1]));
 			findColor=true;
+			if (stateString.equals("1")) {
+				((TextView)convertView.findViewById(R.id.item_name)).setTextColor(this.context.getResources().getColor(DBOpenHelper.gray));
+			}
+		}
+		if(stateString.equals("1")){			
+			((TextView)convertView.findViewById(R.id.timeBegin)).setTextColor(this.context.getResources().getColor(DBOpenHelper.gray));
+			((TextView)convertView.findViewById(R.id.timeEnd)).setTextColor(this.context.getResources().getColor(DBOpenHelper.gray));
+			((TextView)convertView.findViewById(R.id.money_icon)).setTextColor(this.context.getResources().getColor(DBOpenHelper.gray));
+			((TextView)convertView.findViewById(R.id.item_money)).setTextColor(this.context.getResources().getColor(DBOpenHelper.gray));
+			((TextView)convertView.findViewById(R.id.item_profit)).setTextColor(this.context.getResources().getColor(DBOpenHelper.gray));
+			((ImageView)convertView.findViewById(R.id.item_icon)).setImageResource(DBOpenHelper.PLATFORM_ICONS_GRAY[temp]);
+		}else{
+			((TextView)convertView.findViewById(R.id.timeBegin)).setTextColor(this.context.getResources().getColor(R.color.light_black));
+			((TextView)convertView.findViewById(R.id.timeEnd)).setTextColor(this.context.getResources().getColor(R.color.light_black));
+			((TextView)convertView.findViewById(R.id.money_icon)).setTextColor(this.context.getResources().getColor(R.color.light_black));
+			((TextView)convertView.findViewById(R.id.item_money)).setTextColor(this.context.getResources().getColor(R.color.light_black));
+			((TextView)convertView.findViewById(R.id.item_profit)).setTextColor(this.context.getResources().getColor(R.color.light_black));
+			((ImageView)convertView.findViewById(R.id.item_icon)).setImageResource(DBOpenHelper.PLATFORM_ICONS[temp]);
 		}
 		return localView;
 	}

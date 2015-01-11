@@ -153,10 +153,11 @@ public class MainActivity extends Activity implements OnClickListener{
             if (platformFragment == null)  
             {   
             	platformFragment = new PlatformFragment();  
-                transaction.add(R.id.content, platformFragment);  
+                transaction.add(R.id.content, platformFragment); 
             } else  
             {   
                 transaction.show(platformFragment);  
+                platformFragment.reflash();
             }  
             break;
 		case 4:  

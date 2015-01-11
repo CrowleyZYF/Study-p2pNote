@@ -9,18 +9,22 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageView;
+import android.widget.SimpleAdapter;
 import android.widget.TextView;
 
-public class HorizontalScrollViewAdapter {
+public class HorizontalScrollViewAdapter extends SimpleAdapter{
 	private Context mContext;  
     private LayoutInflater mInflater;  
-    private List<Integer> mDatas;
+    private List<Integer> mDatas; 
+    private List<String> mDatas2;
   
-    public HorizontalScrollViewAdapter(Context context, List<Integer> mDatas)  
+    public HorizontalScrollViewAdapter(Context context, List<Integer> mDatas, List<String> mDatas2)  
     {  
+    	super(context, null, 0, null, null);
         this.mContext = context;  
         mInflater = LayoutInflater.from(context);  
         this.mDatas = mDatas; 
+        this.mDatas2 = mDatas2;
     }  
   
     public int getCount()  
@@ -48,15 +52,15 @@ public class HorizontalScrollViewAdapter {
                     R.layout.platform_tab, parent, false);  
             viewHolder.mImg = (ImageView) convertView  
                     .findViewById(R.id.platform_tab_img);  
-            /*viewHolder.mText = (TextView) convertView  
-                    .findViewById(R.id.platform_tab_text);*/  
+            viewHolder.mText = (TextView) convertView  
+                    .findViewById(R.id.platform_name);  
             convertView.setTag(viewHolder);  
         } else  
         {  
             viewHolder = (ViewHolder) convertView.getTag();  
         }  
         viewHolder.mImg.setImageResource(mDatas.get(position));  
-        //viewHolder.mText.setText(this.mContext.getResources().getString(mDatas2.get(position)));
+        viewHolder.mText.setText(mDatas2.get(position));
   
         return convertView;  
     }  
@@ -64,6 +68,6 @@ public class HorizontalScrollViewAdapter {
     private class ViewHolder  
     {  
         ImageView mImg;  
-        //TextView mText;  
+        TextView mText;  
     } 
 }
