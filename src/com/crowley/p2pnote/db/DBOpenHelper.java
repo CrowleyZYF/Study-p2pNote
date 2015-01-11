@@ -104,7 +104,7 @@ public class DBOpenHelper extends SQLiteOpenHelper{
 		};
 
 	public DBOpenHelper(Context context, String name) {
-		super(context, name, null, 4);
+		super(context, name, null, 5);
 		// TODO Auto-generated constructor stub
 	}
 
@@ -146,12 +146,19 @@ public class DBOpenHelper extends SQLiteOpenHelper{
 		 * 增加表rest
 		 * 
 		 * _id:id号
-		 * platform：平台名称
+		 * platform：平台-项目名称
 		 * userName：用户名
-		 * type：收益还是取出 收益为0 取出为1
+		 * type：计息方式， 0为到期还本息 1为 按月还本息 2为按月只还息
 		 * money：支出多少和取出多少
 		 * rest：完成这笔记录后余额还有多少
 		 * timeStampEnd：结算时间
+		 * 
+		 * 
+		 * version 5:
+		 * 弃用rest record增加一个字段rest
+		 * rest:结算后 该平台的余额还有多少
+		 * 
+		 * 
 		 * 
 		 * 
 		 */
@@ -189,6 +196,10 @@ public class DBOpenHelper extends SQLiteOpenHelper{
 			}
 			case 4:{
 				db.execSQL("create table if not exists rest (_id integer primary key autoincrement,platform text not null,userName text not null,type integer not null,money real not null,rest real not null,timeStampEnd real not null)");
+				break;
+			}
+			case 5:{
+				db.execSQL("ALTER TABLE record ADD COLUMN rest real not null DEFAULT 0.00");
 				break;
 			}
 			default:

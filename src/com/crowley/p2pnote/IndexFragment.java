@@ -1,5 +1,6 @@
 package com.crowley.p2pnote;
 
+import java.text.ParseException;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -19,6 +20,7 @@ import android.content.Intent;
 import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
 import android.os.Bundle;
+import android.text.TextUtils;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -117,7 +119,9 @@ public class IndexFragment extends Fragment implements OnClickListener,OnItemLon
         earningText=(EditText) dialog.findViewById(R.id.earning);
         getOutText=(EditText) dialog.findViewById(R.id.get_out);
         
+        sureButton = (Button) dialog.findViewById(R.id.sure_button);
         cancelButton = (Button) dialog.findViewById(R.id.cancel_button);
+        sureButton.setOnClickListener(this);
         cancelButton.setOnClickListener(this);
     	
 		
@@ -166,6 +170,49 @@ public class IndexFragment extends Fragment implements OnClickListener,OnItemLon
             nowState=1;
             list_adapter.notifyDataSetChanged();
             break;  
+        case R.id.sure_button:{
+        	boolean erroredBoolean=false;
+        	String errorString="";
+        	Float earningFloat=0.0f;
+        	Float getOutFloat=0.0f;
+        	if(TextUtils.isEmpty(earningText.getText())){
+				erroredBoolean=true;
+				errorString="收益确认不得为空";	
+			}else{
+				earningFloat = Float.parseFloat(earningText.getText().toString());
+				if(earningFloat<0){
+					erroredBoolean=true;
+					errorString="收益必须大于0";				
+				}
+			}
+        	if(TextUtils.isEmpty(getOutText.getText())){
+        		getOutFloat=0.0f;
+			}else{
+				getOutFloat = Float.parseFloat(getOutText.getText().toString());
+				if(earningFloat<0){
+					erroredBoolean=true;
+					errorString="取出金额必须大于0";				
+				}
+			}
+        	if (erroredBoolean) {
+				//Toast.makeText(getApplicationContext(), errorString, Toast.LENGTH_SHORT).show();
+				new SweetAlertDialog(this.getActivity(), SweetAlertDialog.ERROR_TYPE)
+	                .setTitleText("确认投资失败")
+	                .setContentText(errorString)
+	                .setConfirmText("确定")
+	                .show();
+			//如果成功则插入数据并返回
+			}else{
+				/*DBOpenHelper helper = new DBOpenHelper(NewItemActivity.this, "record.db");
+				SQLiteDatabase db = helper.getWritableDatabase();
+				db.execSQL(sqlString);
+				returnList.logInfo();*/
+				
+				dialog.dismiss();
+				reflash();
+			}
+        	break;
+        }
         case R.id.cancel_button:{
         	dialog.dismiss();
         	break;        	
@@ -234,9 +281,14 @@ public class IndexFragment extends Fragment implements OnClickListener,OnItemLon
 				String rateString=((TextView)arg1.findViewById(R.id.item_profit)).getText().toString();
 				rateTextView.setText(rateString.substring(0, rateString.length()-1));
 				earningText.setText("");
-				earningText.setHint(returnList.getEarning(id,0));
-				getOutText.setText("");
-				getOutText.setHint(returnList.getEarning(id,1));
+				try {
+					earningText.setHint(returnList.getEarning(id));
+				} catch (ParseException e) {
+					// TODO Auto-generated catch block
+					e.printStackTrace();
+				}
+				//getOutText.setText("");
+				//getOutText.setHint(returnList.getEarning(id,1));
                 dialog.show();
 				break;
 			}case 1:{

@@ -1,6 +1,8 @@
 package com.crowley.p2pnote.functions;
 
 import java.math.BigDecimal;
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.HashMap;
@@ -13,6 +15,7 @@ import javax.crypto.spec.IvParameterSpec;
 
 import android.R.integer;
 import android.content.Context;
+import android.content.SharedPreferences;
 import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
 import android.util.Log;
@@ -37,6 +40,8 @@ public class ReturnList {
 	private SQLiteDatabase db;
 	private Cursor allRecords;
 	
+	private String loginString;
+	
 	public ReturnList(Context context) {
 		// TODO Auto-generated constructor stub
 		this.context = context;
@@ -50,6 +55,14 @@ public class ReturnList {
 		this.month = this.cal.get(Calendar.MONTH)+1;
 		this.day = this.cal.get(Calendar.DAY_OF_MONTH);
 		this.days=this.year*365+this.month*this.months[this.month]+this.day;
+		
+		SharedPreferences preferences=context.getSharedPreferences("user", android.content.Context.MODE_PRIVATE);
+		boolean isLogined = preferences.getBoolean("isLogined", false);
+		if(isLogined){
+			loginString=preferences.getString("account", "出错啦");
+		}else{
+			loginString="not_login";
+		}
 	}
 	
 	public int daysNumber(){
@@ -150,51 +163,78 @@ public class ReturnList {
 		return bd.floatValue();
 	}
 	
-	public String getEarning(String idString,int type){
+	public Double dealFloat(Double d){
+		int scale = 2;//设置位数  
+		int roundingMode = 4;//表示四舍五入，可以选择其他舍值方式，例如去尾，等等.  
+		BigDecimal bd = new BigDecimal(d);  
+		bd = bd.setScale(scale,roundingMode);  
+		return bd.doubleValue();
+	}
+	
+	public float getRest(String platform){
+		return 0.0f;
+		
+	}
+	
+	/**
+	 * 到期处理
+	 * 
+	 * */
+	public void dealRecord(String idString,Float earning,Float get_out){
+		Long tsLong = System.currentTimeMillis();
+		String ts = tsLong.toString();
+		Cursor tempCursor=this.db.rawQuery("select * from record WHERE _id = "+idString, null);
+		tempCursor.moveToFirst();
+		RecordModel tempRecordModel=new RecordModel(tempCursor);
+		float rest = getRest(tempRecordModel.getPlatform());
+		rest=rest+earning-get_out;
+		this.db.execSQL("UPDATE record SET restBegin = "+earning+", state = 1, rest = "+rest+", timeStampEnd = '"+ts+"', restEnd = "+get_out+" WHERE _id = "+idString);
+	}
+	
+	/**
+	 * 返回利息
+	 * 
+	 * */
+	public String getEarning(String idString) throws ParseException{
 		Cursor tempCursor=this.db.rawQuery("select * from record WHERE _id = "+idString, null);
 		tempCursor.moveToFirst();
 		RecordModel tempRecordModel=new RecordModel(tempCursor);
 		switch (tempRecordModel.getMethod()) {
 		//到期还本息
 		case 0:{
+			int days=parseDay(tempRecordModel.getTimeEnd())-parseDay(tempRecordModel.getTimeBegin());
 			if(tempRecordModel.getEarningMin()==0.0){
-				int days=parseDay(tempRecordModel.getTimeEnd())-parseDay(tempRecordModel.getTimeBegin());
-				if(type==0){
-					return Float.valueOf(dealFloat(tempRecordModel.getMoney()*tempRecordModel.getEarningMax()*days/365)).toString();
-				}else{
-					return Float.valueOf(tempRecordModel.getMoney()+dealFloat(tempRecordModel.getMoney()*tempRecordModel.getEarningMax()*days/365)).toString();
-				}				
+				return Float.valueOf(dealFloat(tempRecordModel.getMoney()*tempRecordModel.getEarningMax()*days/365)).toString();				
 			}else{
-				int days=parseDay(tempRecordModel.getTimeEnd())-parseDay(tempRecordModel.getTimeBegin());
-				if(type==0){
-					return dealFloat(tempRecordModel.getMoney()*tempRecordModel.getEarningMin()*days/365)+"~"+dealFloat(tempRecordModel.getMoney()*tempRecordModel.getEarningMax()*days/365);
-				}else{
-					return (tempRecordModel.getMoney()+dealFloat(tempRecordModel.getMoney()*tempRecordModel.getEarningMin()*days/365))+
-							"~"+
-							(tempRecordModel.getMoney()+dealFloat(tempRecordModel.getMoney()*tempRecordModel.getEarningMax()*days/365));
-				}
+				return dealFloat(tempRecordModel.getMoney()*tempRecordModel.getEarningMin()*days/365)+"~"+dealFloat(tempRecordModel.getMoney()*tempRecordModel.getEarningMax()*days/365);
 			}
 		}
 		case 1:{
-			return "123";
+			SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd");
+			Calendar c1 = Calendar.getInstance();
+			Calendar c2 = Calendar.getInstance();
+			c1.setTime(sdf.parse(tempRecordModel.getTimeBegin()));
+			c2.setTime(sdf.parse(tempRecordModel.getTimeEnd()));
+			int months = c2.get(Calendar.MONTH) - c1.get(Calendar.MONTH);
+			months = (months==0) ? 1 : Math.abs(months);
+			if(tempRecordModel.getEarningMin()==0.0){
+				Float rate = tempRecordModel.getEarningMax() / 12;				
+				double earning = (tempRecordModel.getMoney() * months * Math.pow((1 + rate), months) / (Math.pow((1 + rate), months) - 1))*months-tempRecordModel.getMoney();
+				return Double.valueOf(dealFloat(earning)).toString();				
+			}else{
+				Float rate1 = tempRecordModel.getEarningMin() / 12;				
+				double earning1 = (tempRecordModel.getMoney() * months * Math.pow((1 + rate1), months) / (Math.pow((1 + rate1), months) - 1))*months-tempRecordModel.getMoney();
+				Float rate2 = tempRecordModel.getEarningMax() / 12;				
+				double earning2 = (tempRecordModel.getMoney() * months * Math.pow((1 + rate2), months) / (Math.pow((1 + rate2), months) - 1))*months-tempRecordModel.getMoney();
+				return Double.valueOf(dealFloat(earning1)).toString()+"~"+Double.valueOf(dealFloat(earning2)).toString();
+			}
 		}
 		case 2:{
+			int days=parseDay(tempRecordModel.getTimeEnd())-parseDay(tempRecordModel.getTimeBegin());
 			if(tempRecordModel.getEarningMin()==0.0){
-				int days=parseDay(tempRecordModel.getTimeEnd())-parseDay(tempRecordModel.getTimeBegin());
-				if(type==0){
-					return Float.valueOf(dealFloat(tempRecordModel.getMoney()*tempRecordModel.getEarningMax()*days/365)).toString();
-				}else{
-					return Float.valueOf(tempRecordModel.getMoney()+dealFloat(tempRecordModel.getMoney()*tempRecordModel.getEarningMax()*days/365)).toString();
-				}				
+				return Float.valueOf(dealFloat(tempRecordModel.getMoney()*tempRecordModel.getEarningMax()*days/365)).toString();				
 			}else{
-				int days=parseDay(tempRecordModel.getTimeEnd())-parseDay(tempRecordModel.getTimeBegin());
-				if(type==0){
-					return dealFloat(tempRecordModel.getMoney()*tempRecordModel.getEarningMin()*days/365)+"~"+dealFloat(tempRecordModel.getMoney()*tempRecordModel.getEarningMax()*days/365);
-				}else{
-					return (tempRecordModel.getMoney()+dealFloat(tempRecordModel.getMoney()*tempRecordModel.getEarningMin()*days/365))+
-							"~"+
-							(tempRecordModel.getMoney()+dealFloat(tempRecordModel.getMoney()*tempRecordModel.getEarningMax()*days/365));
-				}
+				return dealFloat(tempRecordModel.getMoney()*tempRecordModel.getEarningMin()*days/365)+"~"+dealFloat(tempRecordModel.getMoney()*tempRecordModel.getEarningMax()*days/365);
 			}			
 		}
 		default:
@@ -212,8 +252,8 @@ public class ReturnList {
 				temp.clear();
 				Map<String, Object> map=new HashMap<String, Object>();
 				RecordModel record=new RecordModel(allRecords);
-				//如果记录已经被删除 跳出本次循环
-				if(record.getIsDeleted()==1){
+				//如果记录已经被删除  或者不属于该账户 跳出本次循环
+				if(record.getIsDeleted()==1||record.getUserName().equals(loginString)){
 					continue;
 				}
 				map.put("item_id", record.getID());
@@ -327,8 +367,8 @@ public class ReturnList {
 			while (allRecords.moveToNext()) {
 				Map<String, Object> map=new HashMap<String, Object>();
 				RecordModel record=new RecordModel(allRecords);
-				//如果记录已经被删除 跳出本次循环
-				if(record.getIsDeleted()==1){
+				//如果记录已经被删除 不属于该用户 已经处理过 跳出本次循环
+				if(record.getIsDeleted()==1||record.getUserName().equals(loginString)||record.getState()==1){
 					continue;
 				}
 				boolean judge=false;
@@ -389,7 +429,7 @@ public class ReturnList {
 			while (allRecords.moveToNext()) {
 				RecordModel record=new RecordModel(allRecords);
 				//如果记录已经被删除 跳出本次循环
-				if(record.getIsDeleted()==1){
+				if(record.getIsDeleted()==1||record.getUserName().equals(loginString)||record.getState()==1){
 					continue;
 				}
 				switch (type) {
@@ -423,7 +463,7 @@ public class ReturnList {
 			while (allRecords.moveToNext()) {
 				RecordModel record=new RecordModel(allRecords);
 				//如果记录已经被删除 跳出本次循环
-				if(record.getIsDeleted()==1){
+				if(record.getIsDeleted()==1||record.getUserName().equals(loginString)||record.getState()==1){
 					continue;
 				}
 				switch (type) {
@@ -474,7 +514,7 @@ public class ReturnList {
 			while (allRecords.moveToNext()) {
 				RecordModel record=new RecordModel(allRecords);
 				//如果记录已经被删除 跳出本次循环
-				if(record.getIsDeleted()==1){
+				if(record.getIsDeleted()==1||record.getUserName().equals(loginString)||record.getState()==1){
 					continue;
 				}
 				int time=parseDay(record.getTimeEnd());
