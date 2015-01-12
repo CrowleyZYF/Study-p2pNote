@@ -70,4 +70,10 @@ public class HorizontalScrollViewAdapter extends SimpleAdapter{
         ImageView mImg;  
         TextView mText;  
     } 
+    
+    @Override
+    public void notifyDataSetChanged() {
+    	// TODO Auto-generated method stub
+    	super.notifyDataSetChanged();
+    }
 }

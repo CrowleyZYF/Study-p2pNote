@@ -143,6 +143,7 @@ public class MainActivity extends Activity implements OnClickListener{
             } else  
             {   
                 transaction.show(analyzeFragment);  
+                analyzeFragment.reflash();
             }  
             break;  
         case 3: 

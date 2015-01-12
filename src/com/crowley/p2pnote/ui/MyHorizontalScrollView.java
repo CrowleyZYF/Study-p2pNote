@@ -83,6 +83,19 @@ public class MyHorizontalScrollView extends HorizontalScrollView implements OnCl
 		initFirstScreenChildren();  
 	}  
 	
+	public void updateDate(HorizontalScrollViewAdapter mAdapter)
+	{
+		this.mAdapter = mAdapter;  
+		mContainer = (LinearLayout) getChildAt(0);  
+		mContainer.removeAllViews();
+		// 获得适配器中第一个View  
+		final View view = mAdapter.getView(0, null, mContainer); 
+		mContainer.addView(view);  		
+		
+		//初始化第一屏幕的元素  
+		initFirstScreenChildren();  
+	}
+	
 	/** 
 	* 加载第一屏的View 
 	*  

@@ -475,10 +475,18 @@ public class NewItemActivity extends Activity implements OnItemSelectedListener,
 				userNameString="not_login";
 			}
 			String sqlString="";
+			moneys=returnList.dealFloat(moneys);
+			min=returnList.dealFloat(min);
+			max=returnList.dealFloat(max);
 			if(modelString.equals("1")){
 				sqlString="UPDATE record SET platform= '"+company+"', type= '"+type+"', money= "+moneys+" ,earningMin= "+min+" ,earningMax= "+max+" ,method= "+method+" ,timeBegin= '"+begin_dayString+"' ,timeEnd='"+end_dayString+"' WHERE _id="+idString+"";
 			}else{
-				sqlString="insert into record(platform,type,money,earningMin,earningMax,method,timeBegin,timeEnd,timeStamp,state,isDeleted,userName,restBegin,restEnd,timeStampEnd) values('"+company+"','"+type+"',"+moneys+","+min+","+max+","+method+",'"+begin_dayString+"','"+end_dayString+"','"+ts+"',0,0,'"+userNameString+"',0.0,0.0,'')";
+				float rest=returnList.getRest(company);
+				rest=rest-moneys;
+				if (rest<0) {
+					rest=0;
+				}
+				sqlString="insert into record(platform,type,money,earningMin,earningMax,method,timeBegin,timeEnd,timeStamp,state,isDeleted,userName,restBegin,restEnd,timeStampEnd,rest) values('"+company+"','"+type+"',"+moneys+","+min+","+max+","+method+",'"+begin_dayString+"','"+end_dayString+"','"+ts+"',0,0,'"+userNameString+"',0.0,0.0,'',"+rest+")";
 			}
 			//如果出错则弹出提示
 			if (erroredBoolean) {

@@ -137,7 +137,7 @@ public class DBOpenHelper extends SQLiteOpenHelper{
 		};
 
 	public DBOpenHelper(Context context, String name) {
-		super(context, name, null, 5);
+		super(context, name, null, 1);
 		// TODO Auto-generated constructor stub
 	}
 
@@ -196,8 +196,9 @@ public class DBOpenHelper extends SQLiteOpenHelper{
 		 * 
 		 */
 		//db.execSQL("DROP TABLE record");
-		db.execSQL("create table if not exists record (_id integer primary key autoincrement,platform text not null,type text not null,money real not null,earningMin real not null,earningMax real not null,method integer not null,timeBegin text not null,timeEnd text not null,timeStamp text not null,state integer not null,isDeleted integer not null,restBegin real not null,restEnd real not null,timeStampEnd text not null)");		
-		db.execSQL("create table if not exists rest (_id integer primary key autoincrement,platform text not null,userName text not null,type integer not null,money real not null,rest real not null,timeStampEnd real not null)");
+		
+		db.execSQL("create table if not exists record (_id integer primary key autoincrement,platform text not null,type text not null,money real not null,earningMin real not null,earningMax real not null,method integer not null,timeBegin text not null,timeEnd text not null,timeStamp text not null DEFAULT '',state integer not null DEFAULT 0,isDeleted integer not null DEFAULT 0,userName text not null DEFAULT '',restBegin real not null DEFAULT 0.00,restEnd real not null DEFAULT 0.00,timeStampEnd text not null DEFAULT '',rest real not null DEFAULT 0.00)");		
+		//db.execSQL("create table if not exists rest (_id integer primary key autoincrement,platform text not null,userName text not null,type integer not null,money real not null,rest real not null,timeStampEnd real not null)");
 	}
 
 	@Override

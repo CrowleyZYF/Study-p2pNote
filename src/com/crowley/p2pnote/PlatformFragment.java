@@ -34,15 +34,13 @@ public class PlatformFragment extends Fragment implements OnClickListener{
 	private MyHorizontalScrollView mHorizontalScrollView;  
     private HorizontalScrollViewAdapter mAdapter;  
     private LinearLayout recordsLinearLayout; 
-    /*private List<Integer> mDatas = new ArrayList<Integer>(Arrays.asList(  
-    		R.drawable.company_icon01, R.drawable.company_icon02, R.drawable.company_icon03,  
-            R.drawable.company_icon04, R.drawable.company_icon05, R.drawable.company_icon06, R.drawable.company_icon07,
-            R.drawable.company_icon01, R.drawable.company_icon02, R.drawable.company_icon03,  
-            R.drawable.company_icon04, R.drawable.company_icon05, R.drawable.company_icon06, R.drawable.company_icon07));*/
     private List<Integer> mDatas;
     private List<String> mDatas2;
     private TextView title;
     private TextView platform_earning;
+    private TextView platform_rest;
+    private TextView platform_earning_rate;
+    private TextView platform_amount;
    
     
 	@Override
@@ -55,6 +53,9 @@ public class PlatformFragment extends Fragment implements OnClickListener{
 		recordsLinearLayout = (LinearLayout) view.findViewById(R.id.platform_record);
 		title = (TextView) this.getActivity().findViewById(R.id.main_tab_banner_title);
 		platform_earning = (TextView) view.findViewById(R.id.platform_earning);
+		platform_rest = (TextView) view.findViewById(R.id.platform_rest);
+		platform_earning_rate = (TextView) view.findViewById(R.id.platform_earning_rate);
+		platform_amount = (TextView) view.findViewById(R.id.platform_amount);
 		
 		returnList=new ReturnList(this.getActivity());
 		mDatas=returnList.getPlatformsIcon();
@@ -87,6 +88,9 @@ public class PlatformFragment extends Fragment implements OnClickListener{
 	public void updatePlatform(String platformString) {
 		title.setText(platformString);
 		platform_earning.setText(Float.valueOf(returnList.getEarningAll(platformString)).toString());
+		platform_rest.setText(Float.valueOf(returnList.getRest(platformString)).toString());
+		platform_earning_rate.setText(Float.valueOf(returnList.getEarningRateAll(platformString)).toString());
+		platform_amount.setText(Float.valueOf(returnList.getAllAmount(platformString)).toString());
 	}
 
 
@@ -111,8 +115,8 @@ public class PlatformFragment extends Fragment implements OnClickListener{
 		if(!mDatas2.isEmpty()){
 			updatePlatform(mDatas2.get(0));
 		}
-		mAdapter.notifyDataSetChanged();
-		mHorizontalScrollView.initFirstScreenChildren();
+		mAdapter=new HorizontalScrollViewAdapter(this.getActivity(), mDatas, mDatas2);
+		mHorizontalScrollView.updateDate(mAdapter);
 	}
 
 	

@@ -65,6 +65,7 @@ public class WaterFragment extends Fragment implements OnClickListener,OnItemLon
 		View view = inflater.inflate(R.layout.water_fragment, container, false);
 
 		returnList = new ReturnList(this.getActivity());
+		returnList.logInfo();
 		dataList=new ArrayList<Map<String,Object>>();
         listView=(ListView) view.findViewById(R.id.water_list_view);
         time_tab=(RelativeLayout) view.findViewById(R.id.invest_time);
