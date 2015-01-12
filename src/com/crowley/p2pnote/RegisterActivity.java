@@ -64,8 +64,42 @@ public class RegisterActivity extends Activity implements OnClickListener {
 					editor.putBoolean("isLogined", true);
 					editor.putString("account", accountString);
 					editor.commit();
-					Intent intent=new Intent(nowContext,MainActivity.class);
-		            startActivity(intent);										
+					if(returnList.checkNotLogin()){
+						new SweetAlertDialog(nowContext, SweetAlertDialog.WARNING_TYPE)
+			            .setTitleText("是否将本地记录导入？")
+			            .setCancelText("取消")
+			            .setConfirmText("确定")
+			            .showCancelButton(true)
+			            .setCancelClickListener(new SweetAlertDialog.OnSweetClickListener() {
+			                @Override
+			                public void onClick(SweetAlertDialog sDialog) {
+			                    sDialog.dismiss();
+								finish();
+			                }
+			            })
+			            .setConfirmClickListener(new SweetAlertDialog.OnSweetClickListener() {
+			                @Override
+			                public void onClick(SweetAlertDialog sDialog) {
+			                	returnList.setUserName(accountString);
+			                    sDialog.setTitleText("成功导入")
+			                            .setConfirmText("确定")
+			                            .showContentText(false)
+			                            .showCancelButton(false)
+			                            .setCancelClickListener(null)
+			                            .setConfirmClickListener(new SweetAlertDialog.OnSweetClickListener() {
+			        		                @Override
+			        		                public void onClick(SweetAlertDialog sDialog2) {
+			        		                    sDialog2.dismiss();
+			        							finish();
+			        		                }
+			        		            })
+			                            .changeAlertType(SweetAlertDialog.SUCCESS_TYPE);
+			                }
+			            })
+			            .show();
+					}else{
+						finish();
+					}												
 					break;					
 				}
 				case ALREADY_EXIST:{

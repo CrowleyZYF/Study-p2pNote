@@ -475,9 +475,6 @@ public class NewItemActivity extends Activity implements OnItemSelectedListener,
 				userNameString="not_login";
 			}
 			String sqlString="";
-			moneys=returnList.dealFloat(moneys);
-			min=returnList.dealFloat(min);
-			max=returnList.dealFloat(max);
 			if(modelString.equals("1")){
 				sqlString="UPDATE record SET platform= '"+company+"', type= '"+type+"', money= "+moneys+" ,earningMin= "+min+" ,earningMax= "+max+" ,method= "+method+" ,timeBegin= '"+begin_dayString+"' ,timeEnd='"+end_dayString+"' WHERE _id="+idString+"";
 			}else{

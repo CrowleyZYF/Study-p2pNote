@@ -71,6 +71,8 @@ public class IndexFragment extends Fragment implements OnClickListener,OnItemLon
 	private EditText earningText;
 	private EditText getOutText;
 	
+	private float total=0.0f;
+	
 	
 	
 	@Override
@@ -182,16 +184,20 @@ public class IndexFragment extends Fragment implements OnClickListener,OnItemLon
 				earningFloat = Float.parseFloat(earningText.getText().toString());
 				if(earningFloat<0){
 					erroredBoolean=true;
-					errorString="收益必须大于0";				
+					errorString="收益必须大于0";	
 				}
 			}
         	if(TextUtils.isEmpty(getOutText.getText())){
         		getOutFloat=0.0f;
 			}else{
 				getOutFloat = Float.parseFloat(getOutText.getText().toString());
-				if(earningFloat<0){
+				if(getOutFloat<0){
 					erroredBoolean=true;
 					errorString="取出金额必须大于0";				
+				}
+				if(getOutFloat>total+earningFloat){
+					erroredBoolean=true;
+					errorString="取出金额必须小于"+(total+earningFloat);	
 				}
 			}
         	if (erroredBoolean) {
@@ -259,6 +265,11 @@ public class IndexFragment extends Fragment implements OnClickListener,OnItemLon
         list_adapter.notifyDataSetChanged();
         tab_button01_number.setText(String.valueOf(returnList.indexCount(0)));
         tab_button02_number.setText(String.valueOf(returnList.indexCount(1)));
+        index_info_basic01_number.setText(returnList.getBaseInfo01Number01());
+    	index_info_basic01_float.setText(returnList.getBaseInfo01Number02());
+    	index_info_basic02_number.setText(returnList.getBaseInfo02Number01());
+    	index_info_basic02_float.setText(returnList.getBaseInfo02Number02());
+    	index_info_basic03_number.setText(returnList.getBaseInfo03());
 	}
 
 	@Override
@@ -283,8 +294,9 @@ public class IndexFragment extends Fragment implements OnClickListener,OnItemLon
 					// TODO Auto-generated catch block
 					e.printStackTrace();
 				}
-				//getOutText.setText("");
-				//getOutText.setHint(returnList.getEarning(id,1));
+				getOutText.setText("");
+				total=returnList.getRest(returnList.getPlatformString(id))+Float.valueOf(((TextView)arg1.findViewById(R.id.item_money)).getText().toString());
+				getOutText.setHint(Float.valueOf(total).toString());
                 dialog.show();
 				break;
 			}case 1:{

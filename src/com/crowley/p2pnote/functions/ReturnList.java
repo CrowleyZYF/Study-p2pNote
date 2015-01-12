@@ -58,6 +58,7 @@ public class ReturnList {
 		this.days=this.year*365+this.month*this.months[this.month]+this.day;
 		
 		updateLogin();
+		logInfo();
 	}
 	
 	public int daysNumber(){
@@ -74,8 +75,17 @@ public class ReturnList {
 		}
 	}
 	
+	public boolean checkNotLogin(){
+		Cursor tempCursor=this.db.rawQuery("select * from record WHERE isDeleted=0 AND userName='not_login'", null);
+		return !(tempCursor.getCount()==0);
+	}
+	
+	public void setUserName(String userString){
+		this.db.execSQL("UPDATE record SET userName = '"+userString+"' WHERE userName = 'not_login'");
+	}
+	
 	public void logInfo(){
-		this.allRecords = this.helper.returALLRecords(this.db);
+		/*this.allRecords = this.helper.returALLRecords(this.db);
 		if(allRecords.getCount()!=0){
 			while (allRecords.moveToNext()) {
 				Log.i("m_info","id:"+allRecords.getInt(allRecords.getColumnIndex("_id")));
@@ -97,7 +107,7 @@ public class ReturnList {
 				Log.i("m_info","rest:"+allRecords.getFloat(allRecords.getColumnIndex("rest")));
 				Log.i("m_info","-----------------");				
 			}
-		}		
+		}		*/
 	}
 	
 	public String getTime(){
@@ -125,23 +135,127 @@ public class ReturnList {
 	}
 	
 	public String getBaseInfo01Number01(){
-		return "20.95";
+		updateLogin();
+		float amount=0.0f;
+		Cursor tempCursor=this.db.rawQuery("select * from record WHERE state=0 AND isDeleted=0 AND userName='"+loginString+"'", null);
+		if(tempCursor.getCount()!=0){
+			while(tempCursor.moveToNext()){
+				RecordModel tempRecordModel=new RecordModel(tempCursor);
+				if(parseDay(tempRecordModel.getTimeEnd())<this.days){
+					continue;
+				}else{
+					if (tempRecordModel.getEarningMin()==0) {
+						amount+=tempRecordModel.getMoney()*tempRecordModel.getEarningMax()/365;						
+					}else{
+						amount+=tempRecordModel.getMoney()*(tempRecordModel.getEarningMax()+tempRecordModel.getEarningMin())/2/365;
+					}
+				}
+			}
+			return Float.valueOf(dealFloat(amount)).toString();
+		}else{
+			return Float.valueOf(dealFloat(0.0f)).toString();
+		}
 	}
 	
 	public String getBaseInfo01Number02(){
-		return "1";
+		updateLogin();
+		float high=0.0f;
+		float amount=0.0f;
+		Cursor tempCursor=this.db.rawQuery("select * from record WHERE state=0 AND isDeleted=0 AND userName='"+loginString+"'", null);
+		if(tempCursor.getCount()!=0){
+			while(tempCursor.moveToNext()){
+				RecordModel tempRecordModel=new RecordModel(tempCursor);
+				if(parseDay(tempRecordModel.getTimeEnd())<this.days){
+					continue;
+				}else{
+					if (tempRecordModel.getEarningMin()==0) {							
+						amount+=tempRecordModel.getMoney()*tempRecordModel.getEarningMax()/365;						
+					}else{
+						amount+=tempRecordModel.getMoney()*(tempRecordModel.getEarningMax()+tempRecordModel.getEarningMin())/2/365;
+					}
+					high+=tempRecordModel.getMoney()*tempRecordModel.getEarningMax()/365;
+				}
+			}
+			return Float.valueOf(dealFloat(high-amount)).toString();
+		}else{
+			return Float.valueOf(dealFloat(0.0f)).toString();
+		}
 	}
 	
 	public String getBaseInfo02Number01(){
-		return "8.5";
+		updateLogin();
+		float total=0.0f;
+		float amount=0.0f;
+		Cursor tempCursor=this.db.rawQuery("select * from record WHERE state=0 AND isDeleted=0 AND userName='"+loginString+"'", null);
+		if(tempCursor.getCount()!=0){
+			while(tempCursor.moveToNext()){
+				RecordModel tempRecordModel=new RecordModel(tempCursor);
+				if(parseDay(tempRecordModel.getTimeEnd())<this.days){
+					continue;
+				}else{
+					if (tempRecordModel.getEarningMin()==0) {
+						total+=tempRecordModel.getMoney()*tempRecordModel.getEarningMax();
+						amount+=tempRecordModel.getMoney();					
+					}else{
+						total+=tempRecordModel.getMoney()*(tempRecordModel.getEarningMax()+tempRecordModel.getEarningMin())/2;
+						amount+=tempRecordModel.getMoney();
+					}
+				}
+			}
+			return Float.valueOf(dealFloat(total/amount*100)).toString();
+		}else{
+			return Float.valueOf(dealFloat(0.0f)).toString();
+		}
 	}
 	
 	public String getBaseInfo02Number02(){
-		return "1.2 %";
+		updateLogin();
+		float total=0.0f;
+		float total2=0.0f;
+		float amount=0.0f;
+		Cursor tempCursor=this.db.rawQuery("select * from record WHERE state=0 AND isDeleted=0 AND userName='"+loginString+"'", null);
+		if(tempCursor.getCount()!=0){
+			while(tempCursor.moveToNext()){
+				RecordModel tempRecordModel=new RecordModel(tempCursor);
+				if(parseDay(tempRecordModel.getTimeEnd())<this.days){
+					continue;
+				}else{
+					if (tempRecordModel.getEarningMin()==0) {						
+						total+=tempRecordModel.getMoney()*tempRecordModel.getEarningMax();
+						amount+=tempRecordModel.getMoney();					
+					}else{
+						total+=tempRecordModel.getMoney()*(tempRecordModel.getEarningMax()+tempRecordModel.getEarningMin())/2;
+						amount+=tempRecordModel.getMoney();
+					}
+					total2+=tempRecordModel.getMoney()*tempRecordModel.getEarningMax();
+				}
+			}
+			return Float.valueOf(dealFloat(total2/amount*100-total/amount*100)).toString()+" %";
+		}else{
+			return Float.valueOf(dealFloat(0.0f)).toString()+" %";
+		}
 	}
 	
 	public String getBaseInfo03(){
-		return "135600.58";
+		updateLogin();
+		float amount=0.0f;
+		Cursor tempCursor=this.db.rawQuery("select * from record WHERE state=0 AND isDeleted=0 AND userName='"+loginString+"'", null);
+		if(tempCursor.getCount()!=0){
+			while(tempCursor.moveToNext()){
+				RecordModel tempRecordModel=new RecordModel(tempCursor);
+				amount+=tempRecordModel.getMoney();	
+			}
+			return Float.valueOf(amount).toString();
+		}else{
+			return Float.valueOf(0.0f).toString();
+		}	
+	}
+	
+	public String getPlatformString(String id){
+		updateLogin();
+		Cursor tempCursor=this.db.rawQuery("select * from record WHERE _id="+id, null);
+		tempCursor.moveToFirst();
+		return (new RecordModel(tempCursor).getPlatform());
 	}
 
 	public int parseDay(String date){
@@ -286,7 +400,13 @@ public class ReturnList {
 						if(!mDatas.contains(DBOpenHelper.PLATFORM_ICONS_BIG[i])){
 							mDatas.add(DBOpenHelper.PLATFORM_ICONS_BIG[i]);
 							i=100;
-						}						
+						}else{
+							i=100;
+						}
+					}
+					//说明是最后一次循环了 看一下i是不是等于100 不等于的话就说明即没有找到 也没有添加过
+					if (i==DBOpenHelper.PLATFORM_NAMES.length-1) {
+						mDatas.add(DBOpenHelper.PLATFORM_ICONS_BIG[DBOpenHelper.PLATFORM_NAMES.length-1]);
 					}
 				}
 			}
@@ -314,7 +434,13 @@ public class ReturnList {
 						if(!mDatas.contains(tempRecordModel.getPlatform())){
 							mDatas.add(tempRecordModel.getPlatform());
 							i=100;
+						}else{
+							i=100;
 						}						
+					}
+					//说明是最后一次循环了 看一下i是不是等于100 不等于的话就说明即没有找到 也没有添加过
+					if (i==DBOpenHelper.PLATFORM_NAMES.length-1) {
+						mDatas.add(tempRecordModel.getPlatform());
 					}
 				}
 			}

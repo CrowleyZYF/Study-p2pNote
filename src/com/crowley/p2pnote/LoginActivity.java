@@ -28,6 +28,7 @@ import android.view.Window;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ImageButton;
+import android.widget.TextView;
 import android.widget.Toast;
 
 public class LoginActivity extends Activity implements OnClickListener {
@@ -58,7 +59,42 @@ public class LoginActivity extends Activity implements OnClickListener {
 					editor.putBoolean("isLogined", true);
 					editor.putString("account", accountString);
 					editor.commit();
-					finish();										
+					if(returnList.checkNotLogin()){
+						new SweetAlertDialog(nowContext, SweetAlertDialog.WARNING_TYPE)
+			            .setTitleText("是否将本地记录导入？")
+			            .setCancelText("取消")
+			            .setConfirmText("确定")
+			            .showCancelButton(true)
+			            .setCancelClickListener(new SweetAlertDialog.OnSweetClickListener() {
+			                @Override
+			                public void onClick(SweetAlertDialog sDialog) {
+			                    sDialog.dismiss();
+								finish();
+			                }
+			            })
+			            .setConfirmClickListener(new SweetAlertDialog.OnSweetClickListener() {
+			                @Override
+			                public void onClick(SweetAlertDialog sDialog) {
+			                	returnList.setUserName(accountString);
+			                    sDialog.setTitleText("成功导入")
+			                            .setConfirmText("确定")
+			                            .showContentText(false)
+			                            .showCancelButton(false)
+			                            .setCancelClickListener(null)
+			                            .setConfirmClickListener(new SweetAlertDialog.OnSweetClickListener() {
+			        		                @Override
+			        		                public void onClick(SweetAlertDialog sDialog2) {
+			        		                    sDialog2.dismiss();
+			        							finish();
+			        		                }
+			        		            })
+			                            .changeAlertType(SweetAlertDialog.SUCCESS_TYPE);
+			                }
+			            })
+			            .show();
+					}else{
+						finish();
+					}
 					break;					
 				}
 				case NOT_EXIST:{
