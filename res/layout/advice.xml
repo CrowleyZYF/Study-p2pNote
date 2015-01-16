@@ -37,18 +37,64 @@
         android:orientation="vertical"
         >
         
-        <TextView
-            android:layout_width="wrap_content"
+        <RelativeLayout 
+            android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_gravity="left"
             android:layout_marginLeft="10dp"
+            android:layout_marginRight="10dp"
             android:layout_marginTop="15dp"
             android:layout_marginBottom="15dp"
-            android:gravity="center_vertical"
-            android:text="意见："
-            android:textSize="20sp"
-            android:textColor="@color/light_black"
-            ></TextView>
+            >
+            
+            <TextView
+	            android:layout_width="wrap_content"
+	            android:layout_height="wrap_content"
+	            android:layout_alignParentLeft="true"
+	            android:layout_centerVertical="true"
+	            android:text="标签："
+	            android:textSize="20sp"
+	            android:textColor="@color/light_black"
+	            ></TextView>
+            
+            <LinearLayout 
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:orientation="horizontal"
+                android:layout_alignParentRight="true"
+                >
+                
+                <TextView 
+                    android:id="@+id/advice_tag"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="建议"
+        			android:background="@drawable/radis_border"
+        			android:layout_marginLeft="15dp"
+        			android:textColor="@color/platform_chosen"
+                    />
+                
+                <TextView 
+                    android:id="@+id/wrong_tag"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="出错"
+        			android:background="@drawable/radis_border"
+        			android:layout_marginLeft="15dp"
+        			android:textColor="@color/light_black"
+                    />
+                
+                <TextView 
+                    android:id="@+id/help_tag"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="帮助"
+        			android:background="@drawable/radis_border"
+        			android:layout_marginLeft="15dp"
+        			android:textColor="@color/light_black"
+                    />
+            </LinearLayout>
+        </RelativeLayout>
+        
         
         <EditText 
             android:id="@+id/advice"

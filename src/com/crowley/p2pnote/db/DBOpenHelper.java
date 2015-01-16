@@ -111,6 +111,8 @@ public class DBOpenHelper extends SQLiteOpenHelper{
 		};
 	
 	public static final int gray=R.color.font_gray;
+	public static final int platform_in=R.color.platform_in;
+	public static final int platform_out=R.color.platform_out;
 	
 	/**
 	 * 分析标题
@@ -137,7 +139,7 @@ public class DBOpenHelper extends SQLiteOpenHelper{
 		};
 
 	public DBOpenHelper(Context context, String name) {
-		super(context, name, null, 1);
+		super(context, name, null, 2);
 		// TODO Auto-generated constructor stub
 	}
 
@@ -192,12 +194,18 @@ public class DBOpenHelper extends SQLiteOpenHelper{
 		 * rest:结算后 该平台的余额还有多少
 		 * 
 		 * 
+		 * 以上都为一个版本， 真版本2
+		 * version2
+		 * 增加news表
+		 * 
+		 * 
 		 * 
 		 * 
 		 */
 		//db.execSQL("DROP TABLE record");
 		
 		db.execSQL("create table if not exists record (_id integer primary key autoincrement,platform text not null,type text not null,money real not null,earningMin real not null,earningMax real not null,method integer not null,timeBegin text not null,timeEnd text not null,timeStamp text not null DEFAULT '',state integer not null DEFAULT 0,isDeleted integer not null DEFAULT 0,userName text not null DEFAULT '',restBegin real not null DEFAULT 0.00,restEnd real not null DEFAULT 0.00,timeStampEnd text not null DEFAULT '',rest real not null DEFAULT 0.00)");		
+		db.execSQL("create table if not exists news (_id integer primary key autoincrement,title text not null,add_time text not null,content text not null)");
 		//db.execSQL("create table if not exists rest (_id integer primary key autoincrement,platform text not null,userName text not null,type integer not null,money real not null,rest real not null,timeStampEnd real not null)");
 	}
 
@@ -207,33 +215,7 @@ public class DBOpenHelper extends SQLiteOpenHelper{
 		for(int i = oldVersion+1;i<=newVersion;i++){
 			switch (i) {
 			case 2:{
-				db.execSQL("ALTER TABLE record ADD COLUMN timeStamp text not null DEFAULT ''");
-				db.execSQL("ALTER TABLE record ADD COLUMN state integer not null DEFAULT 0");
-				db.execSQL("ALTER TABLE record ADD COLUMN isDeleted integer not null DEFAULT 0");
-				db.execSQL("ALTER TABLE record ADD COLUMN userName text not null DEFAULT ''");
-				db.execSQL("ALTER TABLE record ADD COLUMN restBegin real not null DEFAULT 0.00");
-				db.execSQL("ALTER TABLE record ADD COLUMN restEnd real not null DEFAULT 0.00");
-				
-				Cursor allRecords = db.rawQuery("select * from record", null);
-				while (allRecords.moveToNext()) {
-					Long tsLong = System.currentTimeMillis();
-					String ts = tsLong.toString();
-					int id=allRecords.getInt(allRecords.getColumnIndex("_id"));
-					db.execSQL("UPDATE record SET timeStamp = "+ts+", state = 0, isDeleted = 0, userName = 'not_login', restBegin = 0.00, restEnd = 0.00 WHERE _id = "+id);
-					Log.i("m_info",ts);
-				}
-				break;
-			}
-			case 3:{
-				db.execSQL("ALTER TABLE record ADD COLUMN timeStampEnd text not null DEFAULT ''");
-				break;
-			}
-			case 4:{
-				db.execSQL("create table if not exists rest (_id integer primary key autoincrement,platform text not null,userName text not null,type integer not null,money real not null,rest real not null,timeStampEnd real not null)");
-				break;
-			}
-			case 5:{
-				db.execSQL("ALTER TABLE record ADD COLUMN rest real not null DEFAULT 0.00");
+				db.execSQL("create table if not exists news (_id integer primary key autoincrement,title text not null,add_time text not null,content text not null)");
 				break;
 			}
 			default:
@@ -243,22 +225,11 @@ public class DBOpenHelper extends SQLiteOpenHelper{
 	}
 	
 	public Cursor returALLRecords(SQLiteDatabase db){
-		/*Cursor allRecords = db.rawQuery("select * from record", null);
-		Long tsLong = System.currentTimeMillis();		
-		while (allRecords.moveToNext()) {
-			tsLong++;
-			String ts = tsLong.toString();
-			Long tsLong = System.currentTimeMillis();
-			String ts = tsLong.toString();
-			int id=allRecords.getInt(allRecords.getColumnIndex("_id"));
-			db.execSQL("UPDATE record SET timeStamp = "+ts+", state = 0, isDeleted = 0, userName = 'not_login', restBegin = 0.00, restEnd = 0.00 WHERE _id = "+id);
-			//int id=allRecords.getInt(allRecords.getColumnIndex("_id"));
-			//db.execSQL("UPDATE record SET timeStamp = "+ts+"  WHERE _id = "+id);
-			Log.i("m_info","id:"+allRecords.getInt(allRecords.getColumnIndex("_id")));
-			Log.i("m_info","timeStamp:"+allRecords.getString(allRecords.getColumnIndex("timeStamp")));
-			Log.i("m_info","-----------------");
-		}*/
 		return db.rawQuery("select * from record", null);
+	}
+	
+	public Cursor returALLNews(SQLiteDatabase db){
+		return db.rawQuery("select * from news", null);
 	}
 	
 	

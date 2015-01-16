@@ -146,6 +146,21 @@ public class NewItemActivity extends Activity implements OnItemSelectedListener,
     		((TextView) new_item_cancel.findViewById(R.id.new_item_cancel)).setText("取消修改");
     		//title
     		titleTextView.setText("修改记录");
+    	}else if(modelString.equals("2")){
+    		boolean isOther=true;
+    		for(int i=0;i<DBOpenHelper.PLATFORM_NAMES.length;i++){
+    			if(getResources().getString(DBOpenHelper.PLATFORM_NAMES[i]).equals(platformString)){
+    				isOther=false;
+    				platformSpinner.setSelection(i);
+    			}
+    		}
+    		if(isOther){
+    			platformSpinner.setSelection(DBOpenHelper.PLATFORM_NAMES.length-1);
+    			customLinearLayout.setVisibility(View.VISIBLE);	
+				typeSpinner.setVisibility(View.GONE);
+				custom_platform.setText(platformString);
+				custom_type.setText("");
+    		}
     	}
 	}
 

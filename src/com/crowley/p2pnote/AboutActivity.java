@@ -1,5 +1,6 @@
 package com.crowley.p2pnote;
 
+import com.crowley.p2pnote.functions.Common;
 
 import android.app.Activity;
 import android.os.Bundle;
@@ -8,7 +9,6 @@ import android.view.View.OnClickListener;
 import android.view.Window;
 import android.widget.ImageButton;
 import android.widget.RelativeLayout;
-import android.widget.Toast;
 
 public class AboutActivity extends Activity implements OnClickListener {
 
@@ -22,13 +22,10 @@ public class AboutActivity extends Activity implements OnClickListener {
         requestWindowFeature(Window.FEATURE_NO_TITLE);
 		setContentView(R.layout.about);
 		
-		initView();
-		
-		
+		initView();		
 	}
 	
-	private void initView(){
-		
+	private void initView(){		
 		backButton=(ImageButton) findViewById(R.id.back);
 		weichat=(RelativeLayout) findViewById(R.id.weichat_button);
 		weibo=(RelativeLayout) findViewById(R.id.weibo_button);
@@ -36,9 +33,7 @@ public class AboutActivity extends Activity implements OnClickListener {
 		backButton.setOnClickListener(this);
 		weichat.setOnClickListener(this);
 		weibo.setOnClickListener(this);
-	}
-	
-	
+	}	
 
 	@Override
 	public void onClick(View v) {
@@ -49,11 +44,11 @@ public class AboutActivity extends Activity implements OnClickListener {
 			break;
 		}
 		case R.id.weibo_button:{
-			Toast.makeText(getApplicationContext(),"功能还在开发中 敬请期待  ∩_∩ ",Toast.LENGTH_SHORT).show();
+			Common.toBeContinuedDialog(this).show();
 			break;
 		}
 		case R.id.weichat_button:{
-			Toast.makeText(getApplicationContext(),"功能还在开发中 敬请期待  ∩_∩ ",Toast.LENGTH_SHORT).show();
+			Common.toBeContinuedDialog(this).show();
 			break;
 		}
 		default:

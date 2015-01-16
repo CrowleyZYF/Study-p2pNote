@@ -2,35 +2,29 @@ package com.crowley.p2pnote;
 
 import java.util.HashMap;
 import java.util.Map;
-
-import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
-
 import cn.pedant.SweetAlert.SweetAlertDialog;
-
 import com.crowley.p2pnote.db.HttpUtils;
+import com.crowley.p2pnote.functions.Common;
 import com.crowley.p2pnote.functions.ReturnList;
-
+import android.annotation.SuppressLint;
 import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.content.SharedPreferences.Editor;
-import android.net.ConnectivityManager;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.Message;
-import android.util.Log;
 import android.view.View;
 import android.view.View.OnClickListener;
 import android.view.Window;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ImageButton;
-import android.widget.TextView;
-import android.widget.Toast;
 
+@SuppressLint("HandlerLeak") 
 public class LoginActivity extends Activity implements OnClickListener {
 	
 	private Button loginButton;
@@ -48,6 +42,8 @@ public class LoginActivity extends Activity implements OnClickListener {
 	
 	private String accountString;
 	private Context nowContext=this;
+	
+	private String urlString="http://128.199.226.246/beerich/index.php/login";
 	
 	private Handler handler = new Handler(){
 		public void handleMessage(Message msg){
@@ -98,19 +94,11 @@ public class LoginActivity extends Activity implements OnClickListener {
 					break;					
 				}
 				case NOT_EXIST:{
-					new SweetAlertDialog(nowContext, SweetAlertDialog.ERROR_TYPE)
-	                    .setTitleText("µÇÂ½Ê§°Ü")
-	                    .setContentText("²»´æÔÚ¸ÃÕËºÅ£¡")
-	                    .setConfirmText("È·¶¨")
-	                    .show();
+					Common.errorDialog(nowContext, "µÇÂ½Ê§°Ü", "²»´æÔÚ¸ÃÕËºÅ£¡").show();
 					break;
 				}
 				case PASS_ERROR:{
-					new SweetAlertDialog(nowContext, SweetAlertDialog.ERROR_TYPE)
-	                    .setTitleText("µÇÂ½Ê§°Ü")
-	                    .setContentText("ÃÜÂë´íÎó£¡")
-	                    .setConfirmText("È·¶¨")
-	                    .show();
+					Common.errorDialog(nowContext, "µÇÂ½Ê§°Ü", "ÃÜÂë´íÎó£¡").show();
 					break;
 				}
 				default:
@@ -143,30 +131,20 @@ public class LoginActivity extends Activity implements OnClickListener {
 	}
 	
 	public void login(String account,String password){
-		if(!isOpenNetwork()){
-			new SweetAlertDialog(nowContext, SweetAlertDialog.ERROR_TYPE)
-	            .setTitleText("µÇÂ½Ê§°Ü")
-	            .setContentText("ÍøÂçÎ´Á´½Ó")
-                .setConfirmText("È·¶¨")
-	            .show();
+		if(!Common.isOpenNetwork(this)){
+			Common.errorDialog(nowContext, "µÇÂ½Ê§°Ü", "ÍøÂçÎ´Á´½Ó").show();
 		}else if(account==""){
-			new SweetAlertDialog(nowContext, SweetAlertDialog.ERROR_TYPE)
-	            .setTitleText("µÇÂ½Ê§°Ü")
-	            .setContentText("ÕËºÅ²»µÃÎª¿Õ")
-                .setConfirmText("È·¶¨")
-	            .show();
+			Common.errorDialog(nowContext, "µÇÂ½Ê§°Ü", "ÕËºÅ²»µÃÎª¿Õ").show();
 		}else if(password==""){
-			new SweetAlertDialog(nowContext, SweetAlertDialog.ERROR_TYPE)
-	            .setTitleText("µÇÂ½Ê§°Ü")
-	            .setContentText("ÃÜÂë²»µÃÎª¿Õ")
-	            .setConfirmText("È·¶¨")
-	            .show();
-		}else if(returnList.isEmail(account)){
+			Common.errorDialog(nowContext, "µÇÂ½Ê§°Ü", "ÃÜÂë²»µÃÎª¿Õ").show();
+		}else if(!returnList.isEmail(account)){
+			Common.errorDialog(nowContext, "µÇÂ½Ê§°Ü", "ÓÊÏä¸ñÊ½ÓÐÎó£¡").show();					
+		}else {
 			final Map<String, String> params = new HashMap<String, String>();
 			params.put("user_name", account);
 			params.put("password", password);
 			new Thread(){
-				public void run(){String teString=HttpUtils.submitPostData("http://128.199.226.246/beerich/index.php/login", params, "utf-8");
+				public void run(){String teString=HttpUtils.submitPostData(urlString, params, "utf-8");
 					try {
 						JSONObject object=new JSONObject(teString);
 						error_code = (Integer) object.get("error_code");
@@ -175,13 +153,7 @@ public class LoginActivity extends Activity implements OnClickListener {
 						e.printStackTrace();
 					}
 				}
-			}.start();		
-		}else {
-			new SweetAlertDialog(nowContext, SweetAlertDialog.ERROR_TYPE)
-	            .setTitleText("µÇÂ½Ê§°Ü")
-	            .setContentText("ÓÊÏä¸ñÊ½ÓÐÎó£¡")
-                .setConfirmText("È·¶¨")
-	            .show();
+			}.start();
 		}
 	}
 
@@ -207,13 +179,5 @@ public class LoginActivity extends Activity implements OnClickListener {
 		default:
 			break;
 		}		
-	}
-	
-	private boolean isOpenNetwork() {  
-	    ConnectivityManager connManager = (ConnectivityManager)getSystemService(Context.CONNECTIVITY_SERVICE);  
-	    if(connManager.getActiveNetworkInfo() != null) {  
-	        return connManager.getActiveNetworkInfo().isAvailable();  
-	    }	  
-	    return false;  
 	}
 }

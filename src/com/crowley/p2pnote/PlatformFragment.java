@@ -41,6 +41,11 @@ public class PlatformFragment extends Fragment implements OnClickListener{
     private TextView platform_rest;
     private TextView platform_earning_rate;
     private TextView platform_amount;
+    private TextView newest_date;
+    private TextView newest_judge01;
+    private TextView newest_judge02;
+    private TextView newest_money;
+    private TextView platform_invest;
    
     
 	@Override
@@ -56,6 +61,11 @@ public class PlatformFragment extends Fragment implements OnClickListener{
 		platform_rest = (TextView) view.findViewById(R.id.platform_rest);
 		platform_earning_rate = (TextView) view.findViewById(R.id.platform_earning_rate);
 		platform_amount = (TextView) view.findViewById(R.id.platform_amount);
+		newest_date = (TextView) view.findViewById(R.id.newest_date);
+		newest_judge01 = (TextView) view.findViewById(R.id.newest_judge01);
+		newest_judge02 = (TextView) view.findViewById(R.id.newest_judge02);
+		newest_money = (TextView) view.findViewById(R.id.newest_money);
+		platform_invest = (TextView) view.findViewById(R.id.platform_invest);
 		
 		returnList=new ReturnList(this.getActivity());
 		mDatas=returnList.getPlatformsIcon();
@@ -68,6 +78,7 @@ public class PlatformFragment extends Fragment implements OnClickListener{
 		mAdapter = new HorizontalScrollViewAdapter(this.getActivity(), mDatas, mDatas2);
 		
 		recordsLinearLayout.setOnClickListener(this);
+		platform_invest.setOnClickListener(this);
 		//添加点击回调  
 		mHorizontalScrollView.setOnItemClickListener(new OnItemClickListener()  
 		{  
@@ -91,6 +102,17 @@ public class PlatformFragment extends Fragment implements OnClickListener{
 		platform_rest.setText(Float.valueOf(returnList.getRest(platformString)).toString());
 		platform_earning_rate.setText(Float.valueOf(returnList.getEarningRateAll(platformString)).toString());
 		platform_amount.setText(Float.valueOf(returnList.getAllAmount(platformString)).toString());
+		newest_date.setText(returnList.getNewestDate(platformString));
+		if(returnList.getNewestBool(platformString)){
+			newest_judge01.setText("收益");
+			newest_judge02.setText("+");
+			newest_judge02.setTextColor(getResources().getColor(DBOpenHelper.platform_in));
+		}else{
+			newest_judge01.setText("取出");
+			newest_judge02.setText("-");
+			newest_judge02.setTextColor(getResources().getColor(DBOpenHelper.platform_out));
+		}
+		newest_money.setText(returnList.getNewestMoney(platformString, returnList.getNewestBool(platformString)));
 	}
 
 
@@ -100,6 +122,15 @@ public class PlatformFragment extends Fragment implements OnClickListener{
 		switch (arg0.getId()) {
 		case R.id.platform_record:{
 			Intent intent=new Intent(this.getActivity(),RecordActivity.class);
+			intent.putExtra("platform", title.getText());
+            startActivity(intent);
+            break;			
+		}
+		case R.id.platform_invest:{
+			Intent intent=new Intent(this.getActivity(),NewItemActivity.class);
+			intent.putExtra("model", "2");
+			intent.putExtra("id", "");
+			intent.putExtra("platform", title.getText());
             startActivity(intent);
             break;			
 		}

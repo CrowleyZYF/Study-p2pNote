@@ -120,7 +120,15 @@ public class AnalyzeFragment extends Fragment implements OnClickListener{
         int count = xVals.size();
         PieData d;
         PieDataSet ds1=null;
-        if(count==0){
+        entries1 = returnList.analyzeEntries(type,xVals);
+        boolean checkEmpty = true;
+        for(int i=0;i<entries1.size();i++){
+        	if(entries1.get(i).getVal()!=0){
+        		checkEmpty=false;
+        		i=entries1.size()+1;        		
+        	}
+        }
+        if(count==0||checkEmpty){
         	xVals = new ArrayList<String>();
         	xVals.add("暂无相应分析");
         	entries1 = new ArrayList<Entry>();
@@ -129,8 +137,7 @@ public class AnalyzeFragment extends Fragment implements OnClickListener{
         	ds1.setColors(ColorTemplate.VORDIPLOM_COLORS);
             ds1.setSliceSpace(2f);
             d = new PieData(xVals, ds1);
-        }else{
-        	entries1 = returnList.analyzeEntries(type,xVals);
+        }else{        	
         	ArrayList<Entry> result = new ArrayList<Entry>();
         	ArrayList<String> xValsResult = new ArrayList<String>();
         	for(int i=0;i<entries1.size();i++){
@@ -181,8 +188,7 @@ public class AnalyzeFragment extends Fragment implements OnClickListener{
 		}
 		default:
 			break;
-		}
-		
+		}		
 	}
 	
 	public void reflash(){

@@ -55,7 +55,7 @@ public class listAdapter extends SimpleAdapter{
 		String tempString=((TextView)convertView.findViewById(R.id.timeEnd)).getText().toString();
 		String[] time=tempString.split(" ");
 		String stateString=((TextView)convertView.findViewById(R.id.item_state)).getText().toString();
-		if(returnList.parseDay(time[1])<returnList.daysNumber()&&stateString.equals("0")){
+		if(returnList.parseDay(time[1])<=returnList.daysNumber()&&stateString.equals("0")){
 			((ImageView)convertView.findViewById(R.id.circle)).setImageResource(R.drawable.red_circle);
 		}else{
 			((ImageView)convertView.findViewById(R.id.circle)).setImageResource(R.drawable.white_circle);
@@ -79,6 +79,7 @@ public class listAdapter extends SimpleAdapter{
 			if (stateString.equals("1")) {
 				((TextView)convertView.findViewById(R.id.item_name)).setTextColor(this.context.getResources().getColor(DBOpenHelper.gray));
 			}
+			temp=DBOpenHelper.PLATFORM_ICONS.length-1;
 		}
 		if(stateString.equals("1")){			
 			((TextView)convertView.findViewById(R.id.timeBegin)).setTextColor(this.context.getResources().getColor(DBOpenHelper.gray));

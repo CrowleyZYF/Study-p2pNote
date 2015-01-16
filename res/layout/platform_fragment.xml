@@ -298,6 +298,7 @@
                             >
                             
                             <TextView
+                                android:id="@+id/newest_date"
 					            android:layout_width="wrap_content"
 					            android:layout_height="wrap_content"
 					            android:textSize="18sp"
@@ -306,6 +307,7 @@
 					            />
                             
                             <TextView
+                                android:id="@+id/newest_judge01"
 					            android:layout_width="wrap_content"
 					            android:layout_height="wrap_content"
 					            android:textSize="18sp"
@@ -314,7 +316,8 @@
 					            android:text="@string/platform_in"
 					            />
                             
-                            <TextView
+                            <TextView                                
+                                android:id="@+id/newest_judge02"
 					            android:layout_width="wrap_content"
 					            android:layout_height="wrap_content"            
 					            android:textSize="16sp"
@@ -324,7 +327,8 @@
 					            android:text="@string/add"
 					            />
                             
-                            <TextView
+                            <TextView     
+                                android:id="@+id/newest_money"
 					            android:layout_width="wrap_content"
 					            android:layout_height="wrap_content"            
 					            android:textSize="24sp"

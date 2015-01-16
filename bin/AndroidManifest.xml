@@ -45,6 +45,9 @@
         <activity
             android:name="com.crowley.p2pnote.RecordActivity" >
         </activity>
+        <activity
+            android:name="com.crowley.p2pnote.ModifyPasswordActivity" >
+        </activity>
     </application>
 
 </manifest>

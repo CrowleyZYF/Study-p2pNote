@@ -2,37 +2,23 @@ package com.crowley.p2pnote;
 
 import cn.pedant.SweetAlert.SweetAlertDialog;
 
+import com.crowley.p2pnote.functions.Common;
 import com.crowley.p2pnote.ui.SlidingMenu;
 
-import android.support.v7.app.ActionBarActivity;
-import android.support.v7.app.ActionBar;
-import android.support.v4.app.Fragment;
 import android.app.Activity;
 import android.app.FragmentManager;
 import android.app.FragmentTransaction;
 import android.content.Intent;
 import android.content.SharedPreferences;
-import android.content.SharedPreferences.Editor;
-import android.graphics.Color;
 import android.os.Bundle;
 import android.os.CountDownTimer;
-import android.view.LayoutInflater;
-import android.view.Menu;
-import android.view.MenuItem;
 import android.view.View;
 import android.view.View.OnClickListener;
-import android.view.ViewGroup;
 import android.view.Window;
 import android.widget.Button;
-import android.widget.ImageButton;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
-import android.widget.RadioGroup;
-import android.widget.Toast;
-import android.widget.RadioGroup.OnCheckedChangeListener;
 import android.widget.TextView;
-import android.os.Build;
-import android.preference.PreferenceManager;
 
 public class MainActivity extends Activity implements OnClickListener{
 	
@@ -64,8 +50,7 @@ public class MainActivity extends Activity implements OnClickListener{
     private TextView aboutTextView;
     private TextView securityTextView;
     private TextView shareTextView;
-    
-	
+    	
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -173,7 +158,7 @@ public class MainActivity extends Activity implements OnClickListener{
 	        } else  
 	        {   
 	            transaction.show(moreFragment);  
-	        }  
+	        }
 	        break;  
 	    }  
         transaction.commit();  
@@ -309,45 +294,7 @@ public class MainActivity extends Activity implements OnClickListener{
             break;
         }
         case R.id.backup:{
-        	final SweetAlertDialog pDialog = new SweetAlertDialog(this, SweetAlertDialog.PROGRESS_TYPE);
-        	pDialog.setTitleText("正在备份中...");
-        	pDialog.show();
-            pDialog.setCancelable(false);
-            new CountDownTimer(800 * 7, 800) {
-                public void onTick(long millisUntilFinished) {
-                    // you can change the progress bar color by ProgressHelper every 800 millis
-                	iCount++;
-                    switch (iCount){
-                        case 0:
-                            pDialog.getProgressHelper().setBarColor(getResources().getColor(R.color.blue_btn_bg_color));
-                            break;
-                        case 1:
-                            pDialog.getProgressHelper().setBarColor(getResources().getColor(R.color.material_deep_teal_50));
-                            break;
-                        case 2:
-                            pDialog.getProgressHelper().setBarColor(getResources().getColor(R.color.success_stroke_color));
-                            break;
-                        case 3:
-                            pDialog.getProgressHelper().setBarColor(getResources().getColor(R.color.material_deep_teal_20));
-                            break;
-                        case 4:
-                            pDialog.getProgressHelper().setBarColor(getResources().getColor(R.color.material_blue_grey_80));
-                            break;
-                        case 5:
-                            pDialog.getProgressHelper().setBarColor(getResources().getColor(R.color.warning_stroke_color));
-                            break;
-                        case 6:
-                            pDialog.getProgressHelper().setBarColor(getResources().getColor(R.color.success_stroke_color));
-                            break;
-                    }
-                }
-                public void onFinish() {
-                	iCount = -1;
-                    pDialog.setTitleText("备份完成!")
-                            .setConfirmText("确定")
-                            .changeAlertType(SweetAlertDialog.SUCCESS_TYPE);
-                }
-            }.start();
+        	Common.toBeContinuedDialog(this).show();
             break;
         }
         case R.id.check_update:{
@@ -388,21 +335,18 @@ public class MainActivity extends Activity implements OnClickListener{
         	break;
         }
         case R.id.security:{
-        	new SweetAlertDialog(this, SweetAlertDialog.CUSTOM_IMAGE_TYPE)
-	            .setTitleText("功能还在开发中")
-	            .setContentText("敬请期待  ∩_∩")
-                .setConfirmText("确定")
-	            .setCustomImage(R.drawable.logo)
-	            .show();
+        	SharedPreferences preferences=getSharedPreferences("user", MODE_PRIVATE);
+    		boolean isLogined = preferences.getBoolean("isLogined", false);
+    		if(isLogined){
+            	Intent intent=new Intent(this,ModifyPasswordActivity.class);
+                startActivity(intent);
+    		}else{
+    			Common.errorDialog(this, "启用失败", "请先登录账号").show();	
+    		}
         	break;
         }
         case R.id.share:{
-        	new SweetAlertDialog(this, SweetAlertDialog.CUSTOM_IMAGE_TYPE)
-	            .setTitleText("功能还在开发中")
-	            .setContentText("敬请期待  ∩_∩")
-	            .setConfirmText("确定")
-	            .setCustomImage(R.drawable.logo)
-	            .show();
+        	Common.toBeContinuedDialog(this).show();
         	break;
         }
         default:  

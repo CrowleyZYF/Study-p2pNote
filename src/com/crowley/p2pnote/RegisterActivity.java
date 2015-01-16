@@ -9,11 +9,12 @@ import org.json.JSONObject;
 import cn.pedant.SweetAlert.SweetAlertDialog;
 
 import com.crowley.p2pnote.db.HttpUtils;
+import com.crowley.p2pnote.functions.Common;
 import com.crowley.p2pnote.functions.ReturnList;
 
+import android.annotation.SuppressLint;
 import android.app.Activity;
 import android.content.Context;
-import android.content.Intent;
 import android.content.SharedPreferences;
 import android.content.SharedPreferences.Editor;
 import android.os.Bundle;
@@ -25,8 +26,8 @@ import android.view.Window;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ImageButton;
-import android.widget.Toast;
 
+@SuppressLint("HandlerLeak") 
 public class RegisterActivity extends Activity implements OnClickListener {
 	
 	private EditText accountEditText;
@@ -44,6 +45,8 @@ public class RegisterActivity extends Activity implements OnClickListener {
 	
 	private String accountString;
 	private Context nowContext=this;
+	
+	private String urlString="http://128.199.226.246/beerich/index.php/login/register";
 	
 	protected void onCreate(Bundle savedInstanceState) {
 		// TODO Auto-generated method stub
@@ -103,11 +106,7 @@ public class RegisterActivity extends Activity implements OnClickListener {
 					break;					
 				}
 				case ALREADY_EXIST:{
-					new SweetAlertDialog(nowContext, SweetAlertDialog.ERROR_TYPE)
-	                    .setTitleText("注册失败")
-	                    .setContentText("该账号已被注册！")
-	                    .setConfirmText("确定")
-	                    .show();
+					Common.errorDialog(nowContext, "注册失败", "该账号已被注册！").show();
 					break;
 				}
 				default:
@@ -131,24 +130,19 @@ public class RegisterActivity extends Activity implements OnClickListener {
 	}
 	
 	private void register(String account,String password,String password_repeat){
-		if(!returnList.isEmail(account)){
-			new SweetAlertDialog(nowContext, SweetAlertDialog.ERROR_TYPE)
-	            .setTitleText("注册失败")
-	            .setContentText("邮箱格式有误！")
-	            .setConfirmText("确定")
-	            .show();
+		if(!Common.isOpenNetwork(this)){
+			Common.errorDialog(nowContext, "注册失败", "网络未链接").show();
+		}else if(!returnList.isEmail(account)){
+			Common.errorDialog(nowContext, "注册失败", "邮箱格式有误！").show();
 		}else if(!password.equals(password_repeat)){
-			new SweetAlertDialog(nowContext, SweetAlertDialog.ERROR_TYPE)
-	            .setTitleText("注册失败")
-	            .setContentText("两次密码不一致！")
-	            .setConfirmText("确定")
-	            .show();
+			Common.errorDialog(nowContext, "注册失败", "两次密码不一致！").show();
 		}else{
 			final Map<String, String> params = new HashMap<String, String>();
 			params.put("user_name", account);
 			params.put("password", password);
 			new Thread(){
-				public void run(){String teString=HttpUtils.submitPostData("http://128.199.226.246/beerich/index.php/login/register", params, "utf-8");
+				public void run(){
+					String teString=HttpUtils.submitPostData(urlString , params, "utf-8");
 					try {
 						JSONObject object=new JSONObject(teString);
 						error_code = (Integer) object.get("error_code");

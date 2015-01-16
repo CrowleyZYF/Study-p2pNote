@@ -132,12 +132,17 @@
     <string name="left_menu_06">分享给好友</string>
     
     <string name="login_title">登录网贷篮子</string>
-    <string name="register_title">注册网贷篮子</string>    
+    <string name="register_title">注册网贷篮子</string> 
+    <string name="modify_title">修改密码</string>   
     <string name="login_button">登 录</string>    
     <string name="register_button">注 册</string>    
+    <string name="modify_button">修改密码</string>    
     <string name="account_hint">输入您的邮箱账号</string>        
     <string name="password_hint">输入您的密码</string>          
-    <string name="register_hint">重复输入密码</string> 
+    <string name="register_hint">重复输入密码</string>             
+    <string name="password_modify_old">请输入旧密码</string>          
+    <string name="password_modify_new">请输入新密码</string>           
+    <string name="password_modify_new2">再次输入新密码</string> 
                  
     <string name="user_title">账号信息</string>                 
     <string name="user_item_01">头像:</string>                 

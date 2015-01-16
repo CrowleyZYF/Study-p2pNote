@@ -23,6 +23,7 @@ import android.util.Log;
 
 import com.crowley.p2pnote.R;
 import com.crowley.p2pnote.db.DBOpenHelper;
+import com.crowley.p2pnote.db.NewsModel;
 import com.crowley.p2pnote.db.RecordModel;
 import com.github.mikephil.charting.data.Entry;
 
@@ -40,6 +41,7 @@ public class ReturnList {
 	private DBOpenHelper helper;
 	private SQLiteDatabase db;
 	private Cursor allRecords;
+	private Cursor allNews;
 	
 	private String loginString;
 	
@@ -50,6 +52,7 @@ public class ReturnList {
 		this.helper = new DBOpenHelper(context, "record.db");
 		this.db = this.helper.getWritableDatabase();
 		this.allRecords = this.helper.returALLRecords(this.db);
+		this.allNews = this.helper.returALLNews(this.db);
 		
 		this.cal=Calendar.getInstance();
 		this.year = this.cal.get(Calendar.YEAR);
@@ -59,6 +62,25 @@ public class ReturnList {
 		
 		updateLogin();
 		logInfo();
+	}
+	
+	public List<Map<String, Object>> getAllNews(){
+		this.allNews = this.helper.returALLNews(this.db);
+		List<Map<String, Object>> dataList = new ArrayList<Map<String,Object>>();
+		if(allNews.getCount()!=0){
+			while (allNews.moveToNext()) {
+				NewsModel tempModel=new NewsModel(allNews);
+				Map<String, Object> map=new HashMap<String, Object>();  
+				map.put("news_pic", R.drawable.logo);  
+				map.put("news_title", tempModel.getTitle());  
+				map.put("news_intro", tempModel.getContent().substring(0, 30));
+				map.put("news_time", tempModel.getAddTime());
+				dataList.add(map);				
+			}
+			return dataList;
+		}
+		return null;
+		
 	}
 	
 	public int daysNumber(){
@@ -202,7 +224,12 @@ public class ReturnList {
 					}
 				}
 			}
-			return Float.valueOf(dealFloat(total/amount*100)).toString();
+			if(amount==0){
+				return Float.valueOf(dealFloat(0.0f)).toString();
+			}else{
+				return Float.valueOf(dealFloat(total/amount*100)).toString();
+			}
+			
 		}else{
 			return Float.valueOf(dealFloat(0.0f)).toString();
 		}
@@ -230,7 +257,11 @@ public class ReturnList {
 					total2+=tempRecordModel.getMoney()*tempRecordModel.getEarningMax();
 				}
 			}
-			return Float.valueOf(dealFloat(total2/amount*100-total/amount*100)).toString()+" %";
+			if(amount==0){
+				return Float.valueOf(dealFloat(0.0f)).toString()+" %";
+			}else{
+				return Float.valueOf(dealFloat(total2/amount*100-total/amount*100)).toString()+" %";
+			}			
 		}else{
 			return Float.valueOf(dealFloat(0.0f)).toString()+" %";
 		}
@@ -245,10 +276,84 @@ public class ReturnList {
 				RecordModel tempRecordModel=new RecordModel(tempCursor);
 				amount+=tempRecordModel.getMoney();	
 			}
-			return Float.valueOf(amount).toString();
+			return Float.valueOf(dealFloat(amount)).toString();
 		}else{
 			return Float.valueOf(0.0f).toString();
 		}	
+	}
+	
+	public List<Map<String, Object>> getRecordList(String platform){
+		List<Map<String, Object>> dataList=new ArrayList<Map<String,Object>>();
+		Cursor tempCursor=this.db.rawQuery("select * from record WHERE state=1 AND isDeleted=0 AND userName='"+loginString+"' AND platform='"+platform+"'", null);
+		if(tempCursor.getCount()!=0){
+			while(tempCursor.moveToNext()){
+				RecordModel tempRecordModel=new RecordModel(tempCursor);
+				Map<String,Object> map=new HashMap<String, Object>();
+				map.put("record_type", "收益");  
+				map.put("record_time", tempRecordModel.getTimeEnd());  
+				map.put("record_money", dealFloat(tempRecordModel.getRestBegin()));
+				dataList.add(map);
+				if(tempRecordModel.getRestEnd()!=0){
+					Map<String,Object> map2=new HashMap<String, Object>();
+					map2.put("record_type", "取出");  
+					map2.put("record_time", tempRecordModel.getTimeEnd());
+					map2.put("record_money", dealFloat(tempRecordModel.getRestEnd()));
+					dataList.add(map2);
+				}
+			}
+			return dataList;			
+		}else{
+			Map<String,Object> map=new HashMap<String, Object>();
+			map.put("record_type", "收益");  
+			map.put("record_time", "暂无数据");
+			map.put("record_money", "0");
+			dataList.add(map);
+			return dataList;
+		}		
+	}
+	
+	public String getNewestDate(String platform){
+		updateLogin();
+		Cursor tempCursor=this.db.rawQuery("select * from record WHERE state=1 AND isDeleted=0 AND userName='"+loginString+"' AND platform='"+platform+"' ORDER BY timeStampEnd DESC", null);
+		if(tempCursor.getCount()!=0){
+			tempCursor.moveToFirst();
+			RecordModel tempRecordModel=new RecordModel(tempCursor);
+			return tempRecordModel.getTimeEnd();
+		}else{
+			return "暂无数据";
+		}		
+	}
+	
+	public boolean getNewestBool(String platform){
+		updateLogin();
+		Cursor tempCursor=this.db.rawQuery("select * from record WHERE state=1 AND isDeleted=0 AND userName='"+loginString+"' AND platform='"+platform+"' ORDER BY timeStampEnd DESC", null);
+		if(tempCursor.getCount()!=0){
+			tempCursor.moveToFirst();
+			RecordModel tempRecordModel=new RecordModel(tempCursor);
+			if(tempRecordModel.getEarningMin()==0&&tempRecordModel.getEarningMax()==0){
+				return false;
+			}else{
+				return true;
+			}			
+		}else{
+			return true;
+		}
+	}
+	
+	public String getNewestMoney(String platform,boolean in){
+		updateLogin();
+		Cursor tempCursor=this.db.rawQuery("select * from record WHERE state=1 AND isDeleted=0 AND userName='"+loginString+"' AND platform='"+platform+"' ORDER BY timeStampEnd DESC", null);
+		if(tempCursor.getCount()!=0){
+			tempCursor.moveToFirst();
+			RecordModel tempRecordModel=new RecordModel(tempCursor);
+			if(in){
+				return dealFloat(tempRecordModel.getRestBegin())+"";
+			}else{
+				return dealFloat(tempRecordModel.getRestEnd())+"";
+			}
+		}else{
+			return "暂无数据";
+		}		
 	}
 	
 	public String getPlatformString(String id){
@@ -656,9 +761,9 @@ public class ReturnList {
 				boolean judge=false;
 				switch (type) {
 					case 0:{
-						int nowDays=year*365+month*30+day;
-						if(parseDay(record.getTimeEnd())<=nowDays){
-							judge=true;												
+						//int nowDays=year*365+month*30+day;
+						if(parseDay(record.getTimeEnd())<=this.days){
+							judge=true;	
 						}
 						break;
 					}
@@ -685,7 +790,7 @@ public class ReturnList {
 						}						
 					}
 					if (!findIcon) {
-						icon=DBOpenHelper.PLATFORM_ICONS[DBOpenHelper.PLATFORM_NAMES.length-1];
+						icon=DBOpenHelper.PLATFORM_ICONS[DBOpenHelper.PLATFORM_ICONS.length-1];
 						findIcon=true;
 					}
 					map.put("item_icon", icon);
@@ -747,17 +852,20 @@ public class ReturnList {
 			while (allRecords.moveToNext()) {
 				RecordModel record=new RecordModel(allRecords);
 				//如果记录已经被删除 跳出本次循环
-				if(record.getIsDeleted()==1||!record.getUserName().equals(loginString)||record.getState()==1){
+				if(record.getIsDeleted()==1||!record.getUserName().equals(loginString)){
 					continue;
 				}
 				switch (type) {
 					case 0:{
-						if(!xVals.contains(record.getPlatform())){
+						if(!xVals.contains(record.getPlatform())&&record.getState()==0){
 							xVals.add(record.getPlatform());
 						}
 						break;
 					}
 					case 4:{
+						if(!xVals.contains(record.getPlatform())&&record.getState()==1){
+							xVals.add(record.getPlatform());
+						}
 						break;
 					}
 					default:
@@ -786,11 +894,14 @@ public class ReturnList {
 			while (allRecords.moveToNext()) {
 				RecordModel record=new RecordModel(allRecords);
 				//如果记录已经被删除 跳出本次循环
-				if(record.getIsDeleted()==1||!record.getUserName().equals(loginString)||record.getState()==1){
+				if(record.getIsDeleted()==1||!record.getUserName().equals(loginString)){
 					continue;
 				}
 				switch (type) {
 				case 0:{
+					if(record.getState()==1){
+						continue;
+					}
 					for(int i=0;i<xVals.size();i++){
 						String platformString=record.getPlatform();
 						if(platformString.equals(xVals.get(i))){
@@ -801,6 +912,9 @@ public class ReturnList {
 					break;
 				}
 				case 1:{
+					if(record.getState()==1){
+						continue;
+					}
 					Float profit=record.getEarningMax();
 					boolean added=false;
 					for(int i=0;i<analyze01.length&&added==false;i++){
@@ -817,6 +931,9 @@ public class ReturnList {
 					break;						
 				}
 				case 2:{
+					if(record.getState()==1){
+						continue;
+					}
 					int duration=parseDay(record.getTimeEnd())-parseDay(record.getTimeBegin());
 					boolean added=false;
 					for(int i=0;i<analyze02.length&&added==false;i++){
@@ -833,6 +950,9 @@ public class ReturnList {
 					break;
 				}
 				case 3:{
+					if(record.getState()==1){
+						continue;
+					}
 					int left=parseDay(record.getTimeEnd())-days;
 					boolean added=false;
 					for(int i=0;i<analyze03.length&&added==false;i++){
@@ -848,15 +968,34 @@ public class ReturnList {
 					}
 					break;
 				}
+				case 4:{
+					for(int i=0;i<xVals.size();i++){
+						String platformString=xVals.get(i);
+						counts.set(i, counts.get(i)+getRest(platformString));
+						amount+=getRest(platformString);
+					}
+				}
 				default:
 					break;
 				}									
 			}
 		}
 		for(int i = 0; i < xVals.size(); i++) {
-			float result=100f*counts.get(i)/amount;
+			float result;
+			if (amount==0) {
+				result=0.0f;
+			}else{
+				result=100f*counts.get(i)/amount;
+			}			
             entries1.add(new Entry(result, i));
         }
 		return entries1;
+	}
+
+	public void saveNews(NewsModel temp) {
+		// TODO Auto-generated method stub
+		 String sqlString="insert into news(title,add_time,content) values('"+temp.getTitle()+"','"+temp.getAddTime()+"','"+temp.getContent()+"')";
+		 Log.i("m_info",sqlString);
+		 this.db.execSQL(sqlString);		
 	}
 }
