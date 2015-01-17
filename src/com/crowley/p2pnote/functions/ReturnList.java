@@ -288,11 +288,13 @@ public class ReturnList {
 		if(tempCursor.getCount()!=0){
 			while(tempCursor.moveToNext()){
 				RecordModel tempRecordModel=new RecordModel(tempCursor);
-				Map<String,Object> map=new HashMap<String, Object>();
-				map.put("record_type", "收益");  
-				map.put("record_time", tempRecordModel.getTimeEnd());  
-				map.put("record_money", dealFloat(tempRecordModel.getRestBegin()));
-				dataList.add(map);
+				if (tempRecordModel.getRestBegin()!=0) {
+					Map<String,Object> map=new HashMap<String, Object>();
+					map.put("record_type", "收益");  
+					map.put("record_time", tempRecordModel.getTimeEnd());  
+					map.put("record_money", dealFloat(tempRecordModel.getRestBegin()));
+					dataList.add(map);					
+				}				
 				if(tempRecordModel.getRestEnd()!=0){
 					Map<String,Object> map2=new HashMap<String, Object>();
 					map2.put("record_type", "取出");  
@@ -638,7 +640,7 @@ public class ReturnList {
 				RecordModel record=new RecordModel(allRecords);
 				//如果记录已经被删除  或者不属于该账户 跳出本次循环
 				int tempInt=record.getID();
-				if(record.getIsDeleted()==1||!record.getUserName().equals(loginString)){
+				if(record.getIsDeleted()==1||!record.getUserName().equals(loginString)||(record.getEarningMin()==0&&record.getEarningMax()==0)){
 					continue;
 				}
 				map.put("item_id", record.getID());
@@ -755,7 +757,7 @@ public class ReturnList {
 				Map<String, Object> map=new HashMap<String, Object>();
 				RecordModel record=new RecordModel(allRecords);
 				//如果记录已经被删除 不属于该用户 已经处理过 跳出本次循环
-				if(record.getIsDeleted()==1||!record.getUserName().equals(loginString)||record.getState()==1){
+				if(record.getIsDeleted()==1||!record.getUserName().equals(loginString)||record.getState()==1||(record.getEarningMin()==0&&record.getEarningMax()==0)){
 					continue;
 				}
 				boolean judge=false;
@@ -817,7 +819,7 @@ public class ReturnList {
 			while (allRecords.moveToNext()) {
 				RecordModel record=new RecordModel(allRecords);
 				//如果记录已经被删除 跳出本次循环
-				if(record.getIsDeleted()==1||!record.getUserName().equals(loginString)||record.getState()==1){
+				if(record.getIsDeleted()==1||!record.getUserName().equals(loginString)||record.getState()==1||(record.getEarningMin()==0&&record.getEarningMax()==0)){
 					continue;
 				}
 				switch (type) {

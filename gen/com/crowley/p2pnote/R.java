@@ -1603,9 +1603,10 @@ containing a value of this type.
         public static final int select_type_item=0x7f03002e;
         public static final int support_simple_spinner_dropdown_item=0x7f03002f;
         public static final int tab_container=0x7f030030;
-        public static final int user=0x7f030031;
-        public static final int water_fragment=0x7f030032;
-        public static final int z_tab_container2=0x7f030033;
+        public static final int takeout_dialog=0x7f030031;
+        public static final int user=0x7f030032;
+        public static final int water_fragment=0x7f030033;
+        public static final int z_tab_container2=0x7f030034;
     }
     public static final class menu {
         public static final int main=0x7f0c0000;
@@ -1791,6 +1792,7 @@ containing a value of this type.
         public static final int tab_news=0x7f0a0030;
         public static final int tab_platform=0x7f0a002f;
         public static final int tab_water=0x7f0a002d;
+        public static final int takeout_title=0x7f0a00a3;
         public static final int user_banner=0x7f0a008e;
         public static final int user_item_01=0x7f0a008a;
         public static final int user_item_02=0x7f0a008b;
@@ -1801,7 +1803,7 @@ containing a value of this type.
         public static final int water_list_sort_02=0x7f0a0020;
         public static final int water_list_sort_03=0x7f0a0021;
         public static final int water_list_sort_04=0x7f0a0022;
-        public static final int without_data=0x7f0a00a3;
+        public static final int without_data=0x7f0a00a4;
     }
     public static final class style {
         /** 

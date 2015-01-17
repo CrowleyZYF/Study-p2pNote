@@ -70,9 +70,9 @@ public class RecordActivity extends Activity implements OnClickListener {
 			dataList.add(map);
 		}else{
 			List<Map<String, Object>> tempList=returnList.getRecordList(platformString);
-			for(int i=0;i<tempList.size();i++){
+			for(int i=tempList.size()-1;i>=0;i--){
 				dataList.add(tempList.get(i));
-			}			
+			}
 		}
     }
 	

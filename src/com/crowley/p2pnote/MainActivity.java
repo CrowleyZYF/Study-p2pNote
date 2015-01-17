@@ -50,6 +50,8 @@ public class MainActivity extends Activity implements OnClickListener{
     private TextView aboutTextView;
     private TextView securityTextView;
     private TextView shareTextView;
+    
+    private int indexNumber=0;
     	
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -58,7 +60,7 @@ public class MainActivity extends Activity implements OnClickListener{
         setContentView(R.layout.activity_main);        
         initViews();  
         fragmentManager = getFragmentManager();  
-        setTabSelection(0);
+        setTabSelection(indexNumber);
         
     }
     
@@ -73,6 +75,26 @@ public class MainActivity extends Activity implements OnClickListener{
 			login.setText("µã»÷µÇÂ¼");
 		}
     	super.onStart();
+    	switch (indexNumber) {
+		case 0:{
+			indexFragment.reflash();
+			break;
+		}
+		case 1:{
+			waterFragment.reflash();
+			break;
+		}
+		case 2:{
+			analyzeFragment.reflash();
+			break;
+		}
+		case 3:{
+			platformFragment.reflash();
+			break;
+		}
+		default:
+			break;
+		}
     }
     
     public void toggleMenu(View view){
@@ -255,22 +277,27 @@ public class MainActivity extends Activity implements OnClickListener{
 		switch (v.getId())  
         {  
         case R.id.tab_index:{
+        	indexNumber=0;
             setTabSelection(0);  
             break;       	
         }
         case R.id.tab_water:{
+        	indexNumber=1;
             setTabSelection(1);  
             break;        	
         } 
         case R.id.tab_analyze:{
+        	indexNumber=2;
         	setTabSelection(2);  
             break;        	
         }             
         case R.id.tab_platform:{
+        	indexNumber=3;
         	setTabSelection(3);  
             break;
         }             
         case R.id.tab_more:{
+        	indexNumber=4;
         	setTabSelection(4);  
             break;        	
         }                         
