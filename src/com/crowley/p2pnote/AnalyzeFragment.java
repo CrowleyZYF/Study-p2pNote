@@ -3,7 +3,7 @@ package com.crowley.p2pnote;
 import java.util.ArrayList;
 
 import com.crowley.p2pnote.db.DBOpenHelper;
-import com.crowley.p2pnote.functions.ReturnList;
+import com.crowley.p2pnote.functions.Analyze;
 import com.github.mikephil.charting.charts.PieChart;
 import com.github.mikephil.charting.data.Entry;
 import com.github.mikephil.charting.data.PieData;
@@ -14,7 +14,6 @@ import com.github.mikephil.charting.utils.Legend.LegendForm;
 import com.github.mikephil.charting.utils.Legend.LegendPosition;
 
 import android.app.Fragment;
-import android.graphics.Typeface;
 import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -24,12 +23,12 @@ import android.widget.ImageView;
 import android.widget.TextView;
 
 public class AnalyzeFragment extends Fragment implements OnClickListener{
-	
-	private PieChart mChart;
-	private ReturnList returnList;
-	
-	private TextView analyze_name;
+
 	private int status;
+	private Analyze analyze;
+	
+	private PieChart mChart;	
+	private TextView analyze_name;
 	private ImageView prev;
 	private ImageView next;
 	
@@ -39,38 +38,54 @@ public class AnalyzeFragment extends Fragment implements OnClickListener{
 		// TODO Auto-generated method stub
 		View v = inflater.inflate(R.layout.analyze_fragment, container, false);
 		
-		returnList=new ReturnList(this.getActivity());
+		initView(v);		
+		initData();        
+        initEvent();
 		
+		return v;
+	}
+
+	public void initEvent() {
+		prev.setOnClickListener(this);
+        next.setOnClickListener(this);
+	}
+
+	public void initData() {
+		status=0;
+		analyze=new Analyze(this.getActivity());
+		
+		mChart.setDescription("");
+        mChart.setUsePercentValues(true);        
+        mChart.setCenterTextSize(22f);
+        mChart.setHoleRadius(45f); 
+        mChart.setTransparentCircleRadius(50f);       
+        
+        //设置文字颜色
+      	mChart.setValueTextColor(getResources().getColor(R.color.light_black));
+        //设置圆圈内的标题文字
+        mChart.setCenterText(this.getActivity().getResources().getString(DBOpenHelper.ANALYZE_TITLE_SMALL[status]));
+        //获取数据
+        mChart.setData(generatePieData(status));  
+        
+        Legend l = mChart.getLegend();
+        l.setPosition(LegendPosition.BELOW_CHART_CENTER);
+        l.setForm(LegendForm.SQUARE);
+	}
+
+	public void initView(View v) {		
 		mChart = (PieChart) v.findViewById(R.id.pieChart1);
 		analyze_name=(TextView) v.findViewById(R.id.analyze_name);
 		prev=(ImageView) v.findViewById(R.id.prev);
 		next=(ImageView) v.findViewById(R.id.next);
-		
-		status=0;
-		
-        mChart.setDescription("");
-        mChart.setUsePercentValues(true);
-        mChart.setCenterText(this.getActivity().getResources().getString(DBOpenHelper.ANALYZE_TITLE_SMALL[status]));
-        mChart.setCenterTextSize(22f);
-        mChart.setHoleRadius(45f); 
-        mChart.setTransparentCircleRadius(50f);        
-        mChart.setData(generatePieData(status));
-        Legend l = mChart.getLegend();
-        l.setPosition(LegendPosition.BELOW_CHART_CENTER);
-        l.setForm(LegendForm.SQUARE);
-        
-        prev.setOnClickListener(this);
-        next.setOnClickListener(this);
-		
-		return v;
 	}
 	
 	protected PieData generatePieData(int type) {
 		ArrayList<String> xVals=null;
 		ArrayList<Entry> entries1 =null;
 		
+		//饼状图分类 如果是0和4 需要去数据库查询 其他的有固定分类
 		if (type==0||type==4) {
-			xVals = returnList.analyzexVals(type);
+			xVals = analyze.analyzexVals(type);
 		}else {
 			switch (type) {
 			case 1:{
@@ -114,13 +129,12 @@ public class AnalyzeFragment extends Fragment implements OnClickListener{
 			default:
 				break;
 			}
-		}
-        
+		}        
         
         int count = xVals.size();
         PieData d;
         PieDataSet ds1=null;
-        entries1 = returnList.analyzeEntries(type,xVals);
+        entries1 = analyze.analyzeEntries(type,xVals);
         boolean checkEmpty = true;
         for(int i=0;i<entries1.size();i++){
         	if(entries1.get(i).getVal()!=0){
@@ -159,8 +173,7 @@ public class AnalyzeFragment extends Fragment implements OnClickListener{
     }
 
 	@Override
-	public void onClick(View v) {
-		
+	public void onClick(View v) {		
 		switch (v.getId()) {
 		case R.id.prev:{
 			if(status==0){

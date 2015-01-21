@@ -199,6 +199,8 @@ public class PlatformFragment extends Fragment implements OnClickListener{
 			float take_out=Float.valueOf(getOutText.getText().toString());
 			returnList.dealRecord(idString, 0.0f, take_out);
 			dialog.dismiss();
+			getOutText.setText("");
+			reflash();
 			break;
 		}
 		default:

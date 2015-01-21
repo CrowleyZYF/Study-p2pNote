@@ -284,7 +284,7 @@ public class ReturnList {
 	
 	public List<Map<String, Object>> getRecordList(String platform){
 		List<Map<String, Object>> dataList=new ArrayList<Map<String,Object>>();
-		Cursor tempCursor=this.db.rawQuery("select * from record WHERE state=1 AND isDeleted=0 AND userName='"+loginString+"' AND platform='"+platform+"'", null);
+		Cursor tempCursor=this.db.rawQuery("select * from record WHERE state=1 AND isDeleted=0 AND userName='"+loginString+"' AND platform='"+platform+"' ORDER BY timeStampEnd", null);
 		if(tempCursor.getCount()!=0){
 			while(tempCursor.moveToNext()){
 				RecordModel tempRecordModel=new RecordModel(tempCursor);
@@ -371,6 +371,13 @@ public class ReturnList {
 		int month=Integer.parseInt(time[1]);
 		int day=Integer.parseInt(time[2]);	
 		return year*365+month*this.months[month]+day;		
+	}
+	
+	public int parseMonth(String date){
+		String[] time=date.split("-");
+		int year=Integer.parseInt(time[0]);
+		int month=Integer.parseInt(time[1]);
+		return year*12+month+1;		
 	}
 	
 	public void deleteItem(String id){
@@ -885,8 +892,8 @@ public class ReturnList {
 		ArrayList<Entry> entries1 = new ArrayList<Entry>();
 		ArrayList<Float> counts = new ArrayList<Float>();
 		Float[] analyze01={0.06f,0.08f,0.1f,0.12f,0.15f,0.2f,0.25f};
-		Integer[] analyze02={30,90,182,272,365,547,730};
-		Integer[] analyze03={7,30,90,182,272,365};
+		Integer[] analyze02={1,3,6,9,12,18,24};
+		Integer[] analyze03={7,1,3,6,9,12};
 		float amount=0.0f;
 		for(int i=0;i<xVals.size();i++){
 			counts.add(0.0f);
@@ -936,7 +943,7 @@ public class ReturnList {
 					if(record.getState()==1){
 						continue;
 					}
-					int duration=parseDay(record.getTimeEnd())-parseDay(record.getTimeBegin());
+					int duration=parseMonth(record.getTimeEnd())-parseMonth(record.getTimeBegin());
 					boolean added=false;
 					for(int i=0;i<analyze02.length&&added==false;i++){
 						if(duration<analyze02[i]){
@@ -955,14 +962,24 @@ public class ReturnList {
 					if(record.getState()==1){
 						continue;
 					}
-					int left=parseDay(record.getTimeEnd())-days;
+					int leftMonth=parseMonth(record.getTimeEnd())-(this.year*12+this.month);
+					int leftDay=parseDay(record.getTimeEnd())-days;
 					boolean added=false;
 					for(int i=0;i<analyze03.length&&added==false;i++){
-						if(left<analyze03[i]){
-							added=true;
-							counts.set(i, counts.get(i)+1.0f);
-							amount+=1.0f;
+						if(i==0){
+							if(leftDay<analyze03[i]){
+								added=true;
+								counts.set(i, counts.get(i)+1.0f);
+								amount+=1.0f;
+							}
+						}else{
+							if(leftMonth<analyze03[i]){
+								added=true;
+								counts.set(i, counts.get(i)+1.0f);
+								amount+=1.0f;
+							}
 						}
+						
 					}
 					if (added==false) {
 						counts.set(xVals.size()-1, counts.get(xVals.size()-1)+1.0f);

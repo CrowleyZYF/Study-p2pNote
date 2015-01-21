@@ -29,17 +29,15 @@
             android:textColor="#ffffff"
 			android:layout_centerInParent="true"/>
         
-        <Button
+        <ImageButton
             android:id="@+id/new_item"
             android:background="@color/banner_bg_light"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_alignParentRight="true"
-        	android:layout_centerVertical="true" 
-        	android:layout_marginRight="15dp"
-            android:text="新的投资"
-            android:textColor="@color/white"
-            android:textSize="15sp"/>                
+        	android:layout_centerVertical="true"
+        	android:src="@drawable/add" 
+        	android:layout_marginRight="15dp"/>                
     </RelativeLayout>
     
     <LinearLayout 
@@ -89,8 +87,8 @@
 	            
 	        </LinearLayout>
 	        
-	        <LinearLayout 
-	            android:id="@+id/tab_water"
+            <LinearLayout 
+	            android:id="@+id/tab_platform"
 	            android:orientation="vertical"
 	            android:layout_width="0dp"
 	            android:layout_height="match_parent"
@@ -98,18 +96,18 @@
 	            >
 	            
 	            <ImageView 
-		            android:id="@+id/tab_water_icon"
+		            android:id="@+id/tab_platform_icon"
 		            android:layout_width="match_parent"
 		            android:layout_height="40dp"
 		            android:gravity="center_horizontal"
-		            android:src="@drawable/water"/>
+		            android:src="@drawable/platform"/>
 	            
 	            <TextView 
-	                android:id="@+id/tab_water_text"
+	                android:id="@+id/tab_platform_text"
 		            android:layout_width="match_parent"
 		            android:layout_height="20dp"
 		            android:gravity="center_horizontal"
-		            android:text="@string/tab_water"
+		            android:text="@string/tab_platform"
 		            android:textSize="12sp"/>            
 	            
 	        </LinearLayout>
@@ -137,10 +135,10 @@
 		            android:text="@string/tab_analyze"
 		            android:textSize="12sp"/>            
 	            
-	        </LinearLayout>
+	        </LinearLayout>	        
 	        
 	        <LinearLayout 
-	            android:id="@+id/tab_platform"
+	            android:id="@+id/tab_water"
 	            android:orientation="vertical"
 	            android:layout_width="0dp"
 	            android:layout_height="match_parent"
@@ -148,21 +146,23 @@
 	            >
 	            
 	            <ImageView 
-		            android:id="@+id/tab_platform_icon"
+		            android:id="@+id/tab_water_icon"
 		            android:layout_width="match_parent"
 		            android:layout_height="40dp"
 		            android:gravity="center_horizontal"
-		            android:src="@drawable/platform"/>
+		            android:src="@drawable/water"/>
 	            
 	            <TextView 
-	                android:id="@+id/tab_platform_text"
+	                android:id="@+id/tab_water_text"
 		            android:layout_width="match_parent"
 		            android:layout_height="20dp"
 		            android:gravity="center_horizontal"
-		            android:text="@string/tab_platform"
+		            android:text="@string/tab_water"
 		            android:textSize="12sp"/>            
 	            
 	        </LinearLayout>
+	        
+	        <!-- 
 	        
 	        <LinearLayout 
 	            android:id="@+id/tab_more"
@@ -187,7 +187,7 @@
 		            android:text="@string/tab_news"
 		            android:textSize="12sp"/>            
 	            
-	        </LinearLayout>            
+	        </LinearLayout>        -->     
             
         </LinearLayout>        
         

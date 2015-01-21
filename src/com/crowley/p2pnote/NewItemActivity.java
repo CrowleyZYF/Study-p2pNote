@@ -146,6 +146,7 @@ public class NewItemActivity extends Activity implements OnItemSelectedListener,
     		((TextView) new_item_cancel.findViewById(R.id.new_item_cancel)).setText("取消修改");
     		//title
     		titleTextView.setText("修改记录");
+    		rateSpinner.setSelection(1);
     	}else if(modelString.equals("2")){
     		boolean isOther=true;
     		for(int i=0;i<DBOpenHelper.PLATFORM_NAMES.length;i++){
@@ -161,6 +162,9 @@ public class NewItemActivity extends Activity implements OnItemSelectedListener,
 				custom_platform.setText(platformString);
 				custom_type.setText("");
     		}
+    		rateSpinner.setSelection(1);
+    	}else{
+    		rateSpinner.setSelection(1);
     	}
 	}
 
@@ -473,10 +477,19 @@ public class NewItemActivity extends Activity implements OnItemSelectedListener,
 			//判断时间
 			String begin_dayString=begin_time.getText().toString();
 			String end_dayString=end_time.getText().toString();
+			
+			String[] time1=begin_dayString.split("-");
+			String[] time2=end_dayString.split("-");
+			int day1=Integer.parseInt(time1[2]);
+			int day2=Integer.parseInt(time2[2]);			
+			
 			if(returnList.parseDay(begin_dayString)>returnList.parseDay(end_dayString)){
 				erroredBoolean=true;
 				errorString="结束时间应晚于计息时间";	
-			}			
+			}else if(day1!=day2){
+				erroredBoolean=true;
+				errorString="必须以整月形式购买";	
+			}
 			//创建时间戳
 			Long tsLong = System.currentTimeMillis();
 			String ts = tsLong.toString();			

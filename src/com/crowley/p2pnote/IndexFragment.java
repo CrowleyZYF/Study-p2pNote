@@ -2,26 +2,22 @@ package com.crowley.p2pnote;
 
 import java.text.ParseException;
 import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
 import cn.pedant.SweetAlert.SweetAlertDialog;
 
-import com.crowley.p2pnote.db.DBOpenHelper;
-import com.crowley.p2pnote.functions.ReturnList;
+import com.crowley.p2pnote.functions.Common;
+import com.crowley.p2pnote.functions.Index;
+import com.crowley.p2pnote.functions.Platform;
 import com.crowley.p2pnote.ui.listAdapter;
 
-import android.R.integer;
 import android.app.Dialog;
 import android.app.Fragment;
-import android.content.ContentValues;
+import android.content.Context;
 import android.content.Intent;
-import android.database.Cursor;
-import android.database.sqlite.SQLiteDatabase;
 import android.os.Bundle;
 import android.text.TextUtils;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.View.OnClickListener;
@@ -33,13 +29,12 @@ import android.widget.Button;
 import android.widget.EditText;
 import android.widget.LinearLayout;
 import android.widget.ListView;
-import android.widget.SimpleAdapter;
 import android.widget.TextView;
 
 public class IndexFragment extends Fragment implements OnClickListener,OnItemLongClickListener,OnItemClickListener{	
 
-	private View view;
-	private ReturnList returnList;
+	private Index index;
+	private Platform platform;
 	private ListView listView;
 	private listAdapter list_adapter;
 	private List<Map<String, Object>> dataList;
@@ -72,6 +67,7 @@ public class IndexFragment extends Fragment implements OnClickListener,OnItemLon
 	private EditText getOutText;
 	
 	private float total=0.0f;
+	private Context nowContext;
 	
 	
 	
@@ -80,22 +76,49 @@ public class IndexFragment extends Fragment implements OnClickListener,OnItemLon
 			Bundle savedInstanceState) {
 		// TODO Auto-generated method stub
 		View view = inflater.inflate(R.layout.index_fragment, container, false);
-		//TextView text = (TextView) view.findViewById(R.id.test);
-		
-		returnList = new ReturnList(this.getActivity());
+        
+        initView(view);    	
+        initData(view);
+        initEvent();
+        
+        return view;
+	}
+
+	public void initEvent() {
+		sureButton.setOnClickListener(this);
+        cancelButton.setOnClickListener(this);		
+        tab_button01.setOnClickListener(this);
+        tab_button02.setOnClickListener(this);
+        listView.setOnItemClickListener(this);
+        listView.setOnItemLongClickListener(this);
+	}
+
+	public void initData(View view) {
+		index = new Index(this.getActivity());
+		platform = new Platform(this.getActivity());
         dataList=new ArrayList<Map<String,Object>>();
         listView=(ListView) view.findViewById(R.id.list_view);
-        getData(0);
         list_adapter=new listAdapter(this.getActivity(), dataList, R.layout.index_listview_item, new String[]{"item_id","timeBegin","timeEnd","item_icon","item_name","item_money","item_profit"}, new int[]{R.id.item_id,R.id.timeBegin,R.id.timeEnd,R.id.item_icon,R.id.item_name,R.id.item_money,R.id.item_profit});
         listView.setAdapter(list_adapter);
-        
-        
-        tab_button01 = (LinearLayout) view.findViewById(R.id.tab_button01);
+        getData(0);
+        timeTextView.setText(index.getTime());
+        index_info_basic01_number.setText(index.getBaseInfo01Number01());
+    	index_info_basic01_float.setText(index.getBaseInfo01Number02());
+    	index_info_basic02_number.setText(index.getBaseInfo02Number01());
+    	index_info_basic02_float.setText(index.getBaseInfo02Number02());
+    	index_info_basic03_number.setText(index.getBaseInfo03());
+    	
+        tab_button01_number.setText(String.valueOf(index.indexCount(0)));
+        tab_button02_number.setText(String.valueOf(index.indexCount(1)));
+	}
+
+	public void initView(View view) {
+		nowContext=this.getActivity();
+		
+		tab_button01 = (LinearLayout) view.findViewById(R.id.tab_button01);
         tab_button02 = (LinearLayout) view.findViewById(R.id.tab_button02);
         tab_button01_number = (TextView) view.findViewById(R.id.tab_button01_number);
         tab_button02_number = (TextView) view.findViewById(R.id.tab_button02_number);
-        tab_button01_number.setText(String.valueOf(returnList.indexCount(0)));
-        tab_button02_number.setText(String.valueOf(returnList.indexCount(1)));
         
         timeTextView = (TextView) view.findViewById(R.id.index_info_time);
         index_info_basic01_number = (TextView) view.findViewById(R.id.index_info_basic01_number);
@@ -103,13 +126,6 @@ public class IndexFragment extends Fragment implements OnClickListener,OnItemLon
     	index_info_basic02_number = (TextView) view.findViewById(R.id.index_info_basic02_number);
     	index_info_basic02_float = (TextView) view.findViewById(R.id.index_info_basic02_float);
     	index_info_basic03_number = (TextView) view.findViewById(R.id.index_info_basic03_number);
-    	
-        timeTextView.setText(returnList.getTime());
-        index_info_basic01_number.setText(returnList.getBaseInfo01Number01());
-    	index_info_basic01_float.setText(returnList.getBaseInfo01Number02());
-    	index_info_basic02_number.setText(returnList.getBaseInfo02Number01());
-    	index_info_basic02_float.setText(returnList.getBaseInfo02Number02());
-    	index_info_basic03_number.setText(returnList.getBaseInfo03());
     	
     	dialog = new Dialog(this.getActivity(), R.style.MyDialog);
         //设置它的ContentView
@@ -119,35 +135,15 @@ public class IndexFragment extends Fragment implements OnClickListener,OnItemLon
         moneyTextView=(TextView) dialog.findViewById(R.id.money_invest);
         rateTextView=(TextView) dialog.findViewById(R.id.invest_rate);
         earningText=(EditText) dialog.findViewById(R.id.earning);
-        getOutText=(EditText) dialog.findViewById(R.id.get_out);
-        
+        getOutText=(EditText) dialog.findViewById(R.id.get_out);        
         sureButton = (Button) dialog.findViewById(R.id.sure_button);
         cancelButton = (Button) dialog.findViewById(R.id.cancel_button);
-        sureButton.setOnClickListener(this);
-        cancelButton.setOnClickListener(this);
-    	
-		
-        tab_button01.setOnClickListener(this);
-        tab_button02.setOnClickListener(this);
-        listView.setOnItemClickListener(this);
-        listView.setOnItemLongClickListener(this);
-        
-        return view;
 	}
 	
-	@Override
-	public void onResume() {
-		// TODO Auto-generated method stub
-		super.onResume();
-		reflash();
-	}
-
-	//private List<Map<String, Object>> getData(int index){
-	//0锟斤拷锟斤拷锟窖撅拷锟斤拷锟节ｏ拷1锟斤拷锟斤拷锟斤拷锟斤拷锟斤拷
 	private void getData(int type){
 		dataList.clear();
 		List<Map<String, Object>> temp=new ArrayList<Map<String,Object>>();
-		temp=returnList.indexList(type);
+		temp=index.indexList(type);
 		for(int i=0;i<temp.size();i++){
 			dataList.add(temp.get(i));
 		}
@@ -178,8 +174,11 @@ public class IndexFragment extends Fragment implements OnClickListener,OnItemLon
         	Float earningFloat=0.0f;
         	Float getOutFloat=0.0f;
         	if(TextUtils.isEmpty(earningText.getText())){
-				erroredBoolean=true;
-				errorString="收益确认不得为空";	
+				/*erroredBoolean=true;
+				errorString="收益确认不得为空";*/	
+        		String minString=earningText.getHint().toString();
+        		String[] earningString=minString.split("~");
+        		earningFloat = Float.parseFloat(earningString[0]);        		
 			}else{
 				earningFloat = Float.parseFloat(earningText.getText().toString());
 				if(earningFloat<0){
@@ -209,7 +208,7 @@ public class IndexFragment extends Fragment implements OnClickListener,OnItemLon
 	                .show();
 			//如果成功则插入数据并返回
 			}else{
-				returnList.dealRecord(id, earningFloat, getOutFloat);				
+				index.dealRecord(id, earningFloat, getOutFloat);				
 				dialog.dismiss();
 				reflash();
 			}
@@ -240,7 +239,7 @@ public class IndexFragment extends Fragment implements OnClickListener,OnItemLon
             .setConfirmClickListener(new SweetAlertDialog.OnSweetClickListener() {
                 @Override
                 public void onClick(SweetAlertDialog sDialog) {
-                	returnList.deleteItem(((TextView)arg1.findViewById(R.id.item_id)).getText().toString());
+                	Common.deleteItem(nowContext,((TextView)arg1.findViewById(R.id.item_id)).getText().toString());
                 	reflash();
                     sDialog.setTitleText("记录已删除")
                             .setConfirmText("确定")
@@ -263,13 +262,13 @@ public class IndexFragment extends Fragment implements OnClickListener,OnItemLon
 	public void reflash(){
 		getData(nowState);
         list_adapter.notifyDataSetChanged();
-        tab_button01_number.setText(String.valueOf(returnList.indexCount(0)));
-        tab_button02_number.setText(String.valueOf(returnList.indexCount(1)));
-        index_info_basic01_number.setText(returnList.getBaseInfo01Number01());
-    	index_info_basic01_float.setText(returnList.getBaseInfo01Number02());
-    	index_info_basic02_number.setText(returnList.getBaseInfo02Number01());
-    	index_info_basic02_float.setText(returnList.getBaseInfo02Number02());
-    	index_info_basic03_number.setText(returnList.getBaseInfo03());
+        tab_button01_number.setText(String.valueOf(index.indexCount(0)));
+        tab_button02_number.setText(String.valueOf(index.indexCount(1)));
+        index_info_basic01_number.setText(index.getBaseInfo01Number01());
+    	index_info_basic01_float.setText(index.getBaseInfo01Number02());
+    	index_info_basic02_number.setText(index.getBaseInfo02Number01());
+    	index_info_basic02_float.setText(index.getBaseInfo02Number02());
+    	index_info_basic03_number.setText(index.getBaseInfo03());
 	}
 
 	@Override
@@ -289,13 +288,13 @@ public class IndexFragment extends Fragment implements OnClickListener,OnItemLon
 				rateTextView.setText(rateString.substring(0, rateString.length()-1));
 				earningText.setText("");
 				try {
-					earningText.setHint(returnList.getEarning(id));
+					earningText.setHint(index.getEarning(id));
 				} catch (ParseException e) {
 					// TODO Auto-generated catch block
 					e.printStackTrace();
 				}
 				getOutText.setText("");
-				total=returnList.getRest(returnList.getPlatformString(id))+Float.valueOf(((TextView)arg1.findViewById(R.id.item_money)).getText().toString());
+				total=platform.getRest(Common.getPlatformString(this.getActivity(),id))+Float.valueOf(((TextView)arg1.findViewById(R.id.item_money)).getText().toString());
 				getOutText.setHint(Float.valueOf(total).toString());
                 dialog.show();
 				break;

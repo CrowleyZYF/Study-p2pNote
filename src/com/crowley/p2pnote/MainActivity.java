@@ -15,7 +15,7 @@ import android.os.CountDownTimer;
 import android.view.View;
 import android.view.View.OnClickListener;
 import android.view.Window;
-import android.widget.Button;
+import android.widget.ImageButton;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.TextView;
@@ -34,7 +34,7 @@ public class MainActivity extends Activity implements OnClickListener{
     private LinearLayout tabWater;
     private LinearLayout tabAnalyze;
     private LinearLayout tabPlatform;
-    private LinearLayout tabMore;
+    //private LinearLayout tabMore;
     
     private SlidingMenu mLeftMenu;
     
@@ -42,7 +42,7 @@ public class MainActivity extends Activity implements OnClickListener{
     
     private TextView title;
     
-    private Button newItem;
+    private ImageButton newItem;
     private TextView login;
     private TextView checkTextView;
     private TextView backupTextView;
@@ -109,7 +109,7 @@ public class MainActivity extends Activity implements OnClickListener{
         switch (index)  
         {  
         case 0:   
-        	((Button)findViewById(R.id.new_item)).setVisibility(View.VISIBLE);
+        	((ImageButton)findViewById(R.id.new_item)).setVisibility(View.VISIBLE);
         	title.setText(R.string.tab_index);
             ((ImageView)tabIndex.findViewById(R.id.tab_index_icon)).setImageResource(R.drawable.index_focus);
             ((TextView)tabIndex.findViewById(R.id.tab_index_text)).setTextColor(getResources().getColor(R.color.tab_text_chosen));
@@ -124,7 +124,7 @@ public class MainActivity extends Activity implements OnClickListener{
             }  
             break;  
         case 1:  
-        	((Button)findViewById(R.id.new_item)).setVisibility(View.GONE);
+        	((ImageButton)findViewById(R.id.new_item)).setVisibility(View.GONE);
         	title.setText(R.string.tab_water);
         	((ImageView)tabWater.findViewById(R.id.tab_water_icon)).setImageResource(R.drawable.water_focus);
             ((TextView)tabWater.findViewById(R.id.tab_water_text)).setTextColor(getResources().getColor(R.color.tab_text_chosen));  
@@ -139,7 +139,7 @@ public class MainActivity extends Activity implements OnClickListener{
             }  
             break;  
         case 2:  
-        	((Button)findViewById(R.id.new_item)).setVisibility(View.GONE);
+        	((ImageButton)findViewById(R.id.new_item)).setVisibility(View.GONE);
         	title.setText(R.string.tab_analyze);
         	((ImageView)tabAnalyze.findViewById(R.id.tab_analyze_icon)).setImageResource(R.drawable.analyze_focus);
             ((TextView)tabAnalyze.findViewById(R.id.tab_analyze_text)).setTextColor(getResources().getColor(R.color.tab_text_chosen));  
@@ -154,7 +154,7 @@ public class MainActivity extends Activity implements OnClickListener{
             }  
             break;  
         case 3: 
-        	((Button)findViewById(R.id.new_item)).setVisibility(View.GONE);
+        	((ImageButton)findViewById(R.id.new_item)).setVisibility(View.GONE);
         	title.setText(R.string.tab_platform);
         	((ImageView)tabPlatform.findViewById(R.id.tab_platform_icon)).setImageResource(R.drawable.platform_focus); 
             ((TextView)tabPlatform.findViewById(R.id.tab_platform_text)).setTextColor(getResources().getColor(R.color.tab_text_chosen)); 
@@ -168,8 +168,8 @@ public class MainActivity extends Activity implements OnClickListener{
                 platformFragment.reflash();
             }  
             break;
-		case 4:  
-        	((Button)findViewById(R.id.new_item)).setVisibility(View.GONE);
+		/*case 4:  
+        	((ImageButton)findViewById(R.id.new_item)).setVisibility(View.GONE);
 			title.setText(R.string.tab_news);
 	    	((ImageView)tabMore.findViewById(R.id.tab_more_icon)).setImageResource(R.drawable.more_focus);  
             ((TextView)tabMore.findViewById(R.id.tab_more_text)).setTextColor(getResources().getColor(R.color.tab_text_chosen));
@@ -181,7 +181,7 @@ public class MainActivity extends Activity implements OnClickListener{
 	        {   
 	            transaction.show(moreFragment);  
 	        }
-	        break;  
+	        break;  */
 	    }  
         transaction.commit();  
 		
@@ -217,12 +217,12 @@ public class MainActivity extends Activity implements OnClickListener{
     	((ImageView)tabWater.findViewById(R.id.tab_water_icon)).setImageResource(R.drawable.water);
     	((ImageView)tabAnalyze.findViewById(R.id.tab_analyze_icon)).setImageResource(R.drawable.analyze);  
     	((ImageView)tabPlatform.findViewById(R.id.tab_platform_icon)).setImageResource(R.drawable.platform);  
-		((ImageView)tabMore.findViewById(R.id.tab_more_icon)).setImageResource(R.drawable.more);
+		//((ImageView)tabMore.findViewById(R.id.tab_more_icon)).setImageResource(R.drawable.more);
 		((TextView)tabIndex.findViewById(R.id.tab_index_text)).setTextColor(getResources().getColor(R.color.tab_text));
 		((TextView)tabWater.findViewById(R.id.tab_water_text)).setTextColor(getResources().getColor(R.color.tab_text));
 		((TextView)tabAnalyze.findViewById(R.id.tab_analyze_text)).setTextColor(getResources().getColor(R.color.tab_text));
 		((TextView)tabPlatform.findViewById(R.id.tab_platform_text)).setTextColor(getResources().getColor(R.color.tab_text));
-		((TextView)tabMore.findViewById(R.id.tab_more_text)).setTextColor(getResources().getColor(R.color.tab_text));
+		//((TextView)tabMore.findViewById(R.id.tab_more_text)).setTextColor(getResources().getColor(R.color.tab_text));
 	}
 
 	private void initViews() {
@@ -231,9 +231,9 @@ public class MainActivity extends Activity implements OnClickListener{
 		tabWater = (LinearLayout) findViewById(R.id.tab_water);
 		tabAnalyze = (LinearLayout) findViewById(R.id.tab_analyze);
 		tabPlatform = (LinearLayout) findViewById(R.id.tab_platform);
-		tabMore = (LinearLayout) findViewById(R.id.tab_more);
+		//tabMore = (LinearLayout) findViewById(R.id.tab_more);
 		
-		newItem = (Button) findViewById(R.id.new_item);
+		newItem = (ImageButton) findViewById(R.id.new_item);
 		
 		title = (TextView) findViewById(R.id.main_tab_banner_title);		
 
@@ -251,7 +251,7 @@ public class MainActivity extends Activity implements OnClickListener{
 		tabWater.setOnClickListener(this);
 		tabAnalyze.setOnClickListener(this);
 		tabPlatform.setOnClickListener(this);
-		tabMore.setOnClickListener(this);
+		//tabMore.setOnClickListener(this);
 		newItem.setOnClickListener(this);
 		login.setOnClickListener(this);
 		backupTextView.setOnClickListener(this);
