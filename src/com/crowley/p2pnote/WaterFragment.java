@@ -6,14 +6,14 @@ import java.util.Map;
 
 import cn.pedant.SweetAlert.SweetAlertDialog;
 
-import com.crowley.p2pnote.functions.ReturnList;
+import com.crowley.p2pnote.functions.Common;
+import com.crowley.p2pnote.functions.Water;
 import com.crowley.p2pnote.ui.listAdapter;
 
-import android.R.integer;
 import android.app.Fragment;
+import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.View.OnClickListener;
@@ -33,7 +33,7 @@ public class WaterFragment extends Fragment implements OnClickListener,OnItemLon
 	private listAdapter list_adapter;
 	private List<Map<String, Object>> dataList;
 	
-	private ReturnList returnList;
+	private Water water;
 	
 	private boolean time_des=true;
 	private boolean money_des=true;
@@ -57,46 +57,54 @@ public class WaterFragment extends Fragment implements OnClickListener,OnItemLon
 	
 	private int now_state;
 	private boolean now_order;
+	private Context nowContext=this.getActivity();
 	
 	@Override
 	public View onCreateView(LayoutInflater inflater, ViewGroup container,
 			Bundle savedInstanceState) {
 		// TODO Auto-generated method stub
 		View view = inflater.inflate(R.layout.water_fragment, container, false);
+		
+        initView(view);
+        initData();        
+        initEvent();
+        
+		return view;
+	}
 
-		returnList = new ReturnList(this.getActivity());
-		returnList.logInfo();
-		dataList=new ArrayList<Map<String,Object>>();
-        listView=(ListView) view.findViewById(R.id.water_list_view);
-        time_tab=(RelativeLayout) view.findViewById(R.id.invest_time);
-        money_tab=(RelativeLayout) view.findViewById(R.id.invest_money);
-        profit_tab=(RelativeLayout) view.findViewById(R.id.invest_profit);
-        begin_invest=(RelativeLayout) view.findViewById(R.id.begin_invest);
-        
-        time_tab_text=(TextView) view.findViewById(R.id.invest_time_text);
-        money_tab_text=(TextView) view.findViewById(R.id.invest_money_text);
-        profit_tab_text=(TextView) view.findViewById(R.id.invest_profit_text);
-        begin_invest_text=(TextView) view.findViewById(R.id.begin_invest_text);
-        
-        time_tab_icon=(ImageView) view.findViewById(R.id.invest_time_icon);
-        money_tab_icon=(ImageView) view.findViewById(R.id.invest_money_icon);
-        profit_tab_icon=(ImageView) view.findViewById(R.id.invest_profit_icon);
-        begin_invest_icon=(ImageView) view.findViewById(R.id.begin_invest_icon);
-        
-        getData(3,begin_des);
-        now_state=3;
-        now_order=begin_des;
-        list_adapter=new listAdapter(this.getActivity(), dataList, R.layout.index_listview_item, new String[]{"item_id","item_state","timeBegin","timeEnd","item_icon","item_name","item_money","item_profit"}, new int[]{R.id.item_id,R.id.item_state,R.id.timeBegin,R.id.timeEnd,R.id.item_icon,R.id.item_name,R.id.item_money,R.id.item_profit});
-        
-               
-        listView.setAdapter(list_adapter);
-        time_tab.setOnClickListener(this);
+	public void initEvent() {
+		time_tab.setOnClickListener(this);
         money_tab.setOnClickListener(this);
         profit_tab.setOnClickListener(this);
         begin_invest.setOnClickListener(this);
         listView.setOnItemClickListener(this);
         listView.setOnItemLongClickListener(this);
-		return view;
+	}
+
+	public void initData() {
+		water = new Water(this.getActivity());
+		dataList=new ArrayList<Map<String,Object>>();
+        getData(3,begin_des);
+        now_state=3;
+        now_order=begin_des;
+        list_adapter=new listAdapter(this.getActivity(), dataList, R.layout.index_listview_item, new String[]{"item_id","item_state","timeBegin","timeEnd","item_icon","item_name","item_money","item_profit"}, new int[]{R.id.item_id,R.id.item_state,R.id.timeBegin,R.id.timeEnd,R.id.item_icon,R.id.item_name,R.id.item_money,R.id.item_profit});
+        listView.setAdapter(list_adapter);
+	}
+
+	public void initView(View view) {
+		listView=(ListView) view.findViewById(R.id.water_list_view);
+        time_tab=(RelativeLayout) view.findViewById(R.id.invest_time);
+        money_tab=(RelativeLayout) view.findViewById(R.id.invest_money);
+        profit_tab=(RelativeLayout) view.findViewById(R.id.invest_profit);
+        begin_invest=(RelativeLayout) view.findViewById(R.id.begin_invest);        
+        time_tab_text=(TextView) view.findViewById(R.id.invest_time_text);
+        money_tab_text=(TextView) view.findViewById(R.id.invest_money_text);
+        profit_tab_text=(TextView) view.findViewById(R.id.invest_profit_text);
+        begin_invest_text=(TextView) view.findViewById(R.id.begin_invest_text);        
+        time_tab_icon=(ImageView) view.findViewById(R.id.invest_time_icon);
+        money_tab_icon=(ImageView) view.findViewById(R.id.invest_money_icon);
+        profit_tab_icon=(ImageView) view.findViewById(R.id.invest_profit_icon);
+        begin_invest_icon=(ImageView) view.findViewById(R.id.begin_invest_icon);
 	}
 	
 	@Override
@@ -115,7 +123,7 @@ public class WaterFragment extends Fragment implements OnClickListener,OnItemLon
 		// TODO Auto-generated method stub
 		dataList.clear();
 		List<Map<String, Object>> temp=new ArrayList<Map<String,Object>>();
-		temp=returnList.waterSort(type,des);
+		temp=water.waterSort(type,des);
 		for(int i=0;i<temp.size();i++){
 			dataList.add(temp.get(i));
 		}
@@ -233,7 +241,7 @@ public class WaterFragment extends Fragment implements OnClickListener,OnItemLon
 	            .setConfirmClickListener(new SweetAlertDialog.OnSweetClickListener() {
 	                @Override
 	                public void onClick(SweetAlertDialog sDialog) {
-	                	returnList.deleteItem(((TextView)arg1.findViewById(R.id.item_id)).getText().toString());
+	                	Common.deleteItem(nowContext,((TextView)arg1.findViewById(R.id.item_id)).getText().toString());
 	                	reflash();
 	                    sDialog.setTitleText("记录已删除")
 	                            .setConfirmText("确定")

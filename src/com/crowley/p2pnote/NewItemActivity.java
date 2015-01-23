@@ -12,36 +12,30 @@ import com.crowley.p2pnote.db.DBOpenHelper;
 import com.crowley.p2pnote.db.RecordModel;
 import com.crowley.p2pnote.functions.ReturnList;
 
-import android.R.integer;
 import android.app.Activity;
 import android.app.DatePickerDialog;
 import android.app.DatePickerDialog.OnDateSetListener;
-import android.content.ContentValues;
-import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.SharedPreferences;
-import android.content.DialogInterface.OnClickListener;
-import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
 import android.os.Bundle;
 import android.text.TextUtils;
-import android.util.Log;
 import android.view.View;
 import android.view.Window;
 import android.widget.AdapterView;
 import android.widget.AdapterView.OnItemSelectedListener;
-import android.widget.ArrayAdapter;
 import android.widget.DatePicker;
 import android.widget.EditText;
+import android.widget.ImageButton;
 import android.widget.LinearLayout;
 import android.widget.SimpleAdapter;
 import android.widget.Spinner;
 import android.widget.TextView;
-import android.widget.Toast;
 
 public class NewItemActivity extends Activity implements OnItemSelectedListener,android.view.View.OnClickListener{	
-	private ReturnList returnList;		
-	private boolean init = false;	
+	private ReturnList returnList;
+	private boolean init = false;
+	private ImageButton backButton;
 	//平台下拉框
 	private Spinner platformSpinner;
 	private SimpleAdapter platform_adapter;
@@ -169,6 +163,7 @@ public class NewItemActivity extends Activity implements OnItemSelectedListener,
 	}
 
 	private void initEvent() {
+		backButton.setOnClickListener(this);
 		platformSpinner.setOnItemSelectedListener(this);
 		rateSpinner.setOnItemSelectedListener(this);
 		begin_time.setOnClickListener(this);
@@ -201,6 +196,7 @@ public class NewItemActivity extends Activity implements OnItemSelectedListener,
 	}
 
 	private void initView() {
+		backButton = (ImageButton) findViewById(R.id.back);
 		//平台
 		platformSpinner = (Spinner) findViewById(R.id.platform);
 		//类型
@@ -365,6 +361,10 @@ public class NewItemActivity extends Activity implements OnItemSelectedListener,
 	@Override
 	public void onClick(View v) {
 		switch (v.getId()) {
+		case R.id.back:{
+			finish();
+			break;
+		}
 		//计息时间
 		case R.id.begin_time:{
 			new DatePickerDialog(this, new OnDateSetListener() {				
@@ -442,7 +442,7 @@ public class NewItemActivity extends Activity implements OnItemSelectedListener,
 					errorString="收益率不得为空";
 				}else{
 					min = Float.parseFloat(minEditText.getText().toString())/100;
-					if(min<0){
+					if(min<=0){
 						erroredBoolean=true;
 						errorString="请输入大于0的下限数目";				
 					}
@@ -458,7 +458,7 @@ public class NewItemActivity extends Activity implements OnItemSelectedListener,
 					errorString="收益率不得为空";	
 				}else{
 					max = Float.parseFloat(maxEditText.getText().toString())/100;
-					if(max<0){
+					if(max<=0){
 						erroredBoolean=true;
 						errorString="收益率必须大于0";				
 					}
@@ -483,10 +483,10 @@ public class NewItemActivity extends Activity implements OnItemSelectedListener,
 			int day1=Integer.parseInt(time1[2]);
 			int day2=Integer.parseInt(time2[2]);			
 			
-			if(returnList.parseDay(begin_dayString)>returnList.parseDay(end_dayString)){
+			if(returnList.parseDay(begin_dayString)>=returnList.parseDay(end_dayString)){
 				erroredBoolean=true;
 				errorString="结束时间应晚于计息时间";	
-			}else if(day1!=day2){
+			}else if(day1!=day2&&method!=0){
 				erroredBoolean=true;
 				errorString="必须以整月形式购买";	
 			}

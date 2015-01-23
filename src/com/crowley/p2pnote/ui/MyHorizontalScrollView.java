@@ -136,5 +136,11 @@ public class MyHorizontalScrollView extends HorizontalScrollView implements OnCl
 		    mOnClickListener.onClick(arg0, mViewPos.get(arg0));
 		}
 	}  
+	
+	@Override
+	public boolean onTouchEvent(MotionEvent ev) {
+		// TODO Auto-generated method stub		
+		return super.onTouchEvent(ev);
+	}
 
 }

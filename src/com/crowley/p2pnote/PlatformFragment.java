@@ -1,12 +1,12 @@
 package com.crowley.p2pnote;
 
-import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.List;
 
 import com.crowley.p2pnote.db.DBOpenHelper;
 import com.crowley.p2pnote.db.RecordModel;
-import com.crowley.p2pnote.functions.ReturnList;
+import com.crowley.p2pnote.functions.Common;
+import com.crowley.p2pnote.functions.Index;
+import com.crowley.p2pnote.functions.Platform;
 import com.crowley.p2pnote.ui.HorizontalScrollViewAdapter;
 import com.crowley.p2pnote.ui.MyHorizontalScrollView;
 import com.crowley.p2pnote.ui.MyHorizontalScrollView.OnItemClickListener;
@@ -17,9 +17,7 @@ import android.content.Intent;
 import android.content.SharedPreferences;
 import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
-import android.graphics.Color;
 import android.os.Bundle;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.MotionEvent;
 import android.view.View;
@@ -28,17 +26,17 @@ import android.view.View.OnTouchListener;
 import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.EditText;
-import android.widget.HorizontalScrollView;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
 
 
-public class PlatformFragment extends Fragment implements OnClickListener{
+public class PlatformFragment extends Fragment implements OnClickListener,OnTouchListener{
 	
-	private ReturnList returnList;
+	private Platform platform;
 	
+	private LinearLayout platformLinearLayout;
 	private MyHorizontalScrollView mHorizontalScrollView;  
     private HorizontalScrollViewAdapter mAdapter;  
     private LinearLayout recordsLinearLayout; 
@@ -69,6 +67,48 @@ public class PlatformFragment extends Fragment implements OnClickListener{
 		// TODO Auto-generated method stub
 		View view = inflater.inflate(R.layout.platform_fragment, container, false);
 		
+		initView(view);		
+		initData();        
+        initEvent();	
+		 
+		return view;
+	}
+
+
+	public void initEvent() {
+		platformLinearLayout.setOnTouchListener(this);
+		sureButton.setOnClickListener(this);
+        cancelButton.setOnClickListener(this);
+        recordsLinearLayout.setOnClickListener(this);
+		platform_invest.setOnClickListener(this);
+		platform_out.setOnClickListener(this);
+		//添加点击回调  
+		mHorizontalScrollView.setOnItemClickListener(new OnItemClickListener()  
+		{  		
+		    @Override  
+		    public void onClick(View view, int position)
+		    {  
+		        ((ImageView)(((RelativeLayout) view).getChildAt(2))).setImageResource(R.drawable.platform_arrow_grey);
+		        updatePlatform(((TextView)(((RelativeLayout) view).getChildAt(0))).getText().toString());
+		    }  
+		});
+	}
+
+
+	public void initData() {
+		platform=new Platform(this.getActivity());
+		mDatas=platform.getPlatformsIcon();
+		mDatas2=platform.getPlatformsName();
+		if(!mDatas2.isEmpty()){
+			updatePlatform(mDatas2.get(0));
+		}		
+		mAdapter = new HorizontalScrollViewAdapter(this.getActivity(), mDatas, mDatas2);
+		mHorizontalScrollView.initDatas(mAdapter);
+	}
+
+
+	public void initView(View view) {
+		platformLinearLayout=(LinearLayout) view.findViewById(R.id.platform_linearlayout);
 		mHorizontalScrollView = (MyHorizontalScrollView) view.findViewById(R.id.scroll_view);
 		recordsLinearLayout = (LinearLayout) view.findViewById(R.id.platform_record);
 		title = (TextView) this.getActivity().findViewById(R.id.main_tab_banner_title);
@@ -82,57 +122,25 @@ public class PlatformFragment extends Fragment implements OnClickListener{
 		newest_money = (TextView) view.findViewById(R.id.newest_money);
 		platform_invest = (TextView) view.findViewById(R.id.platform_invest);
 		platform_out = (TextView) view.findViewById(R.id.platform_out);
-		
-		returnList=new ReturnList(this.getActivity());
-		mDatas=returnList.getPlatformsIcon();
-		mDatas2=returnList.getPlatformsName();
-		
 		dialog = new Dialog(this.getActivity(), R.style.MyDialog);
         //设置它的ContentView
         dialog.setContentView(R.layout.takeout_dialog);
         timeEndTextView=(TextView) dialog.findViewById(R.id.end_time);
         productTextView=(TextView) dialog.findViewById(R.id.item_name);
-        getOutText=(EditText) dialog.findViewById(R.id.get_out);
-        
+        getOutText=(EditText) dialog.findViewById(R.id.get_out);        
         sureButton = (Button) dialog.findViewById(R.id.sure_button);
         cancelButton = (Button) dialog.findViewById(R.id.cancel_button);
-        sureButton.setOnClickListener(this);
-        cancelButton.setOnClickListener(this);
-		
-		if(!mDatas2.isEmpty()){
-			updatePlatform(mDatas2.get(0));
-		}	
-		
-		mAdapter = new HorizontalScrollViewAdapter(this.getActivity(), mDatas, mDatas2);
-		
-		recordsLinearLayout.setOnClickListener(this);
-		platform_invest.setOnClickListener(this);
-		platform_out.setOnClickListener(this);
-		//添加点击回调  
-		mHorizontalScrollView.setOnItemClickListener(new OnItemClickListener()  
-		{  
-		
-		    @Override  
-		    public void onClick(View view, int position)
-		    {  
-		        ((ImageView)(((RelativeLayout) view).getChildAt(2))).setImageResource(R.drawable.platform_arrow_grey);
-		        updatePlatform(((TextView)(((RelativeLayout) view).getChildAt(0))).getText().toString());
-		    }  
-		});  
-		
-		mHorizontalScrollView.initDatas(mAdapter); 
-		return view;
 	}
 
 
 	public void updatePlatform(String platformString) {
 		title.setText(platformString);
-		platform_earning.setText(Float.valueOf(returnList.getEarningAll(platformString)).toString());
-		platform_rest.setText(Float.valueOf(returnList.getRest(platformString)).toString());
-		platform_earning_rate.setText(Float.valueOf(returnList.getEarningRateAll(platformString)).toString());
-		platform_amount.setText(Float.valueOf(returnList.getAllAmount(platformString)).toString());
-		newest_date.setText(returnList.getNewestDate(platformString));
-		if(returnList.getNewestBool(platformString)){
+		platform_earning.setText(Float.valueOf(platform.getEarningAll(platformString)).toString());
+		platform_rest.setText(Float.valueOf(platform.getRest(platformString)).toString());
+		platform_earning_rate.setText(Float.valueOf(platform.getEarningRateAll(platformString)).toString());
+		platform_amount.setText(Float.valueOf(platform.getAllAmount(platformString)).toString());
+		newest_date.setText(platform.getNewestDate(platformString));
+		if(platform.getNewestBool(platformString)){
 			newest_judge01.setText("收益");
 			newest_judge02.setText("+");
 			newest_money.setTextColor(getResources().getColor(DBOpenHelper.platform_in));
@@ -143,7 +151,7 @@ public class PlatformFragment extends Fragment implements OnClickListener{
 			newest_money.setTextColor(getResources().getColor(DBOpenHelper.platform_out));
 			newest_judge02.setTextColor(getResources().getColor(DBOpenHelper.platform_out));
 		}
-		newest_money.setText(returnList.getNewestMoney(platformString, returnList.getNewestBool(platformString)));
+		newest_money.setText(platform.getNewestMoney(platformString, platform.getNewestBool(platformString)));
 	}
 
 
@@ -167,7 +175,7 @@ public class PlatformFragment extends Fragment implements OnClickListener{
 		}
 		case R.id.platform_out:{
 			productTextView.setText(title.getText());
-			timeEndTextView.setText(returnList.getTime());
+			timeEndTextView.setText(Common.getTime());
 			getOutText.setHint(platform_rest.getText());
 			dialog.show();
 			break;
@@ -188,7 +196,7 @@ public class PlatformFragment extends Fragment implements OnClickListener{
 			}else{
 				userNameString="not_login";
 			}
-			String sqlString="insert into record(platform,type,money,earningMin,earningMax,method,timeBegin,timeEnd,timeStamp,state,isDeleted,userName,restBegin,restEnd,timeStampEnd,rest) values('"+title.getText()+"','"+""+"',"+0+","+0+","+0+","+0+",'"+returnList.getTime()+"','"+returnList.getTime()+"','"+ts+"',0,0,'"+userNameString+"',0.0,0.0,'',"+returnList.getRest((String) title.getText())+")";
+			String sqlString="insert into record(platform,type,money,earningMin,earningMax,method,timeBegin,timeEnd,timeStamp,state,isDeleted,userName,restBegin,restEnd,timeStampEnd,rest) values('"+title.getText()+"','"+""+"',"+0+","+0+","+0+","+0+",'"+Common.getTime()+"','"+Common.getTime()+"','"+ts+"',0,0,'"+userNameString+"',0.0,0.0,'',"+platform.getRest((String) title.getText())+")";
 			DBOpenHelper helper = new DBOpenHelper(this.getActivity(), "record.db");
 			SQLiteDatabase db = helper.getWritableDatabase();
 			db.execSQL(sqlString);
@@ -197,7 +205,8 @@ public class PlatformFragment extends Fragment implements OnClickListener{
 			RecordModel tempRecordModel=new RecordModel(tempCursor);
 			String idString=(Integer.valueOf((tempRecordModel.getID()))).toString();
 			float take_out=Float.valueOf(getOutText.getText().toString());
-			returnList.dealRecord(idString, 0.0f, take_out);
+			Index index=new Index(this.getActivity());
+			index.dealRecord(idString, 0.0f, take_out);
 			dialog.dismiss();
 			getOutText.setText("");
 			reflash();
@@ -210,14 +219,28 @@ public class PlatformFragment extends Fragment implements OnClickListener{
 	}
 	
 	public void reflash(){
-		mDatas=returnList.getPlatformsIcon();
-		mDatas2=returnList.getPlatformsName();
+		mDatas=platform.getPlatformsIcon();
+		mDatas2=platform.getPlatformsName();
 		if(!mDatas2.isEmpty()){
 			updatePlatform(mDatas2.get(0));
 		}
 		mAdapter=new HorizontalScrollViewAdapter(this.getActivity(), mDatas, mDatas2);
 		mHorizontalScrollView.updateDate(mAdapter);
 	}
+
+
+	@Override
+	public boolean onTouch(View v, MotionEvent ev) {
+		// TODO Auto-generated method stub
+		switch (v.getId()) {
+		case R.id.platform_linearlayout:
+			mHorizontalScrollView.onTouchEvent(ev);
+			break;
+		default:
+			break;
+		}		
+		return true;
+	}  
 
 	
 

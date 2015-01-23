@@ -1,5 +1,6 @@
 package com.crowley.p2pnote.ui;
 
+import com.crowley.p2pnote.PlatformFragment;
 import com.crowley.p2pnote.R;
 import com.nineoldandroids.view.ViewHelper;
 
@@ -94,9 +95,9 @@ public class SlidingMenu extends HorizontalScrollView {
 		// TODO Auto-generated method stub		
 		super.onLayout(changed, l, t, r, b);
 		
-		if(changed){
+		/*if(changed){
 			this.scrollTo(mMenuWidth, 0);
-		}
+		}*/
 	}
 	
 	private boolean askChild(Object v,MotionEvent ev){
@@ -110,8 +111,10 @@ public class SlidingMenu extends HorizontalScrollView {
 	          if (vg.getChildAt(i) instanceof HorizontalScrollView) {//(这是以HorizontalScrollView为例,其它可以自行加判断)
 	                   return ((ViewGroup)vg.getChildAt(i)).onInterceptTouchEvent(ev);
 	            }
-	 
-	           if(askChild(vg.getChildAt(i), ev)){
+	          /*if (vg.getChildAt(i) instanceof LinearLayout) {//(这是以HorizontalScrollView为例,其它可以自行加判断)
+                  return ((ViewGroup)vg.getChildAt(i)).onInterceptTouchEvent(ev);
+	          }*/
+	            if(askChild(vg.getChildAt(i), ev)){
 	                return true;
 	           }
 	     }
@@ -121,7 +124,7 @@ public class SlidingMenu extends HorizontalScrollView {
 	@Override
 	public boolean onTouchEvent(MotionEvent ev) {
 		// TODO Auto-generated method stub
-		int action = ev.getAction();
+		/*int action = ev.getAction();
 		switch (action) {
 		case MotionEvent.ACTION_UP:
 			int scrollX=getScrollX();			
@@ -136,10 +139,9 @@ public class SlidingMenu extends HorizontalScrollView {
 		default:
 			break;
 		}
-		Log.i("m_info", "321");
-		return super.onTouchEvent(ev);
-		
-		//return false;
+		Log.i("m_info", "321");*/
+		//return super.onTouchEvent(ev);		
+		return false;
 	}
 	
 	@Override
@@ -156,7 +158,7 @@ public class SlidingMenu extends HorizontalScrollView {
 	@Override
 	protected void onScrollChanged(int l, int t, int oldl, int oldt) {
 		// TODO Auto-generated method stub
-		super.onScrollChanged(l, t, oldl, oldt);
+		//super.onScrollChanged(l, t, oldl, oldt);
 		
 		/*float scale = l* 1.0f/mMenuWidth; //1~0
 		

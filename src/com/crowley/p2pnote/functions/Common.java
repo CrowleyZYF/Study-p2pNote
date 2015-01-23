@@ -1,6 +1,7 @@
 package com.crowley.p2pnote.functions;
 
 import java.math.BigDecimal;
+import java.util.Calendar;
 
 import android.content.Context;
 import android.content.SharedPreferences;
@@ -94,6 +95,30 @@ public class Common {
 		int day=Integer.parseInt(time[2]);
 		int[] months={0,31,28,31,30,31,30,31,31,30,31,30,31};
 		return year*365+month*months[month]+day;		
+	}
+	
+	/**
+	 * 	
+	 * @return 今天的年月日
+	 */
+	public static String getTime(){
+		String monthString;
+		String dayString;
+		Calendar cal = Calendar.getInstance();
+		int year=cal.get(Calendar.YEAR);
+		int month=cal.get(Calendar.MONTH)+1;
+		int day=cal.get(Calendar.DAY_OF_MONTH);
+		if (month<10) {
+			monthString="-0"+month;			
+		}else{
+			monthString="-"+month;
+		}
+		if (day<10) {
+			dayString="-0"+day;
+		}else{
+			dayString="-"+day;
+		}
+		return year+monthString+dayString;
 	}
 	
 	/**

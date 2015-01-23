@@ -9,13 +9,12 @@ import org.json.JSONObject;
 import cn.pedant.SweetAlert.SweetAlertDialog;
 
 import com.crowley.p2pnote.db.HttpUtils;
-import com.crowley.p2pnote.functions.ReturnList;
+import com.crowley.p2pnote.functions.Common;
 
+import android.annotation.SuppressLint;
 import android.app.Activity;
 import android.content.Context;
-import android.content.Intent;
 import android.content.SharedPreferences;
-import android.content.SharedPreferences.Editor;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.Message;
@@ -25,8 +24,8 @@ import android.view.Window;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ImageButton;
-import android.widget.Toast;
 
+@SuppressLint("HandlerLeak") 
 public class ModifyPasswordActivity extends Activity implements OnClickListener {
 	
 	private EditText accountEditText;
@@ -36,9 +35,7 @@ public class ModifyPasswordActivity extends Activity implements OnClickListener 
 	
 	private Button registerButton;
 	private ImageButton backButton;
-	
-	private ReturnList returnList;
-	
+		
 	private int error_code = 3;
 	private final int MODIFY_SUCCESS = 0;
 	private final int OLD_WRONG = 2;
@@ -74,11 +71,7 @@ public class ModifyPasswordActivity extends Activity implements OnClickListener 
 					break;					
 				}
 				case OLD_WRONG:{
-					new SweetAlertDialog(nowContext, SweetAlertDialog.ERROR_TYPE)
-	                    .setTitleText("修改密码失败")
-	                    .setContentText("原密码错误！")
-	                    .setConfirmText("确定")
-	                    .show();
+					Common.errorDialog(nowContext, "修改密码失败", "原密码错误！").show();
 					break;
 				}
 				default:
@@ -88,9 +81,7 @@ public class ModifyPasswordActivity extends Activity implements OnClickListener 
 		}		
 	};
 
-	private void initView() {
-		returnList = new ReturnList(this);
-		
+	private void initView() {		
 		registerButton=(Button) findViewById(R.id.register_button);
 		backButton=(ImageButton) findViewById(R.id.back);
 		accountEditText=(EditText) findViewById(R.id.account);
@@ -106,18 +97,12 @@ public class ModifyPasswordActivity extends Activity implements OnClickListener 
 	}
 	
 	private void register(String account,String password,String password_repeat,String password_repeat2){
-		if(!password_repeat.equals(password_repeat2)){
-			new SweetAlertDialog(nowContext, SweetAlertDialog.ERROR_TYPE)
-	            .setTitleText("修改密码失败")
-	            .setContentText("两次密码不一致！")
-	            .setConfirmText("确定")
-	            .show();
+		if(!Common.isOpenNetwork(this)){
+			Common.errorDialog(nowContext, "修改密码失败", "网络未链接").show();
+		}else if(!password_repeat.equals(password_repeat2)){
+			Common.errorDialog(nowContext, "修改密码失败", "两次密码不一致！").show();
 		}else if(password.equals("")){
-			new SweetAlertDialog(nowContext, SweetAlertDialog.ERROR_TYPE)
-            .setTitleText("修改密码失败")
-            .setContentText("必须输入旧密码！")
-            .setConfirmText("确定")
-            .show();
+			Common.errorDialog(nowContext, "修改密码失败", "必须输入旧密码！").show();
 		}else{
 			final Map<String, String> params = new HashMap<String, String>();
 			params.put("user_name", account);

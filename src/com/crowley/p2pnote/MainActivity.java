@@ -49,7 +49,7 @@ public class MainActivity extends Activity implements OnClickListener{
     private TextView adviceTextView;
     private TextView aboutTextView;
     private TextView securityTextView;
-    private TextView shareTextView;
+    //private TextView shareTextView;
     
     private int indexNumber=0;
     	
@@ -244,7 +244,7 @@ public class MainActivity extends Activity implements OnClickListener{
         adviceTextView=(TextView) findViewById(R.id.advice);
         aboutTextView=(TextView) findViewById(R.id.about);
         securityTextView=(TextView) findViewById(R.id.security);
-        shareTextView=(TextView) findViewById(R.id.share);
+        //shareTextView=(TextView) findViewById(R.id.share);
         
 		
 		tabIndex.setOnClickListener(this);
@@ -259,7 +259,7 @@ public class MainActivity extends Activity implements OnClickListener{
 		adviceTextView.setOnClickListener(this);
 		aboutTextView.setOnClickListener(this);
 		securityTextView.setOnClickListener(this);
-		shareTextView.setOnClickListener(this);
+		//shareTextView.setOnClickListener(this);
 		
 		SharedPreferences preferences=getSharedPreferences("user", MODE_PRIVATE);
 		boolean isLogined = preferences.getBoolean("isLogined", false);
@@ -371,11 +371,11 @@ public class MainActivity extends Activity implements OnClickListener{
     			Common.errorDialog(this, "∆Ù”√ ß∞‹", "«Îœ»µ«¬º’À∫≈").show();	
     		}
         	break;
-        }
+        }/*
         case R.id.share:{
         	Common.toBeContinuedDialog(this).show();
         	break;
-        }
+        }*/
         default:  
             break;  
         }  

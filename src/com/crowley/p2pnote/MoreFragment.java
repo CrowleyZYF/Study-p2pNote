@@ -1,16 +1,13 @@
 package com.crowley.p2pnote;
 
-import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
-import cn.pedant.SweetAlert.SweetAlertDialog;
 
 import com.crowley.p2pnote.db.HttpUtils;
 import com.crowley.p2pnote.db.NewsModel;
@@ -18,11 +15,8 @@ import com.crowley.p2pnote.functions.Common;
 import com.crowley.p2pnote.functions.ReturnList;
 import com.crowley.p2pnote.ui.RefreshListView;
 import com.crowley.p2pnote.ui.RefreshListView.IReflashListener;
-import com.crowley.p2pnote.ui.listAdapter;
-
-import android.R.integer;
+import android.annotation.SuppressLint;
 import android.app.Fragment;
-import android.content.Context;
 import android.content.SharedPreferences;
 import android.content.SharedPreferences.Editor;
 import android.os.Bundle;
@@ -31,10 +25,9 @@ import android.os.Message;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.ListView;
 import android.widget.SimpleAdapter;
-import android.widget.TextView;
 
+@SuppressLint("HandlerLeak") 
 public class MoreFragment extends Fragment implements IReflashListener{
 	
 	private RefreshListView listView;
@@ -43,13 +36,10 @@ public class MoreFragment extends Fragment implements IReflashListener{
 	
 	private JSONArray array;
 	
-	private boolean fresh=false;
 	private String timeString;
 	
 	private ReturnList returnList;
 	
-	private int error_code = 2;
-	private Context nowContext=this.getActivity();
 	private SharedPreferences preferences;
 	
 	private Handler handler = new Handler(){

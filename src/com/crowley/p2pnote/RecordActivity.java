@@ -7,7 +7,6 @@ import java.util.List;
 import java.util.Map;
 
 import com.crowley.p2pnote.functions.ReturnList;
-import com.crowley.p2pnote.ui.listAdapter;
 import com.crowley.p2pnote.ui.recordAdapter;
 
 import android.app.Activity;
@@ -18,8 +17,7 @@ import android.view.View.OnClickListener;
 import android.view.Window;
 import android.widget.ImageButton;
 import android.widget.ListView;
-import android.widget.RelativeLayout;
-import android.widget.Toast;
+import android.widget.TextView;
 
 public class RecordActivity extends Activity implements OnClickListener {
 
@@ -31,33 +29,40 @@ public class RecordActivity extends Activity implements OnClickListener {
 	private ReturnList returnList;
 	
 	private String platformString;
+	private TextView main_tab_banner_title;
 	
 	protected void onCreate(Bundle savedInstanceState) {
 		// TODO Auto-generated method stub
 		super.onCreate(savedInstanceState);
         requestWindowFeature(Window.FEATURE_NO_TITLE);
 		setContentView(R.layout.record);
-		
-		Intent intent =getIntent();
-        platformString = intent.getStringExtra("platform");
-		
+				
 		initView();
-		
+		initData();
+		initEvent();		
 		
 	}
 	
-	private void initView(){
-		
-		backButton=(ImageButton) findViewById(R.id.back);		
-		dataList=new ArrayList<Map<String,Object>>();
-        listView=(ListView) findViewById(R.id.record_list_view);
-        returnList=new ReturnList(this);
+	private void initView(){		
+		backButton=(ImageButton) findViewById(R.id.back);
+        listView=(ListView) findViewById(R.id.record_list_view);	
+        main_tab_banner_title=(TextView) findViewById(R.id.main_tab_banner_title);
+	}
+
+	public void initEvent() {
+		backButton.setOnClickListener(this);
+	}
+
+	public void initData() {
+		Intent intent =getIntent();
+        platformString = intent.getStringExtra("platform");
         
+		dataList=new ArrayList<Map<String,Object>>();
+        returnList=new ReturnList(this);        
         getData(platformString);
         list_adapter=new recordAdapter(this, dataList, R.layout.record_listview_item, new String[]{"record_type","record_time","record_money"}, new int[]{R.id.record_type,R.id.record_time,R.id.record_money});
         listView.setAdapter(list_adapter);
-        
-		backButton.setOnClickListener(this);
+        main_tab_banner_title.setText(platformString+"的成交记录");
 	}
 	
 	private void getData(String platform){
