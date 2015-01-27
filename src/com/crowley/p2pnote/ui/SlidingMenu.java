@@ -189,6 +189,10 @@ public class SlidingMenu extends HorizontalScrollView {
 		isOpen = false;
 	}
 	
+	public boolean getOpen(){
+		return isOpen;
+	}
+	
 	public void toggle(){
 		if(isOpen){
 			closeMenu();

@@ -86,7 +86,89 @@
     <string name="company_name08_product03">爱融租</string>
     <string name="company_name08_product04">爱收藏</string>
     
-    <string name="company_name09">其他</string>
+    <string name="company_name09">合拍在线</string>
+    <string name="company_name09_product01">散标</string>
+    
+    <string name="company_name10">红岭创投</string>
+    <string name="company_name10_product01">散标</string>
+    
+    <string name="company_name11">钱爸爸</string>
+    <string name="company_name11_product01">散标</string>
+    
+    <string name="company_name12">人人聚财</string>
+    <string name="company_name12_product01">定投宝</string>
+    <string name="company_name12_product02">散标</string>
+    
+    <string name="company_name13">融资城</string>
+    <string name="company_name13_product01">散标</string>
+    
+    <string name="company_name14">微贷网</string>
+    <string name="company_name14_product01">散标</string>
+    
+    <string name="company_name15">温州贷</string>
+    <string name="company_name15_product01">散标</string>
+    
+    <string name="company_name16">91旺财</string>
+    <string name="company_name16_product01">散标</string>
+    
+    <string name="company_name17">PPmoney</string>
+    <string name="company_name17_product01">加多保</string>
+    <string name="company_name17_product02">安稳盈</string>
+    <string name="company_name17_product03">直投宝</string>
+    <string name="company_name17_product04">小贷宝</string>
+    <string name="company_name17_product05">典当宝</string>
+    <string name="company_name17_product06">散标</string>
+    
+    <string name="company_name18">91旺财</string>
+    <string name="company_name18_product01">整存宝</string>
+    <string name="company_name18_product02">零钱通</string>
+    
+    <string name="company_name19">金信网</string>
+    <string name="company_name19_product01">月满金</string>
+    <string name="company_name19_product02">季度金</string>
+    <string name="company_name19_product03">双季金</string>
+    <string name="company_name19_product04">金元宝</string>
+    <string name="company_name19_product05">金信宝</string>
+    <string name="company_name19_product06">金信盈</string>
+    
+    <string name="company_name20">开鑫贷</string>
+    <string name="company_name20_product01">散标</string>
+    
+    <string name="company_name21">你我贷</string>
+    <string name="company_name21_product01">散标</string>
+    
+    <string name="company_name22">拍拍贷</string>
+    <string name="company_name22_product01">散标</string>
+    
+    <string name="company_name23">投哪网</string>
+    <string name="company_name23_product01">散标</string>
+    
+    <string name="company_name24">向上金服</string>
+    <string name="company_name24_product01">散标</string>
+    
+    <string name="company_name25">小牛在线</string>
+    <string name="company_name25_product01">安心牛</string>
+    <string name="company_name25_product02">散标</string>
+    
+    <string name="company_name26">信融财富</string>
+    <string name="company_name26_product01">散标</string>
+    
+    <string name="company_name27">宜人贷</string>
+    <string name="company_name27_product01">散标</string>
+    
+    <string name="company_name28">易贷网</string>
+    <string name="company_name28_product01">散标</string>
+    
+    <string name="company_name29">翼龙贷</string>
+    <string name="company_name29_product01">散标</string>
+    
+    <string name="company_name30">银湖网</string>
+    <string name="company_name30_product01">散标</string>
+    
+    <string name="company_name31">招财宝</string>
+    <string name="company_name31_product01">散标</string>
+    
+    <string name="company_name32">其他</string>
     
     <string name="select_platform">请选择投资平台</string>
     <string name="select_type">请选择投资类型</string>

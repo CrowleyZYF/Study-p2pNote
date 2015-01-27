@@ -409,15 +409,17 @@ public class Index {
 		}
 		case 1:{
 			SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd");
+			
 			Calendar c1 = Calendar.getInstance();
 			Calendar c2 = Calendar.getInstance();
 			c1.setTime(sdf.parse(tempRecordModel.getTimeBegin()));
 			c2.setTime(sdf.parse(tempRecordModel.getTimeEnd()));
-			int months = c2.get(Calendar.MONTH) - c1.get(Calendar.MONTH);
+			int months = (c2.get(Calendar.YEAR)*12+c2.get(Calendar.MONTH)) - (c1.get(Calendar.YEAR)*12+c1.get(Calendar.MONTH));
 			months = (months==0) ? 1 : Math.abs(months);
 			if(tempRecordModel.getEarningMin()==0.0){
-				Float rate = tempRecordModel.getEarningMax() / 12;				
-				double earning = (tempRecordModel.getMoney() * months * Math.pow((1 + rate), months) / (Math.pow((1 + rate), months) - 1))*months-tempRecordModel.getMoney();
+				Float rate = tempRecordModel.getEarningMax() / 12;	
+				double payMonth = (tempRecordModel.getMoney() * rate * Math.pow((1 + rate), months) / (Math.pow((1 + rate), months) - 1));
+				double earning = payMonth*months-tempRecordModel.getMoney();
 				tempCursor.close();
 				db.close();
 				helper.close();

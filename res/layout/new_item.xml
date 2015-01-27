@@ -151,7 +151,7 @@
                             android:gravity="center_vertical|right" 
                             android:spinnerMode="dialog"
                             android:background="@drawable/icon_bg"
-                            android:prompt="@string/select_platform"
+                            android:prompt="@string/select_platform"         
                                                        
                             />                        
                     </RelativeLayout>

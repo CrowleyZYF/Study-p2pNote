@@ -43,7 +43,7 @@ public class LoginActivity extends Activity implements OnClickListener {
 	private String accountString;
 	private Context nowContext=this;
 	
-	private String urlString="http://128.199.226.246/beerich/index.php/login";
+	private String urlString="http://120.27.44.42/p2pbeerich/index.php/login";
 	
 	private Handler handler = new Handler(){
 		public void handleMessage(Message msg){

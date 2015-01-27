@@ -46,7 +46,7 @@ public class RegisterActivity extends Activity implements OnClickListener {
 	private String accountString;
 	private Context nowContext=this;
 	
-	private String urlString="http://128.199.226.246/beerich/index.php/login/register";
+	private String urlString="http://120.27.44.42/p2pbeerich/index.php/login/register";
 	
 	protected void onCreate(Bundle savedInstanceState) {
 		// TODO Auto-generated method stub

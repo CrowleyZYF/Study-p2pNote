@@ -109,7 +109,7 @@ public class ModifyPasswordActivity extends Activity implements OnClickListener 
 			params.put("old_password", password);
 			params.put("new_password", password_repeat);
 			new Thread(){
-				public void run(){String teString=HttpUtils.submitPostData("http://128.199.226.246/beerich/index.php/login/changePassword", params, "utf-8");
+				public void run(){String teString=HttpUtils.submitPostData("http://120.27.44.42/p2pbeerich/index.php/login/changePassword", params, "utf-8");
 					try {
 						JSONObject object=new JSONObject(teString);
 						error_code = (Integer) object.get("error_code");

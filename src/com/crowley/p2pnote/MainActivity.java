@@ -18,6 +18,7 @@ import android.view.Window;
 import android.widget.ImageButton;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
+import android.widget.RelativeLayout;
 import android.widget.TextView;
 
 public class MainActivity extends Activity implements OnClickListener{
@@ -29,6 +30,8 @@ public class MainActivity extends Activity implements OnClickListener{
     private AnalyzeFragment analyzeFragment;  
     private PlatformFragment platformFragment;
     private MoreFragment moreFragment;
+    
+    private RelativeLayout tab_containerLayout;
     
     private LinearLayout tabIndex;  
     private LinearLayout tabWater;
@@ -51,7 +54,7 @@ public class MainActivity extends Activity implements OnClickListener{
     private TextView securityTextView;
     //private TextView shareTextView;
     
-    private int indexNumber=0;
+    private int indexNumber=0;   
     	
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -227,6 +230,8 @@ public class MainActivity extends Activity implements OnClickListener{
 
 	private void initViews() {
 		// TODO Auto-generated method stub
+		tab_containerLayout = (RelativeLayout) findViewById(R.id.tab_container);
+		
 		tabIndex = (LinearLayout) findViewById(R.id.tab_index);
 		tabWater = (LinearLayout) findViewById(R.id.tab_water);
 		tabAnalyze = (LinearLayout) findViewById(R.id.tab_analyze);
@@ -246,7 +251,8 @@ public class MainActivity extends Activity implements OnClickListener{
         securityTextView=(TextView) findViewById(R.id.security);
         //shareTextView=(TextView) findViewById(R.id.share);
         
-		
+		tab_containerLayout.setOnClickListener(this);
+        
 		tabIndex.setOnClickListener(this);
 		tabWater.setOnClickListener(this);
 		tabAnalyze.setOnClickListener(this);
@@ -276,6 +282,11 @@ public class MainActivity extends Activity implements OnClickListener{
 		// TODO Auto-generated method stub
 		switch (v.getId())  
         {  
+		case R.id.tab_container:{
+			if(mLeftMenu.getOpen()){
+				mLeftMenu.closeMenu();
+			}
+		}
         case R.id.tab_index:{
         	indexNumber=0;
             setTabSelection(0);  

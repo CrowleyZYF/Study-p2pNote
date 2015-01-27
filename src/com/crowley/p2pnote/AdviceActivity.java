@@ -41,7 +41,7 @@ public class AdviceActivity extends Activity implements OnClickListener {
 	private final int SEND_SUCCESS = 0;
 	private Context nowContext=this;
 	
-	public String urlString="http://128.199.226.246/beerich/index.php/news/feedback";
+	public String urlString="http://120.27.44.42/p2pbeerich/index.php/news/feedback";
 	
 	protected void onCreate(Bundle savedInstanceState) {
 		// TODO Auto-generated method stub

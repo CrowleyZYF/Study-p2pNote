@@ -270,7 +270,7 @@ public class NewItemActivity extends Activity implements OnItemSelectedListener,
     		map.put("company_name", getResources().getString(DBOpenHelper.PLATFORM_NAMES[i]));
     		List<Map<String, Object>> typesList = new ArrayList<Map<String, Object>>();
     		for(int j=0;j<DBOpenHelper.PLATFORM_PRODUCT[i].length;j++){
-    			if(i==8){
+    			if(i==31){
     				j=100;
     			}else{
     				Map<String, Object> map2=new HashMap<String, Object>();
@@ -322,7 +322,7 @@ public class NewItemActivity extends Activity implements OnItemSelectedListener,
 				Map<String, Object> map = platformList.get(position);
 				String company_name = (String) map.get("company_name");
 				//其他
-				if(company_name.equals(getResources().getString(R.string.company_name09))){
+				if(company_name.equals(getResources().getString(R.string.company_name32))){
 					customLinearLayout.setVisibility(View.VISIBLE);	
 					typeSpinner.setVisibility(View.GONE);
 				//不是其他
