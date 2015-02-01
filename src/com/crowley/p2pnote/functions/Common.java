@@ -10,6 +10,7 @@ import android.database.sqlite.SQLiteDatabase;
 import android.net.ConnectivityManager;
 import android.app.Activity;
 
+import com.crowley.p2pnote.NewItemActivity;
 import com.crowley.p2pnote.R;
 import com.crowley.p2pnote.db.DBOpenHelper;
 import com.crowley.p2pnote.db.RecordModel;
@@ -93,8 +94,9 @@ public class Common {
 		int year=Integer.parseInt(time[0]);
 		int month=Integer.parseInt(time[1]);
 		int day=Integer.parseInt(time[2]);
-		int[] months={0,31,28,31,30,31,30,31,31,30,31,30,31};
-		return year*365+month*months[month]+day;		
+		int[] months={0,0,31,59,90,120,151,181,212,243,273,304,334,365};
+		int test=year*365+month*months[month]+day;
+		return year*365+months[month]+day;
 	}
 	
 	/**

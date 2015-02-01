@@ -1,7 +1,11 @@
-package com.crowley.p2pnote;
+package com.crowley.p2pnote.fragment;
 
 import java.util.ArrayList;
 
+import com.crowley.p2pnote.R;
+import com.crowley.p2pnote.R.color;
+import com.crowley.p2pnote.R.id;
+import com.crowley.p2pnote.R.layout;
 import com.crowley.p2pnote.db.DBOpenHelper;
 import com.crowley.p2pnote.functions.Analyze;
 import com.crowley.p2pnote.ui.MyHorizontalScrollView;
@@ -107,39 +111,39 @@ public class AnalyzeFragment extends Fragment implements OnClickListener,OnTouch
 			case 1:{
 				//收益率
 				xVals = new ArrayList<String>();
-	        	xVals.add("< 6%");
-	        	xVals.add("< 8%");
-	        	xVals.add("< 10%");
-	        	xVals.add("< 12%");
-	        	xVals.add("< 15%");
-	        	xVals.add("< 20%");
-	        	xVals.add("< 25%");
+	        	xVals.add("0% ~ 6%");
+	        	xVals.add("6% ~ 8%");
+	        	xVals.add("8% ~ 10%");
+	        	xVals.add("10% ~ 12%");
+	        	xVals.add("12% ~ 15%");
+	        	xVals.add("20% ~ 20%");
+	        	xVals.add("20% ~ 25%");
 	        	xVals.add("> 25%");
 	        	break;
 			}
 			case 2:{
 				//期限结构
 				xVals = new ArrayList<String>();
-	        	xVals.add("一个月");
-	        	xVals.add("三个月");
-	        	xVals.add("半年");
-	        	xVals.add("九个月");
-	        	xVals.add("一年");
-	        	xVals.add("一年半");
-	        	xVals.add("两年");
+	        	xVals.add("小于一个月");
+	        	xVals.add("小于三个月");
+	        	xVals.add("小于半年");
+	        	xVals.add("小于九个月");
+	        	xVals.add("小于一年");
+	        	xVals.add("小于一年半");
+	        	xVals.add("小于两年");
 	        	xVals.add("两年以上");
 	        	break;
 			}
 			case 3:{
 				//回款时间
 				xVals = new ArrayList<String>();
-	        	xVals.add("一周");
-	        	xVals.add("一个月");
-	        	xVals.add("三个月");
-	        	xVals.add("半年");
-	        	xVals.add("九个月");
-	        	xVals.add("一年");
-	        	xVals.add("一年以上");
+	        	xVals.add("小于一周");
+	        	xVals.add("小于一个月");
+	        	xVals.add("小于三个月");
+	        	xVals.add("小于半年");
+	        	xVals.add("小于九个月");
+	        	xVals.add("小于一年");
+	        	xVals.add("小于一年以上");
 	        	break;
 			}
 			default:

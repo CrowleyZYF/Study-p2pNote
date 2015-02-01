@@ -14,6 +14,7 @@ import android.database.sqlite.SQLiteDatabase;
 
 import com.crowley.p2pnote.db.DBOpenHelper;
 import com.crowley.p2pnote.db.RecordModel;
+import com.crowley.p2pnote.db.RestModel;
 
 public class Index {
 	//剩余几天判定为即将到期
@@ -245,6 +246,33 @@ public class Index {
 	}
 	
 	/**
+	 * 
+	 * @return 累计收益
+	 */
+	public String getBaseInfo04(){
+		float amount=0.0f;
+		DBOpenHelper helper = new DBOpenHelper(nowContext, "record.db");
+		SQLiteDatabase db = helper.getWritableDatabase();
+		
+		Cursor tempCursor=db.rawQuery("select * from rest WHERE type=3 AND userName='"+Common.updateLogin(nowContext)+"'", null);
+		if(tempCursor.getCount()!=0){
+			while(tempCursor.moveToNext()){
+				RestModel tempRecordModel=new RestModel(tempCursor);
+				amount+=tempRecordModel.getMoney();	
+			}
+			tempCursor.close();
+			db.close();
+			helper.close();
+			return Float.valueOf(Common.dealFloat(amount)).toString();
+		}else{
+			tempCursor.close();
+			db.close();
+			helper.close();
+			return Float.valueOf(0.0f).toString();
+		}	
+	}
+	
+	/**
 	 * 返回已经到期和即将到期的数量
 	 * @param context
 	 * @param type 为0表示已经到期，1表示即将到期
@@ -365,19 +393,16 @@ public class Index {
 	 * */
 	public void dealRecord(String idString,Float earning,Float get_out){
 		Long tsLong = System.currentTimeMillis();
-		String ts = tsLong.toString();
-		
+		String ts = tsLong.toString();		
 		DBOpenHelper helper = new DBOpenHelper(nowContext, "record.db");
-		SQLiteDatabase db = helper.getWritableDatabase();
-		
+		SQLiteDatabase db = helper.getWritableDatabase();		
 		Cursor tempCursor=db.rawQuery("select * from record WHERE _id = "+idString, null);
 		tempCursor.moveToFirst();
 		RecordModel tempRecordModel=new RecordModel(tempCursor);
 		String platformString=tempRecordModel.getPlatform();
-		float rest = platform.getRest(tempRecordModel.getPlatform());
-		rest+=tempRecordModel.getMoney()+earning-get_out;		
-		db.execSQL("UPDATE record SET userName='"+Common.updateLogin(nowContext)+"', restBegin = "+earning+", state = 1, rest = "+rest+", timeStampEnd = '"+ts+"', restEnd = "+get_out+" WHERE _id = "+idString);
-		db.execSQL("UPDATE record SET rest="+rest+" WHERE platform = '"+platformString+"' AND userName='"+Common.updateLogin(nowContext)+"'");
+		db.execSQL("UPDATE record SET userName='"+Common.updateLogin(nowContext)+"', state = 1 WHERE _id = "+idString);
+		db.execSQL("insert into rest(platform,name,type,money,timeStamp,userName) values('"+platformString+"','"+platformString+"-"+tempRecordModel.getType()+"',3,"+earning+",'"+tempRecordModel.getTimeStamp()+"','"+Common.updateLogin(nowContext)+"')");
+		db.execSQL("insert into rest(platform,name,type,money,timeStamp,userName) values('"+platformString+"','"+platformString+"-"+tempRecordModel.getType()+"',5,"+tempRecordModel.getMoney()+",'"+tempRecordModel.getTimeStamp()+"','"+Common.updateLogin(nowContext)+"')");
 	}
 	
 	/**

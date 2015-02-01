@@ -53,44 +53,6 @@ public class DBOpenHelper extends SQLiteOpenHelper{
 		R.string.company_name32
 		};
 	
-	/**
-	 * 平台产品
-	 * 
-	 * */	
-	public static final int[][] PLATFORM_PRODUCT = {
-		{R.string.company_name01_product01,R.string.company_name01_product02,R.string.company_name01_product03,R.string.company_name01_product04,R.string.company_name01_product05},
-		{R.string.company_name02_product01,R.string.company_name02_product02,R.string.company_name02_product03,R.string.company_name02_product04},
-		{R.string.company_name03_product01},
-		{R.string.company_name04_product01,R.string.company_name04_product02,R.string.company_name04_product03,R.string.company_name04_product04,R.string.company_name04_product05},
-		{R.string.company_name05_product01,R.string.company_name05_product02,R.string.company_name05_product03},
-		{R.string.company_name06_product01},
-		{R.string.company_name07_product01,R.string.company_name07_product02},
-		{R.string.company_name08_product01,R.string.company_name08_product02,R.string.company_name08_product03,R.string.company_name08_product04},
-		{R.string.company_name09_product01},
-		{R.string.company_name10_product01},
-		{R.string.company_name11_product01},
-		{R.string.company_name12_product01,R.string.company_name12_product02},
-		{R.string.company_name13_product01},
-		{R.string.company_name14_product01},
-		{R.string.company_name15_product01},
-		{R.string.company_name16_product01},
-		{R.string.company_name17_product01,R.string.company_name17_product02,R.string.company_name17_product03,R.string.company_name17_product04,R.string.company_name17_product05,R.string.company_name17_product06},
-		{R.string.company_name18_product01,R.string.company_name18_product02},
-		{R.string.company_name19_product01,R.string.company_name19_product02,R.string.company_name19_product03,R.string.company_name19_product04,R.string.company_name19_product05,R.string.company_name19_product06},
-		{R.string.company_name20_product01},
-		{R.string.company_name21_product01},
-		{R.string.company_name22_product01},
-		{R.string.company_name23_product01},
-		{R.string.company_name24_product01},
-		{R.string.company_name25_product01,R.string.company_name25_product02},
-		{R.string.company_name26_product01},
-		{R.string.company_name27_product01},
-		{R.string.company_name28_product01},
-		{R.string.company_name29_product01},
-		{R.string.company_name30_product01},
-		{R.string.company_name31_product01},
-		{}
-	};
 	
 	/**
 	 * 平台图标
@@ -277,7 +239,7 @@ public class DBOpenHelper extends SQLiteOpenHelper{
 		};
 
 	public DBOpenHelper(Context context, String name) {
-		super(context, name, null, 2);
+		super(context, name, null, 1);
 		// TODO Auto-generated constructor stub
 	}
 
@@ -285,90 +247,167 @@ public class DBOpenHelper extends SQLiteOpenHelper{
 	public void onCreate(SQLiteDatabase db) {
 		// TODO Auto-generated method stub
 		/*
-		 * 目前就一个表，record，记录所有的投资记录
-		 * 表的字段分别为
+		 * record表
+		 * 
 		 * _id:id号
-		 * plateform:平台名 如陆金所
-		 * type:具体的投资项目 如富赢人生
-		 * money:投资的本金
+		 * platform:平台名 如陆金所
+		 * product:具体的投资项目 如富赢人生
+		 * moneyFromPlatform:来自余额的本金
+		 * moneyFromNew:来自新增的本金
 		 * earningMin:浮动收益率下限 如果是固定收益率 该值为0 格式为小数 即15%的话该值为0.15
 		 * earningMax:浮动收益率上限 如果是固定收益率 该值为其收益率
 		 * method:计息方式 0为到期还本息 1为 按月还本息 2为按月只还息
 		 * timeBegin:计息时间 格式为2014-12-26的字符串
 		 * timeEnd:到期时间 格式为2014-12-26的字符串	 
-		 * 
-		 * 
-		 * version 2:
-		 * 增加字段
-		 * 
 		 * timeStamp:创建记录时的时间戳
 		 * state:到期后是否处理,0为未处理，1为已处理
 		 * isDeleted:是否已被删除，0为未删除，1为已删除
 		 * userName:用户名，登陆后用登陆的用户名，未登录的时候默认为not_login
-		 * restBegin:利息，平台的所剩的余额 new
-		 * restEnd:取出，平台的所剩的余额 new
-		 * 
-		 * 
-		 * version 3:
-		 * 增加字段
-		 * 
 		 * timeStampEnd:结算记录时的时间戳 new
 		 * 
 		 * 
-		 * version 4:
-		 * 增加表rest
+		 * rest表
 		 * 
 		 * _id:id号
-		 * platform：平台-项目名称
+		 * timeStamp：对应记录的创建记录时的时间戳
+		 * platform：平台名称
+		 * name：平台-项目名称/取出操作/充值操作
 		 * userName：用户名
-		 * type：计息方式， 0为到期还本息 1为 按月还本息 2为按月只还息
-		 * money：支出多少和取出多少
-		 * rest：完成这笔记录后余额还有多少
-		 * timeStampEnd：结算时间
+		 * type：1表示新增，2表示取出，3表示收益，4表示投资,5代表回款
+		 * money：具体多少数额
 		 * 
 		 * 
-		 * version 5:
-		 * 弃用rest record增加一个字段rest
-		 * rest:结算后 该平台的余额还有多少
+		 * product表
 		 * 
-		 * 
-		 * 以上都为一个版本， 真版本2
-		 * version2
-		 * 增加news表
-		 * 
+		 * _id:id号
+		 * platform:平台
+		 * product:项目
+		 * money:本金
+		 * method:计息方式 0为到期还本息 1为 按月还本息 2为按月只还息
+		 * earningMin:浮动收益率下限 如果是固定收益率 该值为0 格式为小数 即15%的话该值为0.15
+		 * earningMax:浮动收益率上限 如果是固定收益率 该值为其收益率
+		 * period:投资时间
 		 * 
 		 * 
 		 * 
 		 */
 		//db.execSQL("DROP TABLE record");
 		
-		db.execSQL("create table if not exists record (_id integer primary key autoincrement,platform text not null,type text not null,money real not null,earningMin real not null,earningMax real not null,method integer not null,timeBegin text not null,timeEnd text not null,timeStamp text not null DEFAULT '',state integer not null DEFAULT 0,isDeleted integer not null DEFAULT 0,userName text not null DEFAULT '',restBegin real not null DEFAULT 0.00,restEnd real not null DEFAULT 0.00,timeStampEnd text not null DEFAULT '',rest real not null DEFAULT 0.00)");		
-		db.execSQL("create table if not exists news (_id integer primary key autoincrement,title text not null,add_time text not null,content text not null)");
-		//db.execSQL("create table if not exists rest (_id integer primary key autoincrement,platform text not null,userName text not null,type integer not null,money real not null,rest real not null,timeStampEnd real not null)");
+		db.execSQL("create table if not exists record (_id integer primary key autoincrement,platform text not null,type text not null,moneyFromPlatform real not null,moneyFromNew real not null,earningMin real not null,earningMax real not null,method integer not null,timeBegin text not null,timeEnd text not null,timeStamp text not null,state integer not null,isDeleted integer not null,userName text not null)");		
+		db.execSQL("create table if not exists rest (_id integer primary key autoincrement,platform text not null,name text not null,type text not null,money real not null,timeStamp text not null,userName text not null)");
+		db.execSQL("create table if not exists product (_id integer primary key autoincrement,platform text not null,product text not null,money real not null,earningMin real not null,earningMax real not null,method integer not null,period integer not null)");
+		
+		
+		
+		db.execSQL("insert into product(platform,product,money,earningMin,earningMax,method,period) values('爱投资','爱担保',-1,-1,-1,-1,-1)");
+		db.execSQL("insert into product(platform,product,money,earningMin,earningMax,method,period) values('爱投资','爱保理',-1,-1,-1,-1,-1)");
+		db.execSQL("insert into product(platform,product,money,earningMin,earningMax,method,period) values('爱投资','爱融租',-1,-1,-1,-1,-1)");
+		db.execSQL("insert into product(platform,product,money,earningMin,earningMax,method,period) values('爱投资','爱收藏',-1,-1,-1,-1,-1)");
+		
+		db.execSQL("insert into product(platform,product,money,earningMin,earningMax,method,period) values('点融网','新手投资团',100,0.07,0.16,2,12)");
+		db.execSQL("insert into product(platform,product,money,earningMin,earningMax,method,period) values('点融网','稳健投资团',1000,0,0.09,2,12)");
+		db.execSQL("insert into product(platform,product,money,earningMin,earningMax,method,period) values('点融网','高手投资团',500,0,0.07,2,12)");
+		db.execSQL("insert into product(platform,product,money,earningMin,earningMax,method,period) values('点融网','点融VIP团',300000,0,0.12,2,12)");
+		db.execSQL("insert into product(platform,product,money,earningMin,earningMax,method,period) values('点融网','散标',-1,-1,-1,-1,-1)");
+		
+		db.execSQL("insert into product(platform,product,money,earningMin,earningMax,method,period) values('积木盒子','散标',-1,0,0.09,0,-1)");
+		
+		db.execSQL("insert into product(platform,product,money,earningMin,earningMax,method,period) values('陆金所','安盈票据',3000,0,0.06,0,3)");
+		db.execSQL("insert into product(platform,product,money,earningMin,earningMax,method,period) values('陆金所','富盈人生',1000,0,0.056,0,1)");
+		db.execSQL("insert into product(platform,product,money,earningMin,earningMax,method,period) values('陆金所','稳盈安e',10000,0,0.0861,1,36)");
+		db.execSQL("insert into product(platform,product,money,earningMin,earningMax,method,period) values('陆金所','稳盈安业-3个月',250000,0,0.075,2,3)");
+		db.execSQL("insert into product(platform,product,money,earningMin,earningMax,method,period) values('陆金所','稳盈安业-6个月',250000,0,0.078,2,6)");
+		db.execSQL("insert into product(platform,product,money,earningMin,earningMax,method,period) values('陆金所','专享理财',100000,0.1,0.15,1,1)");
+		
+		db.execSQL("insert into product(platform,product,money,earningMin,earningMax,method,period) values('人人贷','U计划A',1000,0.07,0.14,0,3)");
+		db.execSQL("insert into product(platform,product,money,earningMin,earningMax,method,period) values('人人贷','U计划B',10000,0,0.09,0,6)");
+		db.execSQL("insert into product(platform,product,money,earningMin,earningMax,method,period) values('人人贷','U计划C',10000,0,0.11,0,12)");
+		db.execSQL("insert into product(platform,product,money,earningMin,earningMax,method,period) values('人人贷','散标',-1,-1,-1,-1,-1)");
+		
+		db.execSQL("insert into product(platform,product,money,earningMin,earningMax,method,period) values('盛融在线','散标',-1,-1,-1,-1,-1)");
+		
+		db.execSQL("insert into product(platform,product,money,earningMin,earningMax,method,period) values('鑫合汇','日生益',-1,-1,-1,-1,-1)");
+		db.execSQL("insert into product(platform,product,money,earningMin,earningMax,method,period) values('鑫合汇','聚优宝',-1,-1,-1,-1,-1)");
+		db.execSQL("insert into product(platform,product,money,earningMin,earningMax,method,period) values('鑫合汇','企益融',-1,-1,-1,-1,-1)");
+		
+		db.execSQL("insert into product(platform,product,money,earningMin,earningMax,method,period) values('有利网','定存宝-12个月',1000,0,0.11,0,12)");
+		db.execSQL("insert into product(platform,product,money,earningMin,earningMax,method,period) values('有利网','定存宝-6个月',1000,0,0.09,0,6)");
+		db.execSQL("insert into product(platform,product,money,earningMin,earningMax,method,period) values('有利网','定存宝-3个月',1000,0,0.07,0,3)");
+		db.execSQL("insert into product(platform,product,money,earningMin,earningMax,method,period) values('有利网','月息通',50,0,0.12,1,12)");
+		
+		db.execSQL("insert into product(platform,product,money,earningMin,earningMax,method,period) values('合拍在线','散标',-1,-1,-1,-1,-1)");
+		
+		db.execSQL("insert into product(platform,product,money,earningMin,earningMax,method,period) values('红岭创投','散标',-1,-1,-1,-1,-1)");
+		
+		db.execSQL("insert into product(platform,product,money,earningMin,earningMax,method,period) values('钱爸爸','散标',-1,-1,-1,-1,-1)");
+		
+		db.execSQL("insert into product(platform,product,money,earningMin,earningMax,method,period) values('人人聚财','定投宝-1个月',-1,0.07,0.08,-1,1)");
+		db.execSQL("insert into product(platform,product,money,earningMin,earningMax,method,period) values('人人聚财','定投宝-3个月',-1,0.08,0.09,-1,3)");
+		db.execSQL("insert into product(platform,product,money,earningMin,earningMax,method,period) values('人人聚财','定投宝-6个月',-1,0.09,0.10,-1,6)");
+		db.execSQL("insert into product(platform,product,money,earningMin,earningMax,method,period) values('人人聚财','定投宝-12个月',-1,0.11,0.13,-1,12)");
+		db.execSQL("insert into product(platform,product,money,earningMin,earningMax,method,period) values('人人聚财','散标',-1,-1,-1,-1,-1)");
+		
+		db.execSQL("insert into product(platform,product,money,earningMin,earningMax,method,period) values('融资城','散标',-1,-1,-1,-1,-1)");
+
+		db.execSQL("insert into product(platform,product,money,earningMin,earningMax,method,period) values('微贷网','散标',-1,-1,-1,-1,-1)");
+		
+		db.execSQL("insert into product(platform,product,money,earningMin,earningMax,method,period) values('温州贷','散标',-1,-1,-1,-1,-1)");
+		
+		db.execSQL("insert into product(platform,product,money,earningMin,earningMax,method,period) values('91旺财','散标',-1,-1,-1,-1,-1)");
+		
+		db.execSQL("insert into product(platform,product,money,earningMin,earningMax,method,period) values('PPmoney','加多保',-1,-1,-1,-1,-1)");
+		db.execSQL("insert into product(platform,product,money,earningMin,earningMax,method,period) values('PPmoney','安稳盈',-1,-1,-1,-1,-1)");
+		db.execSQL("insert into product(platform,product,money,earningMin,earningMax,method,period) values('PPmoney','直投宝',-1,-1,-1,-1,-1)");
+		db.execSQL("insert into product(platform,product,money,earningMin,earningMax,method,period) values('PPmoney','小贷宝',-1,-1,-1,-1,-1)");
+		db.execSQL("insert into product(platform,product,money,earningMin,earningMax,method,period) values('PPmoney','典当宝',-1,-1,-1,-1,-1)");
+		db.execSQL("insert into product(platform,product,money,earningMin,earningMax,method,period) values('PPmoney','散标',-1,-1,-1,-1,-1)");
+		
+		db.execSQL("insert into product(platform,product,money,earningMin,earningMax,method,period) values('爱钱进','整存宝-3个月',-1,-1,-1,-1,3)");
+		db.execSQL("insert into product(platform,product,money,earningMin,earningMax,method,period) values('爱钱进','整存宝-12个月',-1,-1,-1,-1,12)");
+		db.execSQL("insert into product(platform,product,money,earningMin,earningMax,method,period) values('爱钱进','零钱通',-1,-1,-1,-1,-1)");
+		
+		db.execSQL("insert into product(platform,product,money,earningMin,earningMax,method,period) values('金信网','月满金',-1,0,0.058,-1,1)");
+		db.execSQL("insert into product(platform,product,money,earningMin,earningMax,method,period) values('金信网','季度金',-1,0,0.09,-1,3)");
+		db.execSQL("insert into product(platform,product,money,earningMin,earningMax,method,period) values('金信网','双季金',-1,0,0.1,-1,6)");
+		db.execSQL("insert into product(platform,product,money,earningMin,earningMax,method,period) values('金信网','金元宝',-1,0.12,0.14,-1,12)");
+		db.execSQL("insert into product(platform,product,money,earningMin,earningMax,method,period) values('金信网','金信宝',-1,0,0.13,-1,18)");
+		db.execSQL("insert into product(platform,product,money,earningMin,earningMax,method,period) values('金信网','金信盈',-1,0,0.15,-1,24)");
+		
+		db.execSQL("insert into product(platform,product,money,earningMin,earningMax,method,period) values('开鑫贷','散标',-1,-1,-1,-1,-1)");
+		
+		db.execSQL("insert into product(platform,product,money,earningMin,earningMax,method,period) values('你我贷','散标',-1,-1,-1,-1,-1)");
+		
+		db.execSQL("insert into product(platform,product,money,earningMin,earningMax,method,period) values('拍拍贷','散标',-1,-1,-1,-1,-1)");
+		
+		db.execSQL("insert into product(platform,product,money,earningMin,earningMax,method,period) values('投哪网','散标',-1,-1,-1,-1,-1)");
+		
+		db.execSQL("insert into product(platform,product,money,earningMin,earningMax,method,period) values('向上金服','散标',-1,-1,-1,-1,-1)");
+		
+		db.execSQL("insert into product(platform,product,money,earningMin,earningMax,method,period) values('小牛在线','安心牛-1个月',-1,0.102,0.105,-1,1)");
+		db.execSQL("insert into product(platform,product,money,earningMin,earningMax,method,period) values('小牛在线','安心牛-3个月',-1,0.118,0.121,-1,3)");
+		db.execSQL("insert into product(platform,product,money,earningMin,earningMax,method,period) values('小牛在线','安心牛-4个月',-1,0.136,0.139,-1,6)");
+		db.execSQL("insert into product(platform,product,money,earningMin,earningMax,method,period) values('小牛在线','散标',-1,-1,-1,-1,-1)");
+		
+		db.execSQL("insert into product(platform,product,money,earningMin,earningMax,method,period) values('信融财富','散标',-1,-1,-1,-1,-1)");
+		
+		db.execSQL("insert into product(platform,product,money,earningMin,earningMax,method,period) values('宜人贷','散标',-1,-1,-1,-1,-1)");
+		
+		db.execSQL("insert into product(platform,product,money,earningMin,earningMax,method,period) values('易贷网','散标',-1,-1,-1,-1,-1)");
+		
+		db.execSQL("insert into product(platform,product,money,earningMin,earningMax,method,period) values('翼龙贷','散标',-1,-1,-1,-1,-1)");
+		
+		db.execSQL("insert into product(platform,product,money,earningMin,earningMax,method,period) values('银湖网','散标',-1,-1,-1,-1,-1)");
+		
+		db.execSQL("insert into product(platform,product,money,earningMin,earningMax,method,period) values('招财宝','散标',-1,-1,-1,-1,-1)");
+		
 	}
 
 	@Override
 	public void onUpgrade(SQLiteDatabase db, int oldVersion, int newVersion) {
 		// TODO Auto-generated method stub
-		for(int i = oldVersion+1;i<=newVersion;i++){
-			switch (i) {
-			case 2:{
-				db.execSQL("create table if not exists news (_id integer primary key autoincrement,title text not null,add_time text not null,content text not null)");
-				break;
-			}
-			default:
-				break;
-			}
-		}
-	}
+	}	
 	
 	public Cursor returALLRecords(SQLiteDatabase db){
 		return db.rawQuery("select * from record", null);
 	}
-	
-	public Cursor returALLNews(SQLiteDatabase db){
-		return db.rawQuery("select * from news", null);
-	}
-	
-	
 }

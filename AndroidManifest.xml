@@ -14,15 +14,21 @@
         android:allowBackup="true"
         android:icon="@drawable/logo"
         android:label="@string/app_name"
-        android:theme="@style/AppTheme" android:logo="@drawable/logo">
+        android:theme="@style/AppTheme" 
+        android:logo="@drawable/logo">
         <activity
-            android:name="com.crowley.p2pnote.MainActivity"
-            android:label="@string/app_name" >
+            android:name="com.crowley.p2pnote.WelcomeActivity" >
+                        
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
 
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
+        </activity>
+        <activity
+            android:name="com.crowley.p2pnote.MainActivity"
+            android:label="@string/app_name"
+             >
         </activity>
         <activity
             android:name="com.crowley.p2pnote.NewItemActivity" >

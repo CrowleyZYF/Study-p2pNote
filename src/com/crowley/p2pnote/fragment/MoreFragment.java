@@ -1,20 +1,27 @@
-package com.crowley.p2pnote;
+package com.crowley.p2pnote.fragment;
 
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
 
+
+import com.crowley.p2pnote.R;
+import com.crowley.p2pnote.R.drawable;
+import com.crowley.p2pnote.R.id;
+import com.crowley.p2pnote.R.layout;
 import com.crowley.p2pnote.db.HttpUtils;
 import com.crowley.p2pnote.db.NewsModel;
 import com.crowley.p2pnote.functions.Common;
 import com.crowley.p2pnote.functions.ReturnList;
 import com.crowley.p2pnote.ui.RefreshListView;
 import com.crowley.p2pnote.ui.RefreshListView.IReflashListener;
+
 import android.annotation.SuppressLint;
 import android.app.Fragment;
 import android.content.SharedPreferences;

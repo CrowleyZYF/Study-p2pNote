@@ -1,4 +1,4 @@
-package com.crowley.p2pnote;
+package com.crowley.p2pnote.fragment;
 
 import java.text.ParseException;
 import java.util.ArrayList;
@@ -7,6 +7,12 @@ import java.util.Map;
 
 import cn.pedant.SweetAlert.SweetAlertDialog;
 
+import com.crowley.p2pnote.NewItemActivity;
+import com.crowley.p2pnote.R;
+import com.crowley.p2pnote.R.color;
+import com.crowley.p2pnote.R.id;
+import com.crowley.p2pnote.R.layout;
+import com.crowley.p2pnote.R.style;
 import com.crowley.p2pnote.functions.Common;
 import com.crowley.p2pnote.functions.Index;
 import com.crowley.p2pnote.functions.Platform;
@@ -51,6 +57,7 @@ public class IndexFragment extends Fragment implements OnClickListener,OnItemLon
 	private TextView index_info_basic02_number;
 	private TextView index_info_basic02_float;
 	private TextView index_info_basic03_number;
+	private TextView index_info_basic04_number;
 	
 	private Dialog dialog;
 	
@@ -64,7 +71,6 @@ public class IndexFragment extends Fragment implements OnClickListener,OnItemLon
 	private TextView moneyTextView;
 	private TextView rateTextView;
 	private EditText earningText;
-	private EditText getOutText;
 	
 	private float total=0.0f;
 	private Context nowContext;
@@ -107,6 +113,7 @@ public class IndexFragment extends Fragment implements OnClickListener,OnItemLon
     	index_info_basic02_number.setText(index.getBaseInfo02Number01());
     	index_info_basic02_float.setText(index.getBaseInfo02Number02());
     	index_info_basic03_number.setText(index.getBaseInfo03());
+    	index_info_basic04_number.setText(index.getBaseInfo04());
     	
         tab_button01_number.setText(String.valueOf(index.indexCount(0)));
         tab_button02_number.setText(String.valueOf(index.indexCount(1)));
@@ -126,6 +133,7 @@ public class IndexFragment extends Fragment implements OnClickListener,OnItemLon
     	index_info_basic02_number = (TextView) view.findViewById(R.id.index_info_basic02_number);
     	index_info_basic02_float = (TextView) view.findViewById(R.id.index_info_basic02_float);
     	index_info_basic03_number = (TextView) view.findViewById(R.id.index_info_basic03_number);
+    	index_info_basic04_number = (TextView) view.findViewById(R.id.index_info_basic04_number);
     	
     	dialog = new Dialog(this.getActivity(), R.style.MyDialog);
         //设置它的ContentView
@@ -134,8 +142,7 @@ public class IndexFragment extends Fragment implements OnClickListener,OnItemLon
         productTextView=(TextView) dialog.findViewById(R.id.item_name);
         moneyTextView=(TextView) dialog.findViewById(R.id.money_invest);
         rateTextView=(TextView) dialog.findViewById(R.id.invest_rate);
-        earningText=(EditText) dialog.findViewById(R.id.earning);
-        getOutText=(EditText) dialog.findViewById(R.id.get_out);        
+        earningText=(EditText) dialog.findViewById(R.id.earning);    
         sureButton = (Button) dialog.findViewById(R.id.sure_button);
         cancelButton = (Button) dialog.findViewById(R.id.cancel_button);
 	}
@@ -174,29 +181,16 @@ public class IndexFragment extends Fragment implements OnClickListener,OnItemLon
         	Float earningFloat=0.0f;
         	Float getOutFloat=0.0f;
         	if(TextUtils.isEmpty(earningText.getText())){
-				/*erroredBoolean=true;
-				errorString="收益确认不得为空";*/	
-        		String minString=earningText.getHint().toString();
+				erroredBoolean=true;
+				errorString="收益确认不得为空";
+        		/*String minString=earningText.getHint().toString();
         		String[] earningString=minString.split("~");
-        		earningFloat = Float.parseFloat(earningString[0]);        		
+        		earningFloat = Float.parseFloat(earningString[0]);*/        		
 			}else{
 				earningFloat = Float.parseFloat(earningText.getText().toString());
 				if(earningFloat<0){
 					erroredBoolean=true;
 					errorString="收益必须大于0";	
-				}
-			}
-        	if(TextUtils.isEmpty(getOutText.getText())){
-        		getOutFloat=0.0f;
-			}else{
-				getOutFloat = Float.parseFloat(getOutText.getText().toString());
-				if(getOutFloat<0){
-					erroredBoolean=true;
-					errorString="取出金额必须大于0";				
-				}
-				if(getOutFloat>total+earningFloat){
-					erroredBoolean=true;
-					errorString="取出金额必须小于"+(total+earningFloat);	
 				}
 			}
         	if (erroredBoolean) {
@@ -269,6 +263,7 @@ public class IndexFragment extends Fragment implements OnClickListener,OnItemLon
     	index_info_basic02_number.setText(index.getBaseInfo02Number01());
     	index_info_basic02_float.setText(index.getBaseInfo02Number02());
     	index_info_basic03_number.setText(index.getBaseInfo03());
+    	index_info_basic04_number.setText(index.getBaseInfo04());
 	}
 
 	@Override
@@ -293,9 +288,6 @@ public class IndexFragment extends Fragment implements OnClickListener,OnItemLon
 					// TODO Auto-generated catch block
 					e.printStackTrace();
 				}
-				getOutText.setText("");
-				total=platform.getRest(Common.getPlatformString(this.getActivity(),id))+Float.valueOf(((TextView)arg1.findViewById(R.id.item_money)).getText().toString());
-				getOutText.setHint(Float.valueOf(total).toString());
                 dialog.show();
 				break;
 			}case 1:{

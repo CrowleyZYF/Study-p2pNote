@@ -2,6 +2,11 @@ package com.crowley.p2pnote;
 
 import cn.pedant.SweetAlert.SweetAlertDialog;
 
+import com.crowley.p2pnote.fragment.AnalyzeFragment;
+import com.crowley.p2pnote.fragment.IndexFragment;
+import com.crowley.p2pnote.fragment.MoreFragment;
+import com.crowley.p2pnote.fragment.PlatformFragment;
+import com.crowley.p2pnote.fragment.WaterFragment;
 import com.crowley.p2pnote.functions.Common;
 import com.crowley.p2pnote.ui.SlidingMenu;
 
@@ -48,7 +53,7 @@ public class MainActivity extends Activity implements OnClickListener{
     private ImageButton newItem;
     private TextView login;
     private TextView checkTextView;
-    private TextView backupTextView;
+    //private TextView backupTextView;
     private TextView adviceTextView;
     private TextView aboutTextView;
     private TextView securityTextView;
@@ -64,7 +69,6 @@ public class MainActivity extends Activity implements OnClickListener{
         initViews();  
         fragmentManager = getFragmentManager();  
         setTabSelection(indexNumber);
-        
     }
     
     @Override
@@ -244,7 +248,7 @@ public class MainActivity extends Activity implements OnClickListener{
 
         mLeftMenu=(SlidingMenu) findViewById(R.id.id_menu);
         login=(TextView) findViewById(R.id.login);   
-        backupTextView=(TextView) findViewById(R.id.backup);
+        //backupTextView=(TextView) findViewById(R.id.backup);
         checkTextView=(TextView) findViewById(R.id.check_update);
         adviceTextView=(TextView) findViewById(R.id.advice);
         aboutTextView=(TextView) findViewById(R.id.about);
@@ -260,7 +264,7 @@ public class MainActivity extends Activity implements OnClickListener{
 		//tabMore.setOnClickListener(this);
 		newItem.setOnClickListener(this);
 		login.setOnClickListener(this);
-		backupTextView.setOnClickListener(this);
+		//backupTextView.setOnClickListener(this);
 		checkTextView.setOnClickListener(this);
 		adviceTextView.setOnClickListener(this);
 		aboutTextView.setOnClickListener(this);
@@ -281,12 +285,7 @@ public class MainActivity extends Activity implements OnClickListener{
 	public void onClick(View v) {
 		// TODO Auto-generated method stub
 		switch (v.getId())  
-        {  
-		case R.id.tab_container:{
-			if(mLeftMenu.getOpen()){
-				mLeftMenu.closeMenu();
-			}
-		}
+        {
         case R.id.tab_index:{
         	indexNumber=0;
             setTabSelection(0);  
@@ -331,10 +330,10 @@ public class MainActivity extends Activity implements OnClickListener{
         	}
             break;
         }
-        case R.id.backup:{
+        /*case R.id.backup:{
         	Common.toBeContinuedDialog(this).show();
             break;
-        }
+        }*/
         case R.id.check_update:{
         	final SweetAlertDialog pDialog = new SweetAlertDialog(this, SweetAlertDialog.PROGRESS_TYPE);
         	pDialog.setTitleText("¼ì²é¸üÐÂ...");

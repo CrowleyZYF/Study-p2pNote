@@ -6,6 +6,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+import com.crowley.p2pnote.functions.Platform;
 import com.crowley.p2pnote.functions.ReturnList;
 import com.crowley.p2pnote.ui.recordAdapter;
 
@@ -26,7 +27,8 @@ public class RecordActivity extends Activity implements OnClickListener {
 	private ListView listView;
 	private recordAdapter list_adapter;
 	private List<Map<String, Object>> dataList;
-	private ReturnList returnList;
+	//private ReturnList returnList;
+	private Platform platform;
 	
 	private String platformString;
 	private TextView main_tab_banner_title;
@@ -58,23 +60,23 @@ public class RecordActivity extends Activity implements OnClickListener {
         platformString = intent.getStringExtra("platform");
         
 		dataList=new ArrayList<Map<String,Object>>();
-        returnList=new ReturnList(this);        
+		platform=new Platform(this);     
         getData(platformString);
         list_adapter=new recordAdapter(this, dataList, R.layout.record_listview_item, new String[]{"record_type","record_time","record_money"}, new int[]{R.id.record_type,R.id.record_time,R.id.record_money});
         listView.setAdapter(list_adapter);
         main_tab_banner_title.setText(platformString+"的成交记录");
 	}
 	
-	private void getData(String platform){
+	private void getData(String platformString){
 		dataList.clear();
-		if(platform=="暂无数据"||platform=="平台"){
+		if(platformString=="暂无数据"||platformString=="平台"){
 			Map<String,Object> map=new HashMap<String, Object>();
 			map.put("record_type", "收益");  
 			map.put("record_time", "暂无数据");  
 			map.put("record_money", "0");
 			dataList.add(map);
 		}else{
-			List<Map<String, Object>> tempList=returnList.getRecordList(platformString);
+			List<Map<String, Object>> tempList=platform.getRecordList(platformString);
 			for(int i=tempList.size()-1;i>=0;i--){
 				dataList.add(tempList.get(i));
 			}

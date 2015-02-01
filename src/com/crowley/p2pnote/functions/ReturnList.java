@@ -52,7 +52,7 @@ public class ReturnList {
 		this.helper = new DBOpenHelper(context, "record.db");
 		this.db = this.helper.getWritableDatabase();
 		this.allRecords = this.helper.returALLRecords(this.db);
-		this.allNews = this.helper.returALLNews(this.db);
+		//this.allNews = this.helper.returALLNews(this.db);
 		
 		this.cal=Calendar.getInstance();
 		this.year = this.cal.get(Calendar.YEAR);
@@ -65,7 +65,7 @@ public class ReturnList {
 	}
 	
 	public List<Map<String, Object>> getAllNews(){
-		this.allNews = this.helper.returALLNews(this.db);
+		//this.allNews = this.helper.returALLNews(this.db);
 		List<Map<String, Object>> dataList = new ArrayList<Map<String,Object>>();
 		if(allNews.getCount()!=0){
 			while (allNews.moveToNext()) {
@@ -282,37 +282,7 @@ public class ReturnList {
 		}	
 	}
 	
-	public List<Map<String, Object>> getRecordList(String platform){
-		List<Map<String, Object>> dataList=new ArrayList<Map<String,Object>>();
-		Cursor tempCursor=this.db.rawQuery("select * from record WHERE state=1 AND isDeleted=0 AND userName='"+loginString+"' AND platform='"+platform+"' ORDER BY timeStampEnd", null);
-		if(tempCursor.getCount()!=0){
-			while(tempCursor.moveToNext()){
-				RecordModel tempRecordModel=new RecordModel(tempCursor);
-				if (tempRecordModel.getRestBegin()!=0) {
-					Map<String,Object> map=new HashMap<String, Object>();
-					map.put("record_type", "收益");  
-					map.put("record_time", tempRecordModel.getTimeEnd());  
-					map.put("record_money", dealFloat(tempRecordModel.getRestBegin()));
-					dataList.add(map);					
-				}				
-				if(tempRecordModel.getRestEnd()!=0){
-					Map<String,Object> map2=new HashMap<String, Object>();
-					map2.put("record_type", "取出");  
-					map2.put("record_time", tempRecordModel.getTimeEnd());
-					map2.put("record_money", dealFloat(tempRecordModel.getRestEnd()));
-					dataList.add(map2);
-				}
-			}
-			return dataList;			
-		}else{
-			Map<String,Object> map=new HashMap<String, Object>();
-			map.put("record_type", "收益");  
-			map.put("record_time", "暂无数据");
-			map.put("record_money", "0");
-			dataList.add(map);
-			return dataList;
-		}		
-	}
+	
 	
 	public String getNewestDate(String platform){
 		updateLogin();
@@ -342,21 +312,7 @@ public class ReturnList {
 		}
 	}
 	
-	public String getNewestMoney(String platform,boolean in){
-		updateLogin();
-		Cursor tempCursor=this.db.rawQuery("select * from record WHERE state=1 AND isDeleted=0 AND userName='"+loginString+"' AND platform='"+platform+"' ORDER BY timeStampEnd DESC", null);
-		if(tempCursor.getCount()!=0){
-			tempCursor.moveToFirst();
-			RecordModel tempRecordModel=new RecordModel(tempCursor);
-			if(in){
-				return dealFloat(tempRecordModel.getRestBegin())+"";
-			}else{
-				return dealFloat(tempRecordModel.getRestEnd())+"";
-			}
-		}else{
-			return "暂无数据";
-		}		
-	}
+	
 	
 	public String getPlatformString(String id){
 		updateLogin();
@@ -449,53 +405,9 @@ public class ReturnList {
 		}		
 	}
 	
-	/**
-	 * 获取平台余额
-	 * 
-	 * */	
-	public float getRest(String platform){
-		updateLogin();
-		Cursor tempCursor=this.db.rawQuery("select * from record WHERE state=0 AND isDeleted=0 AND userName='"+loginString+"' AND platform = '"+platform+"' ORDER BY timeStamp DESC", null);
-		if(tempCursor.getCount()!=0){
-			if(tempCursor.moveToFirst()){
-				RecordModel tempRecordModel=new RecordModel(tempCursor);
-				return tempRecordModel.getRest();
-			}else{
-				return 0.0f;
-			}
-		}else{
-			Cursor tempCursor2=this.db.rawQuery("select * from record WHERE state=1 AND isDeleted=0 AND userName='"+loginString+"' AND platform = '"+platform+"' ORDER BY timeStampEnd DESC", null);
-			if(tempCursor2.getCount()!=0){
-				if(tempCursor2.moveToFirst()){
-					RecordModel tempRecordModel=new RecordModel(tempCursor2);
-					return tempRecordModel.getRest();
-				}else{
-					return 0.0f;
-				}
-			}else{
-				return 0.0f;
-			}
-		}		
-	}
 	
-	/**
-	 * 获取平台总收益
-	 * 
-	 * */
-	public float getEarningAll(String platform){
-		updateLogin();
-		float earningAll=0.0f;
-		Cursor tempCursor=this.db.rawQuery("select * from record WHERE state=1 AND isDeleted=0 AND userName='"+loginString+"' AND platform = '"+platform+"'", null);
-		if(tempCursor.getCount()!=0){
-			while (tempCursor.moveToNext()) {
-				RecordModel tempRecordModel=new RecordModel(tempCursor);
-				earningAll+=tempRecordModel.getRestBegin();				
-			}
-			return earningAll;
-		}else{
-			return 0.0f;
-		}		
-	}
+	
+	
 	
 	/**
 	 * 获取平台图标
@@ -569,19 +481,7 @@ public class ReturnList {
 	 * 到期处理
 	 * 
 	 * */
-	public void dealRecord(String idString,Float earning,Float get_out){
-		updateLogin();
-		Long tsLong = System.currentTimeMillis();
-		String ts = tsLong.toString();
-		Cursor tempCursor=this.db.rawQuery("select * from record WHERE _id = "+idString, null);
-		tempCursor.moveToFirst();
-		RecordModel tempRecordModel=new RecordModel(tempCursor);
-		String platformString=tempRecordModel.getPlatform();
-		float rest = getRest(tempRecordModel.getPlatform());
-		rest+=tempRecordModel.getMoney()+earning-get_out;		
-		this.db.execSQL("UPDATE record SET userName='"+loginString+"', restBegin = "+earning+", state = 1, rest = "+rest+", timeStampEnd = '"+ts+"', restEnd = "+get_out+" WHERE _id = "+idString);
-		this.db.execSQL("UPDATE record SET rest="+rest+" WHERE platform = '"+platformString+"' AND userName='"+loginString+"'");
-	}
+	
 	
 	/**
 	 * 返回利息
@@ -886,130 +786,7 @@ public class ReturnList {
 		return xVals;
 	}
 		
-	//type为0表示平台在投金额分析，1为收益率，2为期限结构，3为回款时间，4为平台余额分析
-	public ArrayList<Entry> analyzeEntries(int type,ArrayList<String> xVals){
-		updateLogin();
-		ArrayList<Entry> entries1 = new ArrayList<Entry>();
-		ArrayList<Float> counts = new ArrayList<Float>();
-		Float[] analyze01={0.06f,0.08f,0.1f,0.12f,0.15f,0.2f,0.25f};
-		Integer[] analyze02={1,3,6,9,12,18,24};
-		Integer[] analyze03={7,1,3,6,9,12};
-		float amount=0.0f;
-		for(int i=0;i<xVals.size();i++){
-			counts.add(0.0f);
-		}
-		this.allRecords = this.helper.returALLRecords(this.db);
-		if(allRecords.getCount()!=0){
-			while (allRecords.moveToNext()) {
-				RecordModel record=new RecordModel(allRecords);
-				//如果记录已经被删除 跳出本次循环
-				if(record.getIsDeleted()==1||!record.getUserName().equals(loginString)){
-					continue;
-				}
-				switch (type) {
-				case 0:{
-					if(record.getState()==1){
-						continue;
-					}
-					for(int i=0;i<xVals.size();i++){
-						String platformString=record.getPlatform();
-						if(platformString.equals(xVals.get(i))){
-							counts.set(i, counts.get(i)+record.getMoney());
-							amount+=record.getMoney();
-						}
-					}
-					break;
-				}
-				case 1:{
-					if(record.getState()==1){
-						continue;
-					}
-					Float profit=record.getEarningMax();
-					boolean added=false;
-					for(int i=0;i<analyze01.length&&added==false;i++){
-						if(profit<analyze01[i]){
-							added=true;
-							counts.set(i, counts.get(i)+1.0f);
-							amount+=1.0f;
-						}
-					}
-					if (added==false) {
-						counts.set(xVals.size()-1, counts.get(xVals.size()-1)+1.0f);
-						amount+=1.0f;
-					}
-					break;						
-				}
-				case 2:{
-					if(record.getState()==1){
-						continue;
-					}
-					int duration=parseMonth(record.getTimeEnd())-parseMonth(record.getTimeBegin());
-					boolean added=false;
-					for(int i=0;i<analyze02.length&&added==false;i++){
-						if(duration<analyze02[i]){
-							added=true;
-							counts.set(i, counts.get(i)+1.0f);
-							amount+=1.0f;
-						}
-					}
-					if (added==false) {
-						counts.set(xVals.size()-1, counts.get(xVals.size()-1)+1.0f);
-						amount+=1.0f;
-					}	
-					break;
-				}
-				case 3:{
-					if(record.getState()==1){
-						continue;
-					}
-					int leftMonth=parseMonth(record.getTimeEnd())-(this.year*12+this.month);
-					int leftDay=parseDay(record.getTimeEnd())-days;
-					boolean added=false;
-					for(int i=0;i<analyze03.length&&added==false;i++){
-						if(i==0){
-							if(leftDay<analyze03[i]){
-								added=true;
-								counts.set(i, counts.get(i)+1.0f);
-								amount+=1.0f;
-							}
-						}else{
-							if(leftMonth<analyze03[i]){
-								added=true;
-								counts.set(i, counts.get(i)+1.0f);
-								amount+=1.0f;
-							}
-						}
-						
-					}
-					if (added==false) {
-						counts.set(xVals.size()-1, counts.get(xVals.size()-1)+1.0f);
-						amount+=1.0f;
-					}
-					break;
-				}
-				case 4:{
-					for(int i=0;i<xVals.size();i++){
-						String platformString=xVals.get(i);
-						counts.set(i, counts.get(i)+getRest(platformString));
-						amount+=getRest(platformString);
-					}
-				}
-				default:
-					break;
-				}									
-			}
-		}
-		for(int i = 0; i < xVals.size(); i++) {
-			float result;
-			if (amount==0) {
-				result=0.0f;
-			}else{
-				result=100f*counts.get(i)/amount;
-			}			
-            entries1.add(new Entry(result, i));
-        }
-		return entries1;
-	}
+	
 
 	public void saveNews(NewsModel temp) {
 		// TODO Auto-generated method stub

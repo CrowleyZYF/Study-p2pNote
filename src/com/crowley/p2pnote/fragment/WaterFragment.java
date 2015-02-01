@@ -1,15 +1,19 @@
-package com.crowley.p2pnote;
+package com.crowley.p2pnote.fragment;
 
+import java.text.ParseException;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 
 import cn.pedant.SweetAlert.SweetAlertDialog;
 
+import com.crowley.p2pnote.NewItemActivity;
+import com.crowley.p2pnote.R;
 import com.crowley.p2pnote.functions.Common;
 import com.crowley.p2pnote.functions.Water;
 import com.crowley.p2pnote.ui.listAdapter;
 
+import android.app.Dialog;
 import android.app.Fragment;
 import android.content.Context;
 import android.content.Intent;
@@ -20,7 +24,10 @@ import android.view.View.OnClickListener;
 import android.view.ViewGroup;
 import android.widget.AdapterView;
 import android.widget.AdapterView.OnItemClickListener;
+import android.widget.Button;
+import android.widget.EditText;
 import android.widget.ImageView;
+import android.widget.LinearLayout;
 import android.widget.ListView;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
@@ -57,7 +64,20 @@ public class WaterFragment extends Fragment implements OnClickListener,OnItemLon
 	
 	private int now_state;
 	private boolean now_order;
-	private Context nowContext=this.getActivity();
+	private static Context nowContext;
+	
+	private Dialog dialog;
+	private LinearLayout indexButtons;
+	private LinearLayout waterButtons;
+	private Button know_button;
+	private TextView timeEndTextView;
+	private TextView productTextView;
+	private TextView moneyTextView;
+	private TextView rateTextView;
+	private EditText earningText;
+	private EditText getOutText;
+	private TextView checkTextView;
+	private String id="";
 	
 	@Override
 	public View onCreateView(LayoutInflater inflater, ViewGroup container,
@@ -79,6 +99,7 @@ public class WaterFragment extends Fragment implements OnClickListener,OnItemLon
         begin_invest.setOnClickListener(this);
         listView.setOnItemClickListener(this);
         listView.setOnItemLongClickListener(this);
+        know_button.setOnClickListener(this);
 	}
 
 	public void initData() {
@@ -92,6 +113,7 @@ public class WaterFragment extends Fragment implements OnClickListener,OnItemLon
 	}
 
 	public void initView(View view) {
+		nowContext=this.getActivity();
 		listView=(ListView) view.findViewById(R.id.water_list_view);
         time_tab=(RelativeLayout) view.findViewById(R.id.invest_time);
         money_tab=(RelativeLayout) view.findViewById(R.id.invest_money);
@@ -105,6 +127,23 @@ public class WaterFragment extends Fragment implements OnClickListener,OnItemLon
         money_tab_icon=(ImageView) view.findViewById(R.id.invest_money_icon);
         profit_tab_icon=(ImageView) view.findViewById(R.id.invest_profit_icon);
         begin_invest_icon=(ImageView) view.findViewById(R.id.begin_invest_icon);
+        
+        dialog = new Dialog(this.getActivity(), R.style.MyDialog);
+        //设置它的ContentView
+        dialog.setContentView(R.layout.dialog);
+        indexButtons=(LinearLayout) dialog.findViewById(R.id.indexButtons);
+        waterButtons=(LinearLayout) dialog.findViewById(R.id.waterButtons);
+        timeEndTextView=(TextView) dialog.findViewById(R.id.end_time);
+        productTextView=(TextView) dialog.findViewById(R.id.item_name);
+        moneyTextView=(TextView) dialog.findViewById(R.id.money_invest);
+        rateTextView=(TextView) dialog.findViewById(R.id.invest_rate);
+        earningText=(EditText) dialog.findViewById(R.id.earning);
+        getOutText=(EditText) dialog.findViewById(R.id.get_out);        
+        know_button = (Button) dialog.findViewById(R.id.know_button);
+        checkTextView = (TextView) dialog.findViewById(R.id.check_title);
+        checkTextView.setText("查看确认投资");
+        indexButtons.setVisibility(View.GONE);
+        waterButtons.setVisibility(View.VISIBLE);
 	}
 	
 	@Override
@@ -160,6 +199,10 @@ public class WaterFragment extends Fragment implements OnClickListener,OnItemLon
 	public void onClick(View v) {
 		// TODO Auto-generated method stub
 		switch (v.getId()) {
+		case R.id.know_button:{
+			dialog.dismiss();
+			break;
+		}
 		case R.id.invest_time:{
 			time_des=!time_des;
 			tabReset();
@@ -254,7 +297,28 @@ public class WaterFragment extends Fragment implements OnClickListener,OnItemLon
 	            })
 	            .show();
 			}else{
-				Toast.makeText(this.getActivity(), "已结算项目暂不提供删除", Toast.LENGTH_SHORT).show();
+				//Toast.makeText(this.getActivity(), "已结算项目暂不提供删除", Toast.LENGTH_SHORT).show();
+				new SweetAlertDialog(this.getActivity(), SweetAlertDialog.WARNING_TYPE)
+	            .setTitleText("确定删除该条记录嘛?")
+	            .showContentText(false)
+	            .setCancelText("取消")
+	            .setConfirmText("确定")
+	            .showCancelButton(true)
+	            .setConfirmClickListener(new SweetAlertDialog.OnSweetClickListener() {
+	                @Override
+	                public void onClick(SweetAlertDialog sDialog) {
+	                	//Common.deleteItem(nowContext,((TextView)arg1.findViewById(R.id.item_id)).getText().toString());
+	                	//reflash();
+	                    sDialog.setTitleText("记录已删除")
+	                            .setConfirmText("确定")
+	                            .showContentText(false)
+	                            .showCancelButton(false)
+	                            .setCancelClickListener(null)
+	                            .setConfirmClickListener(null)
+	                            .changeAlertType(SweetAlertDialog.SUCCESS_TYPE);
+	                }
+	            })
+	            .show();
 			}
 			
 			return true;
@@ -279,7 +343,21 @@ public class WaterFragment extends Fragment implements OnClickListener,OnItemLon
 				intent.putExtra("platform", "");
 	            startActivity(intent);
 			}else{
-				Toast.makeText(this.getActivity(), "已结算项目暂不提供修改", Toast.LENGTH_SHORT).show();
+				//Toast.makeText(this.getActivity(), "已结算项目暂不提供修改", Toast.LENGTH_SHORT).show();
+				id=((TextView)arg1.findViewById(R.id.item_id)).getText().toString();
+				String tempString=((TextView)arg1.findViewById(R.id.timeEnd)).getText().toString();
+				String[] time=tempString.split(" ");
+				timeEndTextView.setText(time[1]);
+				productTextView.setText(((TextView)arg1.findViewById(R.id.item_name)).getText().toString());
+				moneyTextView.setText(((TextView)arg1.findViewById(R.id.item_money)).getText().toString());
+				String rateString=((TextView)arg1.findViewById(R.id.item_profit)).getText().toString();
+				rateTextView.setText(rateString.substring(0, rateString.length()-1));
+				earningText.setText(water.getEarning(id));
+				earningText.setEnabled(false);
+				getOutText.setText(water.getOut(id));
+				getOutText.setEnabled(false);
+                dialog.show();
+				break;
 			}			
 			break;			
 		}

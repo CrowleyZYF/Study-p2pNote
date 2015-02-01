@@ -24,93 +24,68 @@ public class RecordModel {
 	private int id;
 	private String platformString;
 	private String typeString;
-	private Float moneyFloat;
+	private Float moneyFromPlatformFloat;
+	private Float moneyFromNewFloat;
 	private Float earningMinFloat;
 	private Float earningMaxFloat;
 	private Integer methodInteger;
 	private String timeBeginString;
-	private String timeEndString;
-	
+	private String timeEndString;	
 	private String timeStamp;
 	private int state;
 	private int isDeleted;
 	private String userName;
-	private Float restBegin;
-	private Float restEnd;
- 
-	private String timeStampEnd;
-	
-	private Float rest;
 	
 	public RecordModel(){
 		this.id=0;
 		this.platformString="";
 		this.typeString="";
-		this.moneyFloat=0.0f;
+		this.moneyFromPlatformFloat=0.0f;
+		this.moneyFromNewFloat=0.0f;
 		this.earningMinFloat=0.0f;
 		this.earningMaxFloat=0.0f;
 		this.methodInteger=0;
 		this.timeBeginString="";
-		this.timeEndString="";	
-		
+		this.timeEndString="";			
 		this.timeStamp="";
 		this.state=0;
 		this.isDeleted=0;
 		this.userName="";
-		this.restBegin=0.0f;
-		this.restEnd=0.0f;
-		
-		this.timeStampEnd="";
-		
-		this.rest=0.0f;
 	}
 	
-	public RecordModel(Integer id,String platform,String type,Float money,Float earningMin,Float earningMax,Integer method,String timeBegin,String timeEnd,
-			String timeStamp,int state,int isDeleted,String userName,Float restBegin,Float restEnd,
-			String timeStampEnd,Float rest){
+	public RecordModel(Integer id,String platform,String type,Float moneyFromPlatform,Float moneyFormNew,Float earningMin,Float earningMax,Integer method,String timeBegin,String timeEnd,
+			String timeStamp,int state,int isDeleted,String userName){
 		this.id=id;
 		this.platformString=platform;
 		this.typeString=type;
-		this.moneyFloat=money;
+		this.moneyFromPlatformFloat=moneyFromPlatform;
+		this.moneyFromNewFloat=moneyFormNew;
 		this.earningMinFloat=earningMin;
 		this.earningMaxFloat=earningMax;
 		this.methodInteger=method;
 		this.timeBeginString=timeBegin;
-		this.timeEndString=timeEnd;
-		
+		this.timeEndString=timeEnd;		
 		this.timeStamp=timeStamp;
 		this.state=state;
 		this.isDeleted=isDeleted;
 		this.userName=userName;
-		this.restBegin=restBegin;
-		this.restEnd=restEnd;
-		
-		this.timeStampEnd=timeStampEnd;
-		
-		this.rest=rest;
 	}
 	
 	public RecordModel(Cursor cursor){
 		this.id=cursor.getInt(cursor.getColumnIndex("_id"));
 		this.platformString=cursor.getString(cursor.getColumnIndex("platform"));
 		this.typeString=cursor.getString(cursor.getColumnIndex("type"));
-		this.moneyFloat=cursor.getFloat(cursor.getColumnIndex("money"));
+		this.moneyFromPlatformFloat=cursor.getFloat(cursor.getColumnIndex("moneyFromPlatform"));
+		this.moneyFromNewFloat=cursor.getFloat(cursor.getColumnIndex("moneyFromNew"));
 		this.earningMinFloat=cursor.getFloat(cursor.getColumnIndex("earningMin"));
 		this.earningMaxFloat=cursor.getFloat(cursor.getColumnIndex("earningMax"));
 		this.methodInteger=cursor.getInt(cursor.getColumnIndex("method"));
 		this.timeBeginString=cursor.getString(cursor.getColumnIndex("timeBegin"));
-		this.timeEndString=cursor.getString(cursor.getColumnIndex("timeEnd"));
-		
+		this.timeEndString=cursor.getString(cursor.getColumnIndex("timeEnd"));		
 		this.timeStamp=cursor.getString(cursor.getColumnIndex("timeStamp"));
 		this.state=cursor.getInt(cursor.getColumnIndex("state"));
 		this.isDeleted=cursor.getInt(cursor.getColumnIndex("isDeleted"));
 		this.userName=cursor.getString(cursor.getColumnIndex("userName"));
-		this.restBegin=cursor.getFloat(cursor.getColumnIndex("restBegin"));
-		this.restEnd=cursor.getFloat(cursor.getColumnIndex("restEnd"));
-		
-		this.timeStampEnd=cursor.getString(cursor.getColumnIndex("timeStampEnd"));
-		
-		this.rest=cursor.getFloat(cursor.getColumnIndex("rest"));
 	}
 	
 	//get method
@@ -127,7 +102,15 @@ public class RecordModel {
 	}
 	
 	public Float getMoney(){
-		return this.moneyFloat;
+		return this.moneyFromPlatformFloat+this.moneyFromNewFloat;
+	}
+	
+	public Float getMoneyFromPlatform(){
+		return this.moneyFromPlatformFloat;
+	}
+	
+	public Float getMoneyFromNew(){
+		return this.moneyFromNewFloat;
 	}
 	
 	public Float getEarningMin(){
@@ -166,22 +149,6 @@ public class RecordModel {
 		return this.userName;
 	}
 	
-	public Float getRestBegin(){
-		return this.restBegin;
-	}
-	
-	public Float getRestEnd(){
-		return this.restEnd;
-	}
-	
-	public String getTimeStampEnd(){
-		return this.timeStampEnd;
-	}
-	
-	public Float getRest(){
-		return this.rest;
-	}
-	
 	//set method	
 	public void setPlatform(String s){
 		this.platformString=s;
@@ -191,8 +158,12 @@ public class RecordModel {
 		this.typeString=s;
 	}
 	
-	public void setMoney(Float f){
-		this.moneyFloat=f;
+	public void setMoneyFromPlatform(Float f){
+		this.moneyFromPlatformFloat=f;
+	}
+	
+	public void setMoneyFromNew(Float f){
+		this.moneyFromNewFloat=f;
 	}
 	
 	public void setEarningMin(Float f){
@@ -229,21 +200,5 @@ public class RecordModel {
 	
 	public void setUserName(String s){
 		this.userName=s;
-	}
-	
-	public void setRestBegin(Float f){
-		this.restBegin=f;
-	}
-	
-	public void setRestEnd(Float f){
-		this.restEnd=f;
-	}
-	
-	public void setTimeStampEnd(String s){
-		this.timeStampEnd=s;
-	}
-	
-	public void setRest(Float f){
-		this.rest=f;
 	}
 }

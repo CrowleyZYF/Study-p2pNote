@@ -112,7 +112,7 @@
 		<TextView
 		    android:layout_width="wrap_content"
 		    android:layout_height="wrap_content"
-		    android:text="关注网贷篮子微信"
+		    android:text="关注钱去哪了微信"
 		    android:textSize="16sp"
 		    android:textColor="@color/light_black"
 		    android:layout_toRightOf="@id/weichat"
@@ -148,7 +148,7 @@
 		<TextView
 		    android:layout_width="wrap_content"
 		    android:layout_height="wrap_content"
-		    android:text="关注网贷篮子微博"
+		    android:text="关注钱去哪了微博"
 		    android:textSize="16sp"
 		    android:textColor="@color/light_black"
 		    android:layout_toRightOf="@id/weibo"
@@ -168,7 +168,7 @@
     <TextView 
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:text="Copyright 2015 网贷篮子版权所有"        
+        android:text="Copyright 2015 钱去哪了版权所有"        
         android:layout_gravity="bottom"
         android:gravity="bottom|center_horizontal"
         android:paddingBottom="10dp"

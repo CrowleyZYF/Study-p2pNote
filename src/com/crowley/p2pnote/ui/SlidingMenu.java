@@ -1,19 +1,14 @@
 package com.crowley.p2pnote.ui;
 
-import com.crowley.p2pnote.PlatformFragment;
 import com.crowley.p2pnote.R;
-import com.nineoldandroids.view.ViewHelper;
 
-import android.R.integer;
 import android.content.Context;
 import android.content.res.TypedArray;
 import android.util.AttributeSet;
 import android.util.DisplayMetrics;
-import android.util.Log;
 import android.util.TypedValue;
 import android.view.MotionEvent;
 import android.view.ViewGroup;
-import android.view.Window;
 import android.view.WindowManager;
 import android.widget.HorizontalScrollView;
 import android.widget.LinearLayout;
@@ -95,9 +90,9 @@ public class SlidingMenu extends HorizontalScrollView {
 		// TODO Auto-generated method stub		
 		super.onLayout(changed, l, t, r, b);
 		
-		/*if(changed){
+		if(changed){
 			this.scrollTo(mMenuWidth, 0);
-		}*/
+		}
 	}
 	
 	private boolean askChild(Object v,MotionEvent ev){
@@ -111,9 +106,6 @@ public class SlidingMenu extends HorizontalScrollView {
 	          if (vg.getChildAt(i) instanceof HorizontalScrollView) {//(这是以HorizontalScrollView为例,其它可以自行加判断)
 	                   return ((ViewGroup)vg.getChildAt(i)).onInterceptTouchEvent(ev);
 	            }
-	          /*if (vg.getChildAt(i) instanceof LinearLayout) {//(这是以HorizontalScrollView为例,其它可以自行加判断)
-                  return ((ViewGroup)vg.getChildAt(i)).onInterceptTouchEvent(ev);
-	          }*/
 	            if(askChild(vg.getChildAt(i), ev)){
 	                return true;
 	           }
@@ -140,7 +132,7 @@ public class SlidingMenu extends HorizontalScrollView {
 			break;
 		}
 		Log.i("m_info", "321");*/
-		//return super.onTouchEvent(ev);		
+		//return super.onTouchEvent(ev);
 		return false;
 	}
 	

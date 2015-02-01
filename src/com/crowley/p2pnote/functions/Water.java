@@ -20,6 +20,32 @@ public class Water {
 		nowContext=context;
 	}
 	
+	public String getEarning(String idString){
+		DBOpenHelper helper = new DBOpenHelper(nowContext, "record.db");
+		SQLiteDatabase db = helper.getWritableDatabase();
+		
+		Cursor tempCursor=db.rawQuery("select * from record WHERE _id = "+idString, null);
+		tempCursor.moveToFirst();
+		RecordModel tempRecordModel=new RecordModel(tempCursor);
+		tempCursor.close();
+		db.close();
+		helper.close();
+		return "";
+	}
+	
+	public String getOut(String idString){
+		DBOpenHelper helper = new DBOpenHelper(nowContext, "record.db");
+		SQLiteDatabase db = helper.getWritableDatabase();
+		
+		Cursor tempCursor=db.rawQuery("select * from record WHERE _id = "+idString, null);
+		tempCursor.moveToFirst();
+		RecordModel tempRecordModel=new RecordModel(tempCursor);
+		tempCursor.close();
+		db.close();
+		helper.close();
+		return "";
+	}
+	
 	public List<Map<String, Object>> waterSort(int type,boolean des){
 		DBOpenHelper helper = new DBOpenHelper(nowContext, "record.db");
 		SQLiteDatabase db = helper.getWritableDatabase();
@@ -137,6 +163,9 @@ public class Water {
 				dataList.set(i, temp.get(dataList.size()-1-i));
 			}					
 		}
+		allRecords.close();
+		db.close();
+		helper.close();
 		return dataList;		
 	}
 

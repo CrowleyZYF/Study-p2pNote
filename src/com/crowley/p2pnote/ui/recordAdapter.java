@@ -21,17 +21,20 @@ public class recordAdapter extends SimpleAdapter{
 	
 	public static final int[] PLATFORM_TYPE = {
 		R.string.platform_in,
-		R.string.platform_out
+		R.string.platform_out,
+		R.string.platform_add
 		};
 	
 	public static final int[] PLATFORM_SIGNAL = {
 		R.string.add,
-		R.string.minus
+		R.string.minus,
+		R.string.add
 		};
 	
 	public static final int[] COLOR = {
 		R.color.platform_in,
-		R.color.platform_out
+		R.color.platform_out,
+		R.color.platform_in
 		};
 	
 	private LayoutInflater inflater;

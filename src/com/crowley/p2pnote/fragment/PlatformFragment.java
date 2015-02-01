@@ -1,7 +1,16 @@
-package com.crowley.p2pnote;
+package com.crowley.p2pnote.fragment;
 
 import java.util.List;
 
+import cn.pedant.SweetAlert.SweetAlertDialog;
+
+import com.crowley.p2pnote.NewItemActivity;
+import com.crowley.p2pnote.R;
+import com.crowley.p2pnote.RecordActivity;
+import com.crowley.p2pnote.R.drawable;
+import com.crowley.p2pnote.R.id;
+import com.crowley.p2pnote.R.layout;
+import com.crowley.p2pnote.R.style;
 import com.crowley.p2pnote.db.DBOpenHelper;
 import com.crowley.p2pnote.db.RecordModel;
 import com.crowley.p2pnote.functions.Common;
@@ -18,6 +27,7 @@ import android.content.SharedPreferences;
 import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
 import android.os.Bundle;
+import android.text.TextUtils;
 import android.view.LayoutInflater;
 import android.view.MotionEvent;
 import android.view.View;
@@ -60,6 +70,8 @@ public class PlatformFragment extends Fragment implements OnClickListener,OnTouc
 	private TextView timeEndTextView;
 	private TextView productTextView;
 	private EditText getOutText;
+	private TextView actionTitleTextView;
+	private TextView actionNameTextView;
     
 	@Override
 	public View onCreateView(LayoutInflater inflater, ViewGroup container,
@@ -130,6 +142,8 @@ public class PlatformFragment extends Fragment implements OnClickListener,OnTouc
         getOutText=(EditText) dialog.findViewById(R.id.get_out);        
         sureButton = (Button) dialog.findViewById(R.id.sure_button);
         cancelButton = (Button) dialog.findViewById(R.id.cancel_button);
+        actionTitleTextView = (TextView) dialog.findViewById(R.id.action_title);
+        actionNameTextView = (TextView) dialog.findViewById(R.id.action_name);
 	}
 
 
@@ -140,16 +154,30 @@ public class PlatformFragment extends Fragment implements OnClickListener,OnTouc
 		platform_earning_rate.setText(Float.valueOf(platform.getEarningRateAll(platformString)).toString());
 		platform_amount.setText(Float.valueOf(platform.getAllAmount(platformString)).toString());
 		newest_date.setText(platform.getNewestDate(platformString));
-		if(platform.getNewestBool(platformString)){
+		switch (platform.getNewestBool(platformString)) {
+		case 1:{
 			newest_judge01.setText("收益");
 			newest_judge02.setText("+");
 			newest_money.setTextColor(getResources().getColor(DBOpenHelper.platform_in));
 			newest_judge02.setTextColor(getResources().getColor(DBOpenHelper.platform_in));
-		}else{
+			break;
+		}
+		case 2:{
 			newest_judge01.setText("取出");
 			newest_judge02.setText("-");
 			newest_money.setTextColor(getResources().getColor(DBOpenHelper.platform_out));
 			newest_judge02.setTextColor(getResources().getColor(DBOpenHelper.platform_out));
+			break;
+		}
+		case 3:{
+			newest_judge01.setText("充值");
+			newest_judge02.setText("+");
+			newest_money.setTextColor(getResources().getColor(DBOpenHelper.platform_in));
+			newest_judge02.setTextColor(getResources().getColor(DBOpenHelper.platform_in));
+			break;
+		}
+		default:
+			break;
 		}
 		newest_money.setText(platform.getNewestMoney(platformString, platform.getNewestBool(platformString)));
 	}
@@ -166,14 +194,22 @@ public class PlatformFragment extends Fragment implements OnClickListener,OnTouc
             break;			
 		}
 		case R.id.platform_invest:{
-			Intent intent=new Intent(this.getActivity(),NewItemActivity.class);
+			/*Intent intent=new Intent(this.getActivity(),NewItemActivity.class);
 			intent.putExtra("model", "2");
 			intent.putExtra("id", "");
 			intent.putExtra("platform", title.getText());
-            startActivity(intent);
+            startActivity(intent);*/
+			actionNameTextView.setText("充值金额");
+			actionTitleTextView.setText("充值金额");
+			productTextView.setText(title.getText());
+			timeEndTextView.setText(Common.getTime());
+			//getOutText.setHint(platform_rest.getText());
+			dialog.show();
             break;			
 		}
 		case R.id.platform_out:{
+			actionNameTextView.setText("取出余额");
+			actionTitleTextView.setText("取出余额");
 			productTextView.setText(title.getText());
 			timeEndTextView.setText(Common.getTime());
 			getOutText.setHint(platform_rest.getText());
@@ -186,30 +222,58 @@ public class PlatformFragment extends Fragment implements OnClickListener,OnTouc
 		}
 		case R.id.sure_button:{
 			//创建记录
-			Long tsLong = System.currentTimeMillis();
-			String ts = tsLong.toString();
-			String userNameString="";			
-			SharedPreferences preferences=this.getActivity().getSharedPreferences("user", android.content.Context.MODE_PRIVATE);
-			boolean isLogined = preferences.getBoolean("isLogined", false);
-			if(isLogined){
-				userNameString=preferences.getString("account", "出错啦");
-			}else{
-				userNameString="not_login";
+			boolean erroredBoolean=false;
+			String errorString="";
+			if(TextUtils.isEmpty(getOutText.getText())){
+				erroredBoolean=true;
+				errorString="请输入具体金额";	
+			}else if(Float.parseFloat(getOutText.getText().toString())<0){
+				erroredBoolean=true;
+				errorString="金额不可小于0";
 			}
-			String sqlString="insert into record(platform,type,money,earningMin,earningMax,method,timeBegin,timeEnd,timeStamp,state,isDeleted,userName,restBegin,restEnd,timeStampEnd,rest) values('"+title.getText()+"','"+""+"',"+0+","+0+","+0+","+0+",'"+Common.getTime()+"','"+Common.getTime()+"','"+ts+"',0,0,'"+userNameString+"',0.0,0.0,'',"+platform.getRest((String) title.getText())+")";
-			DBOpenHelper helper = new DBOpenHelper(this.getActivity(), "record.db");
-			SQLiteDatabase db = helper.getWritableDatabase();
-			db.execSQL(sqlString);
-			Cursor tempCursor=db.rawQuery("select * from record WHERE timeStamp = "+ts, null);
-			tempCursor.moveToFirst();
-			RecordModel tempRecordModel=new RecordModel(tempCursor);
-			String idString=(Integer.valueOf((tempRecordModel.getID()))).toString();
-			float take_out=Float.valueOf(getOutText.getText().toString());
-			Index index=new Index(this.getActivity());
-			index.dealRecord(idString, 0.0f, take_out);
-			dialog.dismiss();
-			getOutText.setText("");
-			reflash();
+			
+			if ((actionNameTextView.getText().toString()).equals("取出余额")) {
+				if (Float.parseFloat(getOutText.getText().toString())>Float.parseFloat(getOutText.getHint().toString())) {
+					erroredBoolean=true;
+					errorString="取出金额不可大于现余额";	
+				}
+			}
+			if(erroredBoolean){
+				new SweetAlertDialog(this.getActivity(), SweetAlertDialog.ERROR_TYPE)
+	                .setTitleText((actionNameTextView.getText().toString())+"失败")
+	                .setContentText(errorString)
+	                .setConfirmText("确定")
+	                .show();
+			}else{
+				Long tsLong = System.currentTimeMillis();
+				String ts = tsLong.toString();
+				String userNameString="";
+				SharedPreferences preferences=this.getActivity().getSharedPreferences("user", android.content.Context.MODE_PRIVATE);
+				boolean isLogined = preferences.getBoolean("isLogined", false);
+				if(isLogined){
+					userNameString=preferences.getString("account", "出错啦");
+				}else{
+					userNameString="not_login";
+				}
+				String sqlString="insert into record(platform,type,money,earningMin,earningMax,method,timeBegin,timeEnd,timeStamp,state,isDeleted,userName,restBegin,restEnd,timeStampEnd,rest) values('"+title.getText()+"','"+""+"',"+0+","+0+","+0+","+0+",'"+Common.getTime()+"','"+Common.getTime()+"','"+ts+"',0,0,'"+userNameString+"',0.0,0.0,'',"+platform.getRest((String) title.getText())+")";
+				DBOpenHelper helper = new DBOpenHelper(this.getActivity(), "record.db");
+				SQLiteDatabase db = helper.getWritableDatabase();
+				db.execSQL(sqlString);
+				Cursor tempCursor=db.rawQuery("select * from record WHERE timeStamp = "+ts, null);
+				tempCursor.moveToFirst();
+				RecordModel tempRecordModel=new RecordModel(tempCursor);
+				String idString=(Integer.valueOf((tempRecordModel.getID()))).toString();
+				float take_out=Float.valueOf(getOutText.getText().toString());
+				Index index=new Index(this.getActivity());
+				if ((actionNameTextView.getText().toString()).equals("取出余额")) {
+					index.dealRecord(idString, 0.0f, take_out);
+				}else{
+					index.dealRecord(idString, 0.0f, (0-take_out));
+				}
+				dialog.dismiss();
+				getOutText.setText("");
+				reflash();
+			}			
 			break;
 		}
 		default:
