@@ -80,10 +80,10 @@ public class MyHorizontalScrollView extends HorizontalScrollView implements OnCl
 		mContainer.addView(view);  		
 		
 		//初始化第一屏幕的元素  
-		initFirstScreenChildren();  
+		initFirstScreenChildren(null);  
 	}  
 	
-	public void updateDate(HorizontalScrollViewAdapter mAdapter)
+	public void updateDate(HorizontalScrollViewAdapter mAdapter,String platformString)
 	{
 		this.mAdapter = mAdapter;  
 		mContainer = (LinearLayout) getChildAt(0);  
@@ -93,7 +93,7 @@ public class MyHorizontalScrollView extends HorizontalScrollView implements OnCl
 		mContainer.addView(view);  		
 		
 		//初始化第一屏幕的元素  
-		initFirstScreenChildren();  
+		initFirstScreenChildren(platformString);  
 	}
 	
 	/** 
@@ -101,7 +101,7 @@ public class MyHorizontalScrollView extends HorizontalScrollView implements OnCl
 	*  
 	* @param mCountOneScreen 
 	*/  
-	public void initFirstScreenChildren()  
+	public void initFirstScreenChildren(String platformString)  
 	{  
 		mContainer = (LinearLayout) getChildAt(0);  
 		mContainer.removeAllViews();  
@@ -110,9 +110,15 @@ public class MyHorizontalScrollView extends HorizontalScrollView implements OnCl
 		{  
 		    View view = mAdapter.getView(i, null, mContainer);  
 		    view.setOnClickListener(this);
-		    if (i==0) {
-		    	((ImageView)((RelativeLayout) view).getChildAt(2)).setImageResource(R.drawable.platform_arrow_grey);
-			}
+		    if(platformString!=null){
+		    	if(platformString.equals(((TextView)(((RelativeLayout) view).getChildAt(0))).getText().toString())){
+		    		((ImageView)((RelativeLayout) view).getChildAt(2)).setImageResource(R.drawable.platform_arrow_grey);
+		    	}
+		    }else{
+		    	if (i==0) {
+			    	((ImageView)((RelativeLayout) view).getChildAt(2)).setImageResource(R.drawable.platform_arrow_grey);
+				}
+		    }		    
 		    mContainer.addView(view);  
 		    mViewPos.put(view, i); 
 		}	

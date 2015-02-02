@@ -88,10 +88,14 @@ public class NewItemActivity extends Activity implements OnItemSelectedListener,
 	private String modelString;
 	private String idString;
 	private String platformString;
-	//temp
-	private RecordModel tempModel;
 	//title
 	private TextView titleTextView;
+	//fake_rest
+	private Float fake_restFloat;
+	//fake_platform
+	private String fake_platformString;
+	//prodcut
+	private int product;
 	
 	protected void onCreate(Bundle savedInstanceState) {
 		// TODO Auto-generated method stub
@@ -118,7 +122,12 @@ public class NewItemActivity extends Activity implements OnItemSelectedListener,
     			if(getResources().getString(DBOpenHelper.PLATFORM_NAMES[i]).equals(itemModel.getPlatform())){
     				isOther=false;
     				platformSpinner.setSelection(i);
-    				tempModel=itemModel;
+    				for(int j=0;j<typeMap.get(itemModel.getPlatform()).size();j++){
+    					if(itemModel.getType().equals(((Map<String, Object>) (typeMap.get(itemModel.getPlatform()).get(j))).get("earning_rate_name").toString())){
+    						typeSpinner.setSelection(j);
+    						product=j;
+    					}
+    				}
     			}
     		}
     		if(isOther){
@@ -130,6 +139,11 @@ public class NewItemActivity extends Activity implements OnItemSelectedListener,
     		}
     		//本金
     		money.setText(itemModel.getMoney().toString());
+    		//rest
+    		fake_restFloat=itemModel.getMoneyFromPlatform();
+    		rest_money.setText(fake_restFloat.toString()); 
+    		rest_money.setHint("上限为"+Float.valueOf(platform.getRest(itemModel.getPlatform())+fake_restFloat).toString());
+    		fake_platformString=itemModel.getPlatform();
     		//收益率类型
     		if(itemModel.getEarningMin()==0.0){
     			//固定收益率
@@ -168,7 +182,7 @@ public class NewItemActivity extends Activity implements OnItemSelectedListener,
 				custom_type.setText("");
     		}
     		rateSpinner.setSelection(1);
-    	}else{
+    	}else{    		
     		rateSpinner.setSelection(1);
     	}
 	}
@@ -176,6 +190,7 @@ public class NewItemActivity extends Activity implements OnItemSelectedListener,
 	private void initEvent() {
 		backButton.setOnClickListener(this);
 		platformSpinner.setOnItemSelectedListener(this);
+		typeSpinner.setOnItemSelectedListener(this);
 		rateSpinner.setOnItemSelectedListener(this);
 		begin_time.setOnClickListener(this);
 		end_time.setOnClickListener(this);
@@ -205,9 +220,59 @@ public class NewItemActivity extends Activity implements OnItemSelectedListener,
 		methodSpinner.setAdapter(method_Adapter);
 		//投资平台
 		platform_adapter=new SimpleAdapter(this, platformList, R.layout.select_platform_item, new String[]{"company_icon","company_name"}, new int[]{R.id.company_icon,R.id.company_name});
-		platformSpinner.setAdapter(platform_adapter);	
-		
+		platformSpinner.setAdapter(platform_adapter);
 		rest_money.setHint("上限为"+platform.getRest(((Map<String, Object>) (platformSpinner.getSelectedItem())).get("company_name").toString()));
+	}
+	
+	private void setPre(){
+		String company= ((Map<String, Object>) (platformSpinner.getSelectedItem())).get("company_name").toString();
+		String product= ((Map<String, Object>) (typeSpinner.getSelectedItem())).get("earning_rate_name").toString();
+		
+		DBOpenHelper helper = new DBOpenHelper(NewItemActivity.this, "record.db");
+		SQLiteDatabase db = helper.getWritableDatabase();
+		Cursor tempCursor=db.rawQuery("select * from product WHERE platform='"+company+"' AND product='"+product+"'", null);
+		if(tempCursor.getCount()!=0){
+			tempCursor.moveToFirst();
+			ProductModel productModel=new ProductModel(tempCursor);
+			if(productModel.getMoney()>0){
+				money.setText(productModel.getMoney().toString());
+			}
+			if(productModel.getEarningMin()>=0){
+				minEditText.setText(Float.valueOf(Common.dealFloat(productModel.getEarningMin()*100)).toString());
+				maxEditText.setText(Float.valueOf(Common.dealFloat(productModel.getEarningMax()*100)).toString());
+			}
+			if(productModel.getEarningMin()>0){
+				rateSpinner.setSelection(0);
+			}else{
+				rateSpinner.setSelection(1);
+			}
+			if(productModel.getMethod()>0){
+				methodSpinner.setSelection(productModel.getMethod());
+			}else{
+				methodSpinner.setSelection(0);
+			}
+			if(productModel.getPeriod()>0){
+				Calendar cal = Calendar.getInstance();
+				cal.add(Calendar.MONTH, productModel.getPeriod());				
+				String monthString;
+				String dayString;
+				int year=cal.get(Calendar.YEAR);
+				int month=cal.get(Calendar.MONTH)+1;
+				int day=cal.get(Calendar.DAY_OF_MONTH);				
+				if (month<10) {
+					monthString="-0"+month;			
+				}else{
+					monthString="-"+month;
+				}
+				if (day<10) {
+					dayString="-0"+day;
+				}else{
+					dayString="-"+day;
+				}
+				end_time.setText(year+monthString+dayString);				
+			}
+		}		
+		tempCursor.close();
 	}
 
 	private void initView() {
@@ -326,30 +391,20 @@ public class NewItemActivity extends Activity implements OnItemSelectedListener,
 			long id) {
 		//这个好像默认会调用一次 所以来了个初始化？
 		if(init==false){
-			Map<String, Object> map = platformList.get(position);
-			String company_name = (String) map.get("company_name");
 			init=true;
+			Map<String, Object> map = platformList.get(position);
+			String company_name = (String) map.get("company_name");			
 			for(int i=0;i<typeMap.get(company_name).size();i++){
 				typeList.add(typeMap.get(company_name).get(i));
 			}
 			type_adapter=new SimpleAdapter(this, typeList, R.layout.select_earning_item, new String[]{"earning_rate_name"}, new int[]{R.id.earning_rate_name});
 			typeSpinner.setAdapter(type_adapter);
 			
-			/*if(modelString.equals("1")){
-				boolean isFound=false;
-				for(int j=0;j<DBOpenHelper.PLATFORM_PRODUCT[position].length;j++){
-					if(getResources().getString(DBOpenHelper.PLATFORM_PRODUCT[position][j]).equals(tempModel.getType())){
-						isFound=true;
-						typeSpinner.setSelection(j);
-					}
-				}
-				if (!isFound) {
-					platformSpinner.setClickable(false);
-					platformSpinner.setEnabled(false);
-					customLinearLayout.setVisibility(View.VISIBLE);	
-					typeSpinner.setVisibility(View.GONE);
-				}
-			}	*/		
+			if(modelString.equals("1")){
+				typeSpinner.setSelection(product);
+			}else if (modelString.equals("0")) {
+				setPre();
+			}
 		}else{			
 			switch (parent.getId()) {
 			//如果是平台被点击了 检测是否是其他平台 如果是 则隐藏下拉框 改成编辑框 否则更换下拉框内容
@@ -369,10 +424,19 @@ public class NewItemActivity extends Activity implements OnItemSelectedListener,
 					for(int i=0;i<typeMap.get(company_name).size();i++){
 						typeList.add(typeMap.get(company_name).get(i));
 					}
-					type_adapter.notifyDataSetChanged();				
-				}								
+					type_adapter.notifyDataSetChanged();
+				}
+				if (modelString.equals("0")) {
+					setPre();
+				}
 				break;			
-			}			
+			}
+			case R.id.type:{
+				if (modelString.equals("0")) {
+					setPre();
+				}
+				break;
+			}
 			//如果是收益率类型被点击 则根据类型对收益率进行变化
 			case R.id.earning_rate:{
 				Map<String, Object> map = rateList.get(position);
@@ -473,14 +537,21 @@ public class NewItemActivity extends Activity implements OnItemSelectedListener,
 			if(TextUtils.isEmpty(rest_money.getText())){
 				money_rest=0.0f;
 			}else{
-				money_rest = Float.parseFloat(money.getText().toString());
+				money_rest = Float.parseFloat(rest_money.getText().toString());
+				Float monet_rest_max=0.0f;
+				//如果是修改模式并且平台没有修改，那么余额上限是现在的平台余额加上未修改前的来自余额
+				if(modelString.equals("1")&&fake_platformString.equals(company)){
+					monet_rest_max=platform.getRest(company)+fake_restFloat;
+				}else{
+					monet_rest_max=platform.getRest(company);
+				}
 				if(money_rest<0){
 					erroredBoolean=true;
 					errorString="来自余额不得为负数";
 				}else if(money_rest>moneys){
 					erroredBoolean=true;
 					errorString="来自余额不得大于总本金";
-				}else if(money_rest>platform.getRest(company)){
+				}else if(money_rest>monet_rest_max){
 					erroredBoolean=true;
 					errorString="来自余额不得大于余额上限";
 				}
@@ -555,22 +626,33 @@ public class NewItemActivity extends Activity implements OnItemSelectedListener,
 			}else{
 				userNameString="not_login";
 			}
+			DBOpenHelper helper = new DBOpenHelper(NewItemActivity.this, "record.db");
+			SQLiteDatabase db = helper.getWritableDatabase();
 			String recordSqlString="";
 			String restSqlString1="";
 			String restSqlString4="";
 			if(modelString.equals("1")){
-				//sqlString="UPDATE record SET platform= '"+company+"', type= '"+type+"', money= "+moneys+" ,earningMin= "+min+" ,earningMax= "+max+" ,method= "+method+" ,timeBegin= '"+begin_dayString+"' ,timeEnd='"+end_dayString+"' WHERE _id="+idString+"";
+				recordSqlString="UPDATE record SET platform= '"+company+"', type= '"+type+"', moneyFromPlatform= "+money_rest+" , moneyFromNew= "+(moneys-money_rest)+" , earningMin= "+min+" ,earningMax= "+max+" ,method= "+method+" ,timeBegin= '"+begin_dayString+"' ,timeEnd='"+end_dayString+"' WHERE _id="+idString+"";
+				Cursor tempCursor=db.rawQuery("select * from record WHERE _id="+idString, null);
+				tempCursor.moveToFirst();
+				String timeStamp=new RecordModel(tempCursor).getTimeStamp();
+				tempCursor.close();
+				if(moneys-money_rest>0){
+					restSqlString1="UPDATE rest SET platform='"+company+"' , name='"+(company+"-"+type)+"' , money="+(moneys-money_rest)+" WHERE type=1 AND timeStamp='"+timeStamp+"'";
+				}else if(moneys-money_rest==0){
+					//没有新增的记录，则需要删除记录
+					restSqlString1="DELETE FROM rest WHERE timeStamp = '"+timeStamp+"' AND type=1 ";
+				}
+				restSqlString4="UPDATE rest SET platform='"+company+"' , name='"+(company+"-"+type)+"' , money="+moneys+" WHERE type=4 AND timeStamp='"+timeStamp+"'";
 			}else{
 				recordSqlString="insert into record(platform,type,moneyFromPlatform,moneyFromNew,earningMin,earningMax,method,timeBegin,timeEnd,timeStamp,state,isDeleted,userName) values('"+company+"','"+type+"',"+money_rest+","+(moneys-money_rest)+","+min+","+max+","+method+",'"+begin_dayString+"','"+end_dayString+"','"+ts+"',0,0,'"+userNameString+"')";
 				if(moneys-money_rest>0){
-					//1表示新增，2表示取出，3表示收益，4表示投资
-					restSqlString1="insert into rest(platform,name,type,money,timeStamp,userName) values('"+company+"','"+(company+"-"+type)+"',1,"+(moneys-money_rest)+",'"+ts+"','"+userNameString+"')";
+					restSqlString1="insert into rest(platform,name,type,money,timeStamp,userName,createTime) values('"+company+"','"+(company+"-"+type)+"',1,"+(moneys-money_rest)+",'"+ts+"','"+userNameString+"','"+ts+"')";
 				}
-				restSqlString4="insert into rest(platform,name,type,money,timeStamp,userName) values('"+company+"','"+(company+"-"+type)+"',4,"+moneys+",'"+ts+"','"+userNameString+"')";
+				restSqlString4="insert into rest(platform,name,type,money,timeStamp,userName,createTime) values('"+company+"','"+(company+"-"+type)+"',4,"+moneys+",'"+ts+"','"+userNameString+"','"+ts+"')";
 			}
 			//如果出错则弹出提示
 			if (erroredBoolean) {
-				//Toast.makeText(getApplicationContext(), errorString, Toast.LENGTH_SHORT).show();
 				new SweetAlertDialog(this, SweetAlertDialog.ERROR_TYPE)
 	                .setTitleText("新建投资失败")
 	                .setContentText(errorString)
@@ -578,8 +660,6 @@ public class NewItemActivity extends Activity implements OnItemSelectedListener,
 	                .show();
 			//如果成功则插入数据并返回
 			}else{
-				DBOpenHelper helper = new DBOpenHelper(NewItemActivity.this, "record.db");
-				SQLiteDatabase db = helper.getWritableDatabase();
 				db.execSQL(recordSqlString);
 				if(!restSqlString1.equals("")){
 					db.execSQL(restSqlString1);

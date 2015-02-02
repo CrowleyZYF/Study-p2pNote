@@ -28,6 +28,7 @@ public class RestModel {
 	private String userNameString;
 	private Float moneyFloat;
 	private Integer typeInteger;
+	private String createTimeString;
 	
 	public RestModel(){
 		this.id=0;
@@ -37,9 +38,10 @@ public class RestModel {
 		this.userNameString="";
 		this.moneyFloat=0.0f;
 		this.typeInteger=0;
+		this.createTimeString="";
 	}
 	
-	public RestModel(Integer id,String timeStamp,String platform,String name,String userNameString,Float money,Integer type){
+	public RestModel(Integer id,String timeStamp,String platform,String name,String userNameString,Float money,Integer type,String createTime){
 		this.id=id;
 		this.timeStampString=timeStamp;
 		this.platformString=platform;
@@ -47,6 +49,7 @@ public class RestModel {
 		this.userNameString=userNameString;
 		this.moneyFloat=money;
 		this.typeInteger=type;
+		this.createTimeString=createTime;
 	}
 	
 	public RestModel(Cursor cursor){
@@ -56,7 +59,8 @@ public class RestModel {
 		this.nameString=cursor.getString(cursor.getColumnIndex("name"));;
 		this.userNameString=cursor.getString(cursor.getColumnIndex("userName"));;
 		this.moneyFloat=cursor.getFloat(cursor.getColumnIndex("money"));
-		this.typeInteger=cursor.getInt(cursor.getColumnIndex("type"));;
+		this.typeInteger=cursor.getInt(cursor.getColumnIndex("type"));
+		this.createTimeString=cursor.getString(cursor.getColumnIndex("createTime"));
 	}
 	
 	//get method
@@ -88,6 +92,10 @@ public class RestModel {
 		return this.typeInteger;
 	}
 	
+	public String getCreateTime(){
+		return this.createTimeString;
+	}
+	
 	//set method	
 	public void setTimeStamp(String s){
 		this.timeStampString=s;
@@ -111,5 +119,9 @@ public class RestModel {
 	
 	public void setType(int i){
 		this.typeInteger=i;
+	}
+	
+	public void setCreateTime(String s){
+		this.createTimeString=s;
 	}
 }

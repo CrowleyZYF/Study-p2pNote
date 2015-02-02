@@ -63,7 +63,7 @@
     <string name="company_name15">温州贷</string>
     <string name="company_name16">91旺财</string>
     <string name="company_name17">PPmoney</string>
-    <string name="company_name18">91旺财</string>
+    <string name="company_name18">爱钱进</string>
     <string name="company_name19">金信网</string>
     <string name="company_name20">开鑫贷</string>
     <string name="company_name21">你我贷</string>
@@ -140,10 +140,15 @@
     <string name="platform_money">在投总额</string>
     <string name="platform_rest">平台余额</string>
     <string name="platform_record">成交记录</string>
-    <string name="platform_in">收益</string>
-    <string name="platform_out">取出</string>
-    <string name="platform_add">充值</string>    
+    
+    <string name="platform_add">新增</string> 
+    <string name="platform_takeout">取出</string>
+    <string name="platform_earningAmount">收益</string>
+    <string name="platform_investAmount">投资</string>    
+    <string name="platform_back">回款</string>    
+    
     <string name="platform_invest">充值</string>
+    
     
     <string name="record_title">成交记录</string>
     

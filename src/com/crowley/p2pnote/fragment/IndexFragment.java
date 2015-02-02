@@ -61,7 +61,7 @@ public class IndexFragment extends Fragment implements OnClickListener,OnItemLon
 	
 	private Dialog dialog;
 	
-	private int nowState=0;
+	private int nowState=1;
 	private String id="";
 	
 	private Button cancelButton;
@@ -182,10 +182,7 @@ public class IndexFragment extends Fragment implements OnClickListener,OnItemLon
         	Float getOutFloat=0.0f;
         	if(TextUtils.isEmpty(earningText.getText())){
 				erroredBoolean=true;
-				errorString="收益确认不得为空";
-        		/*String minString=earningText.getHint().toString();
-        		String[] earningString=minString.split("~");
-        		earningFloat = Float.parseFloat(earningString[0]);*/        		
+				errorString="收益确认不得为空";		
 			}else{
 				earningFloat = Float.parseFloat(earningText.getText().toString());
 				if(earningFloat<0){
@@ -226,7 +223,8 @@ public class IndexFragment extends Fragment implements OnClickListener,OnItemLon
 		case R.id.list_view:{
 			new SweetAlertDialog(this.getActivity(), SweetAlertDialog.WARNING_TYPE)
             .setTitleText("确定删除该条记录嘛?")
-            .setContentText("该记录将无法复原!")
+            .showContentText(true)
+            .setContentText("来自余额的款项将返回平台")
             .setCancelText("取消")
             .setConfirmText("确定")
             .showCancelButton(true)

@@ -72,6 +72,8 @@ public class PlatformFragment extends Fragment implements OnClickListener,OnTouc
 	private EditText getOutText;
 	private TextView actionTitleTextView;
 	private TextView actionNameTextView;
+	
+	private String statePlatformString;
     
 	@Override
 	public View onCreateView(LayoutInflater inflater, ViewGroup container,
@@ -102,6 +104,7 @@ public class PlatformFragment extends Fragment implements OnClickListener,OnTouc
 		    {  
 		        ((ImageView)(((RelativeLayout) view).getChildAt(2))).setImageResource(R.drawable.platform_arrow_grey);
 		        updatePlatform(((TextView)(((RelativeLayout) view).getChildAt(0))).getText().toString());
+		        statePlatformString=((TextView)(((RelativeLayout) view).getChildAt(0))).getText().toString();
 		    }  
 		});
 	}
@@ -109,10 +112,11 @@ public class PlatformFragment extends Fragment implements OnClickListener,OnTouc
 
 	public void initData() {
 		platform=new Platform(this.getActivity());
-		mDatas=platform.getPlatformsIcon();
 		mDatas2=platform.getPlatformsName();
+		mDatas=platform.getPlatformsIcon(mDatas2);
 		if(!mDatas2.isEmpty()){
 			updatePlatform(mDatas2.get(0));
+			statePlatformString=mDatas2.get(0);
 		}		
 		mAdapter = new HorizontalScrollViewAdapter(this.getActivity(), mDatas, mDatas2);
 		mHorizontalScrollView.initDatas(mAdapter);
@@ -154,9 +158,10 @@ public class PlatformFragment extends Fragment implements OnClickListener,OnTouc
 		platform_earning_rate.setText(Float.valueOf(platform.getEarningRateAll(platformString)).toString());
 		platform_amount.setText(Float.valueOf(platform.getAllAmount(platformString)).toString());
 		newest_date.setText(platform.getNewestDate(platformString));
+		//1表示新增，2表示取出，3表示收益，4表示投资,5代表回款
 		switch (platform.getNewestBool(platformString)) {
 		case 1:{
-			newest_judge01.setText("收益");
+			newest_judge01.setText("新增");
 			newest_judge02.setText("+");
 			newest_money.setTextColor(getResources().getColor(DBOpenHelper.platform_in));
 			newest_judge02.setTextColor(getResources().getColor(DBOpenHelper.platform_in));
@@ -170,7 +175,21 @@ public class PlatformFragment extends Fragment implements OnClickListener,OnTouc
 			break;
 		}
 		case 3:{
-			newest_judge01.setText("充值");
+			newest_judge01.setText("收益");
+			newest_judge02.setText("+");
+			newest_money.setTextColor(getResources().getColor(DBOpenHelper.platform_in));
+			newest_judge02.setTextColor(getResources().getColor(DBOpenHelper.platform_in));
+			break;
+		}
+		case 4:{
+			newest_judge01.setText("投资");
+			newest_judge02.setText("-");
+			newest_money.setTextColor(getResources().getColor(DBOpenHelper.platform_out));
+			newest_judge02.setTextColor(getResources().getColor(DBOpenHelper.platform_out));
+			break;
+		}
+		case 5:{
+			newest_judge01.setText("回款");
 			newest_judge02.setText("+");
 			newest_money.setTextColor(getResources().getColor(DBOpenHelper.platform_in));
 			newest_judge02.setTextColor(getResources().getColor(DBOpenHelper.platform_in));
@@ -179,7 +198,7 @@ public class PlatformFragment extends Fragment implements OnClickListener,OnTouc
 		default:
 			break;
 		}
-		newest_money.setText(platform.getNewestMoney(platformString, platform.getNewestBool(platformString)));
+		newest_money.setText(platform.getNewestMoney(platformString));
 	}
 
 
@@ -194,16 +213,11 @@ public class PlatformFragment extends Fragment implements OnClickListener,OnTouc
             break;			
 		}
 		case R.id.platform_invest:{
-			/*Intent intent=new Intent(this.getActivity(),NewItemActivity.class);
-			intent.putExtra("model", "2");
-			intent.putExtra("id", "");
-			intent.putExtra("platform", title.getText());
-            startActivity(intent);*/
 			actionNameTextView.setText("充值金额");
 			actionTitleTextView.setText("充值金额");
 			productTextView.setText(title.getText());
 			timeEndTextView.setText(Common.getTime());
-			//getOutText.setHint(platform_rest.getText());
+			getOutText.setHint("0");
 			dialog.show();
             break;			
 		}
@@ -230,8 +244,7 @@ public class PlatformFragment extends Fragment implements OnClickListener,OnTouc
 			}else if(Float.parseFloat(getOutText.getText().toString())<0){
 				erroredBoolean=true;
 				errorString="金额不可小于0";
-			}
-			
+			}			
 			if ((actionNameTextView.getText().toString()).equals("取出余额")) {
 				if (Float.parseFloat(getOutText.getText().toString())>Float.parseFloat(getOutText.getHint().toString())) {
 					erroredBoolean=true;
@@ -255,21 +268,16 @@ public class PlatformFragment extends Fragment implements OnClickListener,OnTouc
 				}else{
 					userNameString="not_login";
 				}
-				String sqlString="insert into record(platform,type,money,earningMin,earningMax,method,timeBegin,timeEnd,timeStamp,state,isDeleted,userName,restBegin,restEnd,timeStampEnd,rest) values('"+title.getText()+"','"+""+"',"+0+","+0+","+0+","+0+",'"+Common.getTime()+"','"+Common.getTime()+"','"+ts+"',0,0,'"+userNameString+"',0.0,0.0,'',"+platform.getRest((String) title.getText())+")";
+				float take_out=Float.valueOf(getOutText.getText().toString());
 				DBOpenHelper helper = new DBOpenHelper(this.getActivity(), "record.db");
 				SQLiteDatabase db = helper.getWritableDatabase();
-				db.execSQL(sqlString);
-				Cursor tempCursor=db.rawQuery("select * from record WHERE timeStamp = "+ts, null);
-				tempCursor.moveToFirst();
-				RecordModel tempRecordModel=new RecordModel(tempCursor);
-				String idString=(Integer.valueOf((tempRecordModel.getID()))).toString();
-				float take_out=Float.valueOf(getOutText.getText().toString());
-				Index index=new Index(this.getActivity());
 				if ((actionNameTextView.getText().toString()).equals("取出余额")) {
-					index.dealRecord(idString, 0.0f, take_out);
+					db.execSQL("insert into rest(platform,name,type,money,timeStamp,userName,createTime) values('"+title.getText()+"','取出操作',2,"+take_out+",'"+ts+"','"+userNameString+"','"+ts+"')");
 				}else{
-					index.dealRecord(idString, 0.0f, (0-take_out));
+					db.execSQL("insert into rest(platform,name,type,money,timeStamp,userName,createTime) values('"+title.getText()+"','充值操作',1,"+take_out+",'"+ts+"','"+userNameString+"','"+ts+"')");
 				}
+				db.close();
+				helper.close();
 				dialog.dismiss();
 				getOutText.setText("");
 				reflash();
@@ -283,13 +291,13 @@ public class PlatformFragment extends Fragment implements OnClickListener,OnTouc
 	}
 	
 	public void reflash(){
-		mDatas=platform.getPlatformsIcon();
 		mDatas2=platform.getPlatformsName();
+		mDatas=platform.getPlatformsIcon(mDatas2);
 		if(!mDatas2.isEmpty()){
-			updatePlatform(mDatas2.get(0));
+			updatePlatform(statePlatformString);
 		}
 		mAdapter=new HorizontalScrollViewAdapter(this.getActivity(), mDatas, mDatas2);
-		mHorizontalScrollView.updateDate(mAdapter);
+		mHorizontalScrollView.updateDate(mAdapter,statePlatformString);
 	}
 
 

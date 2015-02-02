@@ -8,6 +8,7 @@ import android.database.Cursor;
 
 import com.crowley.p2pnote.db.DBOpenHelper;
 import com.crowley.p2pnote.db.RecordModel;
+import com.crowley.p2pnote.db.RestModel;
 import com.github.mikephil.charting.data.Entry;
 import com.crowley.p2pnote.functions.Common;
 
@@ -32,35 +33,41 @@ public class Analyze {
         ArrayList<String> xVals = new ArrayList<String>();
         
         DBOpenHelper helper=new DBOpenHelper(nowContext, "record.db");
-		Cursor allRecords = helper.returALLRecords(helper.getWritableDatabase());
-		
-		if(allRecords.getCount()!=0){
-			while (allRecords.moveToNext()) {
-				RecordModel record=new RecordModel(allRecords);
-				//如果记录已经被删除 跳出本次循环
-				if(record.getIsDeleted()==1||!record.getUserName().equals(Common.updateLogin(nowContext))){
-					continue;
-				}
-				switch (type) {
-					case 0:{
+        
+        switch (type) {
+			case 0:{
+				Cursor allRecords = helper.returALLRecords(helper.getWritableDatabase());
+				if(allRecords.getCount()!=0){
+					while (allRecords.moveToNext()) {
+						RecordModel record=new RecordModel(allRecords);
+						//如果记录已经被删除 跳出本次循环
+						if(record.getIsDeleted()==1||!record.getUserName().equals(Common.updateLogin(nowContext))){
+							continue;
+						}
 						if(!xVals.contains(record.getPlatform())&&record.getState()==0){
 							xVals.add(record.getPlatform());
 						}
-						break;
 					}
-					case 4:{
-						if(!xVals.contains(record.getPlatform())&&record.getState()==1){
+				}
+				allRecords.close();
+				break;
+			}
+			case 4:{
+				Cursor allRecords = helper.returALLRests(helper.getWritableDatabase());
+				if(allRecords.getCount()!=0){
+					while (allRecords.moveToNext()) {
+						RestModel record=new RestModel(allRecords);
+						if(!xVals.contains(record.getPlatform())){
 							xVals.add(record.getPlatform());
 						}
-						break;
 					}
-					default:
-						break;
 				}
-				
+				allRecords.close();
+				break;
 			}
+			default:
+				break;
 		}
-		allRecords.close();
 		helper.close();
 		return xVals;
 	}
@@ -198,7 +205,7 @@ public class Analyze {
 			}else{
 				result=100f*counts.get(i)/amount;
 			}			
-	           entries1.add(new Entry(result, i));
+	        entries1.add(new Entry(result, i));
 	    }
 		
 		allRecords.close();

@@ -7,6 +7,7 @@ import java.util.Map;
 
 import com.crowley.p2pnote.db.DBOpenHelper;
 import com.crowley.p2pnote.db.RecordModel;
+import com.crowley.p2pnote.db.RestModel;
 
 import android.content.Context;
 import android.database.Cursor;
@@ -27,10 +28,14 @@ public class Water {
 		Cursor tempCursor=db.rawQuery("select * from record WHERE _id = "+idString, null);
 		tempCursor.moveToFirst();
 		RecordModel tempRecordModel=new RecordModel(tempCursor);
+		Cursor tempCursor2=db.rawQuery("select * from rest WHERE type=3 AND timeStamp = "+tempRecordModel.getTimeStamp(), null);
+		tempCursor2.moveToFirst();
+		RestModel temp=new RestModel(tempCursor2);
+		tempCursor2.close();
 		tempCursor.close();
 		db.close();
 		helper.close();
-		return "";
+		return temp.getMoney().toString();
 	}
 	
 	public String getOut(String idString){

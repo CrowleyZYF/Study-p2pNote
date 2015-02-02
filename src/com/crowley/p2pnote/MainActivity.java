@@ -131,7 +131,7 @@ public class MainActivity extends Activity implements OnClickListener{
             }  
             break;  
         case 1:  
-        	((ImageButton)findViewById(R.id.new_item)).setVisibility(View.GONE);
+        	((ImageButton)findViewById(R.id.new_item)).setVisibility(View.VISIBLE);
         	title.setText(R.string.tab_water);
         	((ImageView)tabWater.findViewById(R.id.tab_water_icon)).setImageResource(R.drawable.water_focus);
             ((TextView)tabWater.findViewById(R.id.tab_water_text)).setTextColor(getResources().getColor(R.color.tab_text_chosen));  
@@ -146,7 +146,7 @@ public class MainActivity extends Activity implements OnClickListener{
             }  
             break;  
         case 2:  
-        	((ImageButton)findViewById(R.id.new_item)).setVisibility(View.GONE);
+        	((ImageButton)findViewById(R.id.new_item)).setVisibility(View.VISIBLE);
         	title.setText(R.string.tab_analyze);
         	((ImageView)tabAnalyze.findViewById(R.id.tab_analyze_icon)).setImageResource(R.drawable.analyze_focus);
             ((TextView)tabAnalyze.findViewById(R.id.tab_analyze_text)).setTextColor(getResources().getColor(R.color.tab_text_chosen));  
@@ -161,7 +161,7 @@ public class MainActivity extends Activity implements OnClickListener{
             }  
             break;  
         case 3: 
-        	((ImageButton)findViewById(R.id.new_item)).setVisibility(View.GONE);
+        	((ImageButton)findViewById(R.id.new_item)).setVisibility(View.VISIBLE);
         	title.setText(R.string.tab_platform);
         	((ImageView)tabPlatform.findViewById(R.id.tab_platform_icon)).setImageResource(R.drawable.platform_focus); 
             ((TextView)tabPlatform.findViewById(R.id.tab_platform_text)).setTextColor(getResources().getColor(R.color.tab_text_chosen)); 

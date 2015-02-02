@@ -19,19 +19,26 @@ import android.widget.TextView;
 
 public class recordAdapter extends SimpleAdapter{
 	
+	//1表示新增，2表示取出，3表示收益，4表示投资,5代表回款
 	public static final int[] PLATFORM_TYPE = {
-		R.string.platform_in,
-		R.string.platform_out,
-		R.string.platform_add
+		R.string.platform_add,
+		R.string.platform_takeout,
+		R.string.platform_earningAmount,
+		R.string.platform_investAmount,
+		R.string.platform_back
 		};
 	
 	public static final int[] PLATFORM_SIGNAL = {
+		R.string.add,
+		R.string.minus,
 		R.string.add,
 		R.string.minus,
 		R.string.add
 		};
 	
 	public static final int[] COLOR = {
+		R.color.platform_in,
+		R.color.platform_out,
 		R.color.platform_in,
 		R.color.platform_out,
 		R.color.platform_in
@@ -65,7 +72,7 @@ public class recordAdapter extends SimpleAdapter{
 			localView = super.getView(position, convertView, parent);
 		}
 		String nameString = ((TextView)convertView.findViewById(R.id.record_type)).getText().toString();
-		for(int i=0;i<2;i++){
+		for(int i=0;i<4;i++){
 			if(nameString.equals(this.context.getResources().getString(PLATFORM_TYPE[i]))){
 				((TextView)convertView.findViewById(R.id.record_money)).setTextColor(this.context.getResources().getColor(COLOR[i]));				
 				((TextView)convertView.findViewById(R.id.record_signal)).setText(PLATFORM_SIGNAL[i]);

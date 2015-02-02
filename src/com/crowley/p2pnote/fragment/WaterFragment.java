@@ -9,6 +9,9 @@ import cn.pedant.SweetAlert.SweetAlertDialog;
 
 import com.crowley.p2pnote.NewItemActivity;
 import com.crowley.p2pnote.R;
+import com.crowley.p2pnote.db.DBOpenHelper;
+import com.crowley.p2pnote.db.RecordModel;
+import com.crowley.p2pnote.db.RestModel;
 import com.crowley.p2pnote.functions.Common;
 import com.crowley.p2pnote.functions.Water;
 import com.crowley.p2pnote.ui.listAdapter;
@@ -17,6 +20,8 @@ import android.app.Dialog;
 import android.app.Fragment;
 import android.content.Context;
 import android.content.Intent;
+import android.database.Cursor;
+import android.database.sqlite.SQLiteDatabase;
 import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -75,7 +80,6 @@ public class WaterFragment extends Fragment implements OnClickListener,OnItemLon
 	private TextView moneyTextView;
 	private TextView rateTextView;
 	private EditText earningText;
-	private EditText getOutText;
 	private TextView checkTextView;
 	private String id="";
 	
@@ -137,8 +141,7 @@ public class WaterFragment extends Fragment implements OnClickListener,OnItemLon
         productTextView=(TextView) dialog.findViewById(R.id.item_name);
         moneyTextView=(TextView) dialog.findViewById(R.id.money_invest);
         rateTextView=(TextView) dialog.findViewById(R.id.invest_rate);
-        earningText=(EditText) dialog.findViewById(R.id.earning);
-        getOutText=(EditText) dialog.findViewById(R.id.get_out);        
+        earningText=(EditText) dialog.findViewById(R.id.earning);     
         know_button = (Button) dialog.findViewById(R.id.know_button);
         checkTextView = (TextView) dialog.findViewById(R.id.check_title);
         checkTextView.setText("查看确认投资");
@@ -277,7 +280,8 @@ public class WaterFragment extends Fragment implements OnClickListener,OnItemLon
 			if((((TextView)arg1.findViewById(R.id.item_state)).getText().toString()).equals("0")){
 				new SweetAlertDialog(this.getActivity(), SweetAlertDialog.WARNING_TYPE)
 	            .setTitleText("确定删除该条记录嘛?")
-	            .showContentText(false)
+	            .showContentText(true)
+	            .setContentText("来自余额的款项将返回平台")
 	            .setCancelText("取消")
 	            .setConfirmText("确定")
 	            .showCancelButton(true)
@@ -298,17 +302,43 @@ public class WaterFragment extends Fragment implements OnClickListener,OnItemLon
 	            .show();
 			}else{
 				//Toast.makeText(this.getActivity(), "已结算项目暂不提供删除", Toast.LENGTH_SHORT).show();
+				DBOpenHelper helper = new DBOpenHelper(this.getActivity(), "record.db");
+				SQLiteDatabase db = helper.getWritableDatabase();
+				Cursor tempCursor=db.rawQuery("select * from record WHERE _id="+((TextView)arg1.findViewById(R.id.item_id)).getText().toString(), null);				
+				tempCursor.moveToFirst();
+				RecordModel recordModel=new RecordModel(tempCursor);
+				String ts=recordModel.getTimeStamp();
+				Cursor tempCursor2=db.rawQuery("select * from rest WHERE timeStamp="+ts, null);
+				String alert1="";
+				String alert2="";
+				String alert3="";
+				while (tempCursor2.moveToNext()) {
+					RestModel temp=new RestModel(tempCursor2);
+					switch (temp.getType()) {
+					case 1:{
+						alert1="取消充值"+temp.getMoney()+" ";
+						break;						
+					}
+					case 3:{
+						alert2="收益减少"+temp.getMoney()+" ";
+						break;	
+					}
+					default:
+						break;
+					}					
+				}			
 				new SweetAlertDialog(this.getActivity(), SweetAlertDialog.WARNING_TYPE)
 	            .setTitleText("确定删除该条记录嘛?")
-	            .showContentText(false)
+	            .showContentText(true)
+	            .setContentText("将删除该记录对应的所有资金变动（"+alert1+alert2+alert3+"）")
 	            .setCancelText("取消")
 	            .setConfirmText("确定")
 	            .showCancelButton(true)
 	            .setConfirmClickListener(new SweetAlertDialog.OnSweetClickListener() {
 	                @Override
 	                public void onClick(SweetAlertDialog sDialog) {
-	                	//Common.deleteItem(nowContext,((TextView)arg1.findViewById(R.id.item_id)).getText().toString());
-	                	//reflash();
+	                	Common.deleteItem(nowContext,((TextView)arg1.findViewById(R.id.item_id)).getText().toString());
+	                	reflash();
 	                    sDialog.setTitleText("记录已删除")
 	                            .setConfirmText("确定")
 	                            .showContentText(false)
@@ -354,8 +384,6 @@ public class WaterFragment extends Fragment implements OnClickListener,OnItemLon
 				rateTextView.setText(rateString.substring(0, rateString.length()-1));
 				earningText.setText(water.getEarning(id));
 				earningText.setEnabled(false);
-				getOutText.setText(water.getOut(id));
-				getOutText.setEnabled(false);
                 dialog.show();
 				break;
 			}			

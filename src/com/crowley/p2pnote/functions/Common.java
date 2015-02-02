@@ -170,7 +170,24 @@ public class Common {
 	public static void deleteItem(Context context,String id){
 		DBOpenHelper helper = new DBOpenHelper(context, "record.db");
 		SQLiteDatabase db = helper.getWritableDatabase();
+		Cursor tempCursor=db.rawQuery("select * from record WHERE _id="+id, null);
+		tempCursor.moveToFirst();
+		String ts=new RecordModel(tempCursor).getTimeStamp();
+		db.execSQL("UPDATE record SET isDeleted = 1 WHERE _id = "+id);
+		db.execSQL("DELETE FROM rest WHERE timeStamp = "+ts);
 		
+		db.close();
+		helper.close();
+	}
+	
+	/**
+	 * 删除已经结算的记录
+	 * @param context
+	 * @param id
+	 */
+	public static void deleteItem2(Context context,String id){
+		DBOpenHelper helper = new DBOpenHelper(context, "record.db");
+		SQLiteDatabase db = helper.getWritableDatabase();
 		db.execSQL("UPDATE record SET isDeleted = 1 WHERE _id = "+id);
 		
 		db.close();
@@ -193,6 +210,38 @@ public class Common {
 		db.close();
 		helper.close();
 		return platformString;
+	}
+	
+	/**
+	 * 将未登录的记录导入
+	 * @param context
+	 * @param userString
+	 */
+	public static void setUserName(Context context,String userString){
+		DBOpenHelper helper = new DBOpenHelper(context, "record.db");
+		SQLiteDatabase db = helper.getWritableDatabase();
+		
+		db.execSQL("UPDATE record SET userName = '"+userString+"' WHERE userName = 'not_login'");
+		db.execSQL("UPDATE rest SET userName = '"+userString+"' WHERE userName = 'not_login'");
+		
+		db.close();
+		helper.close();
+	}
+	
+	/**
+	 * 检测是否有未登录的记录
+	 */
+	public static boolean checkNotLogin(Context context){
+		DBOpenHelper helper = new DBOpenHelper(context, "record.db");
+		SQLiteDatabase db = helper.getWritableDatabase();
+		
+		Cursor tempCursor=db.rawQuery("select * from record WHERE isDeleted=0 AND userName='not_login'", null);
+		Cursor tempCursor2=db.rawQuery("select * from rest WHERE userName='not_login'", null);
+		
+		boolean result=(!(tempCursor.getCount()==0))||(!(tempCursor2.getCount()==0));
+		db.close();
+		helper.close();
+		return result;
 	}
 
 }

@@ -275,6 +275,7 @@ public class DBOpenHelper extends SQLiteOpenHelper{
 		 * userName：用户名
 		 * type：1表示新增，2表示取出，3表示收益，4表示投资,5代表回款
 		 * money：具体多少数额
+		 * createTime:生成余额记录的时间戳，以此来确定哪个是最新的
 		 * 
 		 * 
 		 * product表
@@ -294,7 +295,7 @@ public class DBOpenHelper extends SQLiteOpenHelper{
 		//db.execSQL("DROP TABLE record");
 		
 		db.execSQL("create table if not exists record (_id integer primary key autoincrement,platform text not null,type text not null,moneyFromPlatform real not null,moneyFromNew real not null,earningMin real not null,earningMax real not null,method integer not null,timeBegin text not null,timeEnd text not null,timeStamp text not null,state integer not null,isDeleted integer not null,userName text not null)");		
-		db.execSQL("create table if not exists rest (_id integer primary key autoincrement,platform text not null,name text not null,type text not null,money real not null,timeStamp text not null,userName text not null)");
+		db.execSQL("create table if not exists rest (_id integer primary key autoincrement,platform text not null,name text not null,type text not null,money real not null,timeStamp text not null,userName text not null,createTime text not null)");
 		db.execSQL("create table if not exists product (_id integer primary key autoincrement,platform text not null,product text not null,money real not null,earningMin real not null,earningMax real not null,method integer not null,period integer not null)");
 		
 		
@@ -317,7 +318,7 @@ public class DBOpenHelper extends SQLiteOpenHelper{
 		db.execSQL("insert into product(platform,product,money,earningMin,earningMax,method,period) values('陆金所','稳盈安e',10000,0,0.0861,1,36)");
 		db.execSQL("insert into product(platform,product,money,earningMin,earningMax,method,period) values('陆金所','稳盈安业-3个月',250000,0,0.075,2,3)");
 		db.execSQL("insert into product(platform,product,money,earningMin,earningMax,method,period) values('陆金所','稳盈安业-6个月',250000,0,0.078,2,6)");
-		db.execSQL("insert into product(platform,product,money,earningMin,earningMax,method,period) values('陆金所','专享理财',100000,0.1,0.15,1,1)");
+		db.execSQL("insert into product(platform,product,money,earningMin,earningMax,method,period) values('陆金所','专享理财',100000,0.1,0.15,0,1)");
 		
 		db.execSQL("insert into product(platform,product,money,earningMin,earningMax,method,period) values('人人贷','U计划A',1000,0.07,0.14,0,3)");
 		db.execSQL("insert into product(platform,product,money,earningMin,earningMax,method,period) values('人人贷','U计划B',10000,0,0.09,0,6)");
@@ -409,5 +410,9 @@ public class DBOpenHelper extends SQLiteOpenHelper{
 	
 	public Cursor returALLRecords(SQLiteDatabase db){
 		return db.rawQuery("select * from record", null);
+	}
+	
+	public Cursor returALLRests(SQLiteDatabase db){
+		return db.rawQuery("select * from rest", null);
 	}
 }

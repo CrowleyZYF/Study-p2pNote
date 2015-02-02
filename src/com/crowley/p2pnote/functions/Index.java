@@ -18,7 +18,7 @@ import com.crowley.p2pnote.db.RestModel;
 
 public class Index {
 	//剩余几天判定为即将到期
-	private int LEFT_DAY=7;
+	private int LEFT_DAY=100;
 	
 	private Calendar cal = Calendar.getInstance();
 	private int days=Common.parseDay(cal.get(Calendar.YEAR)+"-"+(cal.get(Calendar.MONTH)+1)+"-"+cal.get(Calendar.DAY_OF_MONTH));
@@ -345,7 +345,7 @@ public class Index {
 					}
 					case 1:{
 						int daysLeft=Common.parseDay(record.getTimeEnd())-days;
-						if(daysLeft<100&&daysLeft>0){
+						if(daysLeft<LEFT_DAY&&daysLeft>0){
 							judge=true;							
 						}
 						break;
@@ -393,7 +393,8 @@ public class Index {
 	 * */
 	public void dealRecord(String idString,Float earning,Float get_out){
 		Long tsLong = System.currentTimeMillis();
-		String ts = tsLong.toString();		
+		String ts1 = tsLong.toString();		
+		String ts2 = Long.valueOf(tsLong+1).toString();		
 		DBOpenHelper helper = new DBOpenHelper(nowContext, "record.db");
 		SQLiteDatabase db = helper.getWritableDatabase();		
 		Cursor tempCursor=db.rawQuery("select * from record WHERE _id = "+idString, null);
@@ -401,8 +402,8 @@ public class Index {
 		RecordModel tempRecordModel=new RecordModel(tempCursor);
 		String platformString=tempRecordModel.getPlatform();
 		db.execSQL("UPDATE record SET userName='"+Common.updateLogin(nowContext)+"', state = 1 WHERE _id = "+idString);
-		db.execSQL("insert into rest(platform,name,type,money,timeStamp,userName) values('"+platformString+"','"+platformString+"-"+tempRecordModel.getType()+"',3,"+earning+",'"+tempRecordModel.getTimeStamp()+"','"+Common.updateLogin(nowContext)+"')");
-		db.execSQL("insert into rest(platform,name,type,money,timeStamp,userName) values('"+platformString+"','"+platformString+"-"+tempRecordModel.getType()+"',5,"+tempRecordModel.getMoney()+",'"+tempRecordModel.getTimeStamp()+"','"+Common.updateLogin(nowContext)+"')");
+		db.execSQL("insert into rest(platform,name,type,money,timeStamp,userName,createTime) values('"+platformString+"','"+platformString+"-"+tempRecordModel.getType()+"',5,"+tempRecordModel.getMoney()+",'"+tempRecordModel.getTimeStamp()+"','"+Common.updateLogin(nowContext)+"','"+ts1+"')");
+		db.execSQL("insert into rest(platform,name,type,money,timeStamp,userName,createTime) values('"+platformString+"','"+platformString+"-"+tempRecordModel.getType()+"',3,"+earning+",'"+tempRecordModel.getTimeStamp()+"','"+Common.updateLogin(nowContext)+"','"+ts2+"')");
 	}
 	
 	/**

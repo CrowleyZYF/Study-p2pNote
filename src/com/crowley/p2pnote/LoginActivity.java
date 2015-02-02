@@ -41,7 +41,7 @@ public class LoginActivity extends Activity implements OnClickListener {
 	private final int PASS_ERROR = 2;
 	
 	private String accountString;
-	private Context nowContext=this;
+	private Context nowContext;
 	
 	private String urlString="http://120.27.44.42/p2pbeerich/index.php/login";
 	
@@ -55,7 +55,7 @@ public class LoginActivity extends Activity implements OnClickListener {
 					editor.putBoolean("isLogined", true);
 					editor.putString("account", accountString);
 					editor.commit();
-					if(returnList.checkNotLogin()){
+					if(Common.checkNotLogin(nowContext)){
 						new SweetAlertDialog(nowContext, SweetAlertDialog.WARNING_TYPE)
 			            .setTitleText("是否将本地记录导入？")
 			            .setCancelText("取消")
@@ -71,7 +71,7 @@ public class LoginActivity extends Activity implements OnClickListener {
 			            .setConfirmClickListener(new SweetAlertDialog.OnSweetClickListener() {
 			                @Override
 			                public void onClick(SweetAlertDialog sDialog) {
-			                	returnList.setUserName(accountString);
+			                	Common.setUserName(nowContext,accountString);
 			                    sDialog.setTitleText("成功导入")
 			                            .setConfirmText("确定")
 			                            .showContentText(false)
@@ -113,7 +113,8 @@ public class LoginActivity extends Activity implements OnClickListener {
 		super.onCreate(savedInstanceState);
         requestWindowFeature(Window.FEATURE_NO_TITLE);
 		setContentView(R.layout.login);		
-		initView();		
+		initView();	
+		nowContext=this;
 	}
 
 	public void initView() {
