@@ -43,15 +43,15 @@ public class UserActivity extends Activity implements OnClickListener {
 		
 		loginOutTextView=(TextView) findViewById(R.id.login_out);
 		accountTextView=(TextView) findViewById(R.id.account);
-		listView=(ListView) findViewById(R.id.backup_record);
+		//listView=(ListView) findViewById(R.id.backup_record);
 		backButton=(ImageButton) findViewById(R.id.back);
 		
-        dataList=new ArrayList<Map<String,Object>>();
+        //dataList=new ArrayList<Map<String,Object>>();
 		
-		simp_adapter=new SimpleAdapter(this, getData(), R.layout.backup_listview_item, new String[]{"backup_time","backup_device"}, new int[]{R.id.backup_time,R.id.backup_device});
+		//simp_adapter=new SimpleAdapter(this, getData(), R.layout.backup_listview_item, new String[]{"backup_time","backup_device"}, new int[]{R.id.backup_time,R.id.backup_device});
 		
 		
-		listView.setAdapter(simp_adapter);
+		//listView.setAdapter(simp_adapter);
 		
 		loginOutTextView.setOnClickListener(this);
 		backButton.setOnClickListener(this);

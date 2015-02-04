@@ -182,12 +182,12 @@ public class IndexFragment extends Fragment implements OnClickListener,OnItemLon
         	Float getOutFloat=0.0f;
         	if(TextUtils.isEmpty(earningText.getText())){
 				erroredBoolean=true;
-				errorString="收益确认不得为空";		
+				errorString="总回款不得为空";		
 			}else{
 				earningFloat = Float.parseFloat(earningText.getText().toString());
-				if(earningFloat<0){
+				if(earningFloat<Float.parseFloat(moneyTextView.getText().toString())){
 					erroredBoolean=true;
-					errorString="收益必须大于0";	
+					errorString="总回款必须大于本金";	
 				}
 			}
         	if (erroredBoolean) {
@@ -199,6 +199,7 @@ public class IndexFragment extends Fragment implements OnClickListener,OnItemLon
 	                .show();
 			//如果成功则插入数据并返回
 			}else{
+				earningFloat-=Float.parseFloat(moneyTextView.getText().toString());
 				index.dealRecord(id, earningFloat, getOutFloat);				
 				dialog.dismiss();
 				reflash();

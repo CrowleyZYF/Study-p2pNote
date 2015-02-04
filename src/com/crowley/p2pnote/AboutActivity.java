@@ -1,5 +1,7 @@
 package com.crowley.p2pnote;
 
+import cn.pedant.SweetAlert.SweetAlertDialog;
+
 import com.crowley.p2pnote.functions.Common;
 
 import android.app.Activity;
@@ -28,11 +30,11 @@ public class AboutActivity extends Activity implements OnClickListener {
 	private void initView(){		
 		backButton=(ImageButton) findViewById(R.id.back);
 		weichat=(RelativeLayout) findViewById(R.id.weichat_button);
-		weibo=(RelativeLayout) findViewById(R.id.weibo_button);
+		//weibo=(RelativeLayout) findViewById(R.id.weibo_button);
 		
 		backButton.setOnClickListener(this);
 		weichat.setOnClickListener(this);
-		weibo.setOnClickListener(this);
+		//weibo.setOnClickListener(this);
 	}	
 
 	@Override
@@ -43,12 +45,18 @@ public class AboutActivity extends Activity implements OnClickListener {
 			finish();
 			break;
 		}
-		case R.id.weibo_button:{
+		/*case R.id.weibo_button:{
 			Common.toBeContinuedDialog(this).show();
 			break;
-		}
+		}*/
 		case R.id.weichat_button:{
-			Common.toBeContinuedDialog(this).show();
+			//Common.toBeContinuedDialog(this).show();
+			new SweetAlertDialog(this, SweetAlertDialog.CUSTOM_IMAGE_TYPE)
+			    .setTitleText("请截屏后扫一扫")
+			    .setContentText("关注我们的公众号O(∩_∩)O")
+			    .setCustomImage(R.drawable.weichatcode)
+			    .setConfirmText("确定")
+			    .show();
 			break;
 		}
 		default:

@@ -26,30 +26,29 @@
 	            android:text="@string/platform_earningAmount"
 	            android:textColor="@color/light_black"
 	            android:textSize="18sp"
-	            />
+	            />          
             
-            <TextView 
-	            android:id="@+id/record_name"
+	        <TextView 
+	            android:id="@+id/record_time1"
 	            android:layout_width="wrap_content"
 	            android:layout_height="wrap_content"
-	            android:text="@string/platform_earningAmount"
+	            android:text="2015-12-12"
 	            android:textColor="@color/font_gray"
+	            android:paddingTop="3dp"
 	            android:textSize="12sp"
-	            android:layout_marginLeft="10dp"
+	        	android:layout_marginLeft="10dp"
 	            />
             
         </LinearLayout>
         
-        
-        <TextView 
-            android:id="@+id/record_time"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:text="2015-12-12"
-            android:textColor="@color/font_gray"
-            android:paddingTop="3dp"
-            android:textSize="12sp"
-            />
+        <TextView
+            android:id="@+id/record_name1"
+	        android:layout_width="wrap_content"
+	        android:layout_height="wrap_content"
+	        android:text="@string/platform_earningAmount"
+	        android:textColor="@color/font_gray"
+	        android:textSize="12sp"
+	        />
     </LinearLayout>
     
     <LinearLayout 

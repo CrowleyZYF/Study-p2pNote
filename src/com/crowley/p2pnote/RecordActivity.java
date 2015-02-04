@@ -62,11 +62,11 @@ public class RecordActivity extends Activity implements OnClickListener {
 		dataList=new ArrayList<Map<String,Object>>();
 		platform=new Platform(this);     
         getData(platformString);
-        list_adapter=new recordAdapter(this, dataList, R.layout.record_listview_item, new String[]{"record_name","record_type","record_time","record_money"}, new int[]{R.id.record_name,R.id.record_type,R.id.record_time,R.id.record_money});
+        list_adapter=new recordAdapter(this, dataList, R.layout.record_listview_item, new String[]{"record_name","record_type","record_time","record_money"}, new int[]{R.id.record_name1,R.id.record_type,R.id.record_time1,R.id.record_money});
         listView.setAdapter(list_adapter);
         main_tab_banner_title.setText(platformString+"的成交记录");
     	
-		platform.consoleLog();
+		//platform.consoleLog();
 	}
 	
 	private void getData(String platformString){

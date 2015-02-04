@@ -319,7 +319,7 @@ public class Platform {
 					break;
 				}
 				case 3:{
-					map.put("record_type", "收益");
+					map.put("record_type", "回款:收益");
 					break;
 				}
 				case 4:{
@@ -327,7 +327,7 @@ public class Platform {
 					break;
 				}
 				case 5:{
-					map.put("record_type", "回款");
+					map.put("record_type", "回款:本金");
 					break;
 				}
 				default:

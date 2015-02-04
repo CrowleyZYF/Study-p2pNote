@@ -6,9 +6,9 @@
     <string name="default_progressbar">Default Progressbar:</string>
     
     <string name="new_item">新的投资</string>
-    <string name="basic_info01">当日收益</string>
+    <string name="basic_info01">当日收益（元）</string>
     <string name="basic_info02">均年化收益</string>
-    <string name="basic_info03">在投总额</string>
+    <string name="basic_info03">在投总额（元）</string>
     <string name="basic_info04">累计收益</string>
     <string name="addMinus">±</string>
     <string name="add">+</string>
@@ -125,7 +125,7 @@
     <string name="user_item_02">账号:</string>                 
     <string name="user_item_03">登录天数:</string>                 
     <string name="user_login_out">注销</string>                       
-    <string name="user_banner">云备份记录</string>    
+    <string name="user_banner">云备份记录：功能正在开发中</string>    
     
     <string name="advice_title">意见反馈</string> 
     <string name="advice_button">发送</string> 
@@ -143,9 +143,9 @@
     
     <string name="platform_add">新增</string> 
     <string name="platform_takeout">取出</string>
-    <string name="platform_earningAmount">收益</string>
+    <string name="platform_earningAmount">回款:收益</string>
     <string name="platform_investAmount">投资</string>    
-    <string name="platform_back">回款</string>    
+    <string name="platform_back">回款:本金</string>    
     
     <string name="platform_invest">充值</string>
     
@@ -156,7 +156,7 @@
     <string name="dialog_item01">投资金额</string>
     <string name="dialog_item02">预期收益率</string>
     <string name="dialog_item03">结算后平台余额</string>
-    <string name="dialog_item04">收益确认</string>
+    <string name="dialog_item04">总回款额</string>
     <string name="dialog_item05">取出余额</string>
     
     <string name="takeout_title">取出余额</string>

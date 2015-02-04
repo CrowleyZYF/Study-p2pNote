@@ -52,11 +52,11 @@ public class MainActivity extends Activity implements OnClickListener{
     
     private ImageButton newItem;
     private TextView login;
-    private TextView checkTextView;
+    private RelativeLayout checkTextView;
     //private TextView backupTextView;
-    private TextView adviceTextView;
-    private TextView aboutTextView;
-    private TextView securityTextView;
+    private RelativeLayout adviceTextView;
+    private RelativeLayout aboutTextView;
+    private RelativeLayout securityTextView;
     //private TextView shareTextView;
     
     private int indexNumber=0;   
@@ -249,10 +249,10 @@ public class MainActivity extends Activity implements OnClickListener{
         mLeftMenu=(SlidingMenu) findViewById(R.id.id_menu);
         login=(TextView) findViewById(R.id.login);   
         //backupTextView=(TextView) findViewById(R.id.backup);
-        checkTextView=(TextView) findViewById(R.id.check_update);
-        adviceTextView=(TextView) findViewById(R.id.advice);
-        aboutTextView=(TextView) findViewById(R.id.about);
-        securityTextView=(TextView) findViewById(R.id.security);
+        checkTextView=(RelativeLayout) findViewById(R.id.check_update);
+        adviceTextView=(RelativeLayout) findViewById(R.id.advice);
+        aboutTextView=(RelativeLayout) findViewById(R.id.about);
+        securityTextView=(RelativeLayout) findViewById(R.id.security);
         //shareTextView=(TextView) findViewById(R.id.share);
         
 		tab_containerLayout.setOnClickListener(this);

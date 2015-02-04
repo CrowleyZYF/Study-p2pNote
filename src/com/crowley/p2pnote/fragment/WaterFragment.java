@@ -81,6 +81,7 @@ public class WaterFragment extends Fragment implements OnClickListener,OnItemLon
 	private TextView rateTextView;
 	private EditText earningText;
 	private TextView checkTextView;
+	private TextView dialog_small_title;
 	private String id="";
 	
 	@Override
@@ -147,6 +148,8 @@ public class WaterFragment extends Fragment implements OnClickListener,OnItemLon
         checkTextView.setText("查看确认投资");
         indexButtons.setVisibility(View.GONE);
         waterButtons.setVisibility(View.VISIBLE);
+        dialog_small_title=(TextView) dialog.findViewById(R.id.dialog_small_title);
+        dialog_small_title.setText("项目收益");
 	}
 	
 	@Override

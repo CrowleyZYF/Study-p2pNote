@@ -37,9 +37,11 @@ public class Index {
 	public String getTime(){
 		String monthString;
 		String dayString;
+		String weekString;
 		int year=cal.get(Calendar.YEAR);
 		int month=cal.get(Calendar.MONTH)+1;
 		int day=cal.get(Calendar.DAY_OF_MONTH);
+		int weekday=cal.get(Calendar.DAY_OF_WEEK);
 		if (month<10) {
 			monthString="-0"+month;			
 		}else{
@@ -50,7 +52,40 @@ public class Index {
 		}else{
 			dayString="-"+day;
 		}
-		return year+monthString+dayString;
+		switch (weekday) {
+		case Calendar.MONDAY:{
+			weekString="星期一";
+			break;
+		}
+		case Calendar.TUESDAY:{
+			weekString="星期二";
+			break;
+		}
+		case Calendar.WEDNESDAY:{
+			weekString="星期三";
+			break;
+		}
+		case Calendar.THURSDAY:{
+			weekString="星期四";
+			break;
+		}
+		case Calendar.FRIDAY:{
+			weekString="星期五";
+			break;
+		}
+		case Calendar.SATURDAY:{
+			weekString="星期六";
+			break;
+		}
+		case Calendar.SUNDAY:{
+			weekString="星期天";
+			break;
+		}
+		default:
+			weekString="星期天";
+			break;
+		}
+		return year+monthString+dayString+" "+weekString;
 	}
 	
 	/**
@@ -425,12 +460,15 @@ public class Index {
 				tempCursor.close();
 				db.close();
 				helper.close();
-				return Float.valueOf(Common.dealFloat(tempRecordModel.getMoney()*tempRecordModel.getEarningMax()*days/365)).toString();				
+				//return Float.valueOf(Common.dealFloat(tempRecordModel.getMoney()*tempRecordModel.getEarningMax()*days/365)).toString();			
+				//总回款
+				return Float.valueOf(tempRecordModel.getMoney()+Common.dealFloat(tempRecordModel.getMoney()*tempRecordModel.getEarningMax()*days/365)).toString();
 			}else{
 				tempCursor.close();
 				db.close();
 				helper.close();
-				return Common.dealFloat(tempRecordModel.getMoney()*tempRecordModel.getEarningMin()*days/365)+"~"+Common.dealFloat(tempRecordModel.getMoney()*tempRecordModel.getEarningMax()*days/365);
+				//return Common.dealFloat(tempRecordModel.getMoney()*tempRecordModel.getEarningMin()*days/365)+"~"+Common.dealFloat(tempRecordModel.getMoney()*tempRecordModel.getEarningMax()*days/365);
+				return Common.dealFloat(tempRecordModel.getMoney()+tempRecordModel.getMoney()*tempRecordModel.getEarningMin()*days/365)+"~"+Common.dealFloat(tempRecordModel.getMoney()+tempRecordModel.getMoney()*tempRecordModel.getEarningMax()*days/365);
 			}
 		}
 		case 1:{
@@ -449,7 +487,8 @@ public class Index {
 				tempCursor.close();
 				db.close();
 				helper.close();
-				return Double.valueOf(Common.dealFloat(earning)).toString();				
+				//return Double.valueOf(Common.dealFloat(earning)).toString();
+				return Double.valueOf(Common.dealFloat(tempRecordModel.getMoney()+earning)).toString();
 			}else{
 				Float rate1 = tempRecordModel.getEarningMin() / 12;				
 				double earning1 = (tempRecordModel.getMoney() * months * Math.pow((1 + rate1), months) / (Math.pow((1 + rate1), months) - 1))*months-tempRecordModel.getMoney();
@@ -458,7 +497,8 @@ public class Index {
 				tempCursor.close();
 				db.close();
 				helper.close();
-				return Double.valueOf(Common.dealFloat(earning1)).toString()+"~"+Double.valueOf(Common.dealFloat(earning2)).toString();
+				//return Double.valueOf(Common.dealFloat(earning1)).toString()+"~"+Double.valueOf(Common.dealFloat(earning2)).toString();
+				return Double.valueOf(Common.dealFloat(tempRecordModel.getMoney()+earning1)).toString()+"~"+Double.valueOf(Common.dealFloat(tempRecordModel.getMoney()+earning2)).toString();
 			}
 		}
 		case 2:{
@@ -467,12 +507,14 @@ public class Index {
 				tempCursor.close();
 				db.close();
 				helper.close();
-				return Float.valueOf(Common.dealFloat(tempRecordModel.getMoney()*tempRecordModel.getEarningMax()*days/365)).toString();				
+				//return Float.valueOf(Common.dealFloat(tempRecordModel.getMoney()*tempRecordModel.getEarningMax()*days/365)).toString();
+				return Float.valueOf(Common.dealFloat(tempRecordModel.getMoney()+tempRecordModel.getMoney()*tempRecordModel.getEarningMax()*days/365)).toString();
 			}else{
 				tempCursor.close();
 				db.close();
 				helper.close();
-				return Common.dealFloat(tempRecordModel.getMoney()*tempRecordModel.getEarningMin()*days/365)+"~"+Common.dealFloat(tempRecordModel.getMoney()*tempRecordModel.getEarningMax()*days/365);
+				//return Common.dealFloat(tempRecordModel.getMoney()*tempRecordModel.getEarningMin()*days/365)+"~"+Common.dealFloat(tempRecordModel.getMoney()*tempRecordModel.getEarningMax()*days/365);
+				return Common.dealFloat(tempRecordModel.getMoney()+tempRecordModel.getMoney()*tempRecordModel.getEarningMin()*days/365)+"~"+Common.dealFloat(tempRecordModel.getMoney()+tempRecordModel.getMoney()*tempRecordModel.getEarningMax()*days/365);
 			}			
 		}
 		default:

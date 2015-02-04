@@ -81,6 +81,7 @@
             android:background="@drawable/tab_line"
             />
         <RelativeLayout 
+            android:id="@+id/check_update"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_marginTop="10dp"
@@ -96,7 +97,6 @@
                 android:src="@drawable/left_menu_02"
                 />            
             <TextView 
-                android:id="@+id/check_update"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_toRightOf="@id/left_menu_02"
@@ -111,7 +111,8 @@
             android:layout_height="1dp"
             android:background="@drawable/tab_line"
             />
-        <RelativeLayout 
+        <RelativeLayout             
+            android:id="@+id/advice"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_marginTop="10dp"
@@ -127,7 +128,6 @@
                 android:src="@drawable/left_menu_03"
                 />            
             <TextView 
-                android:id="@+id/advice"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_toRightOf="@id/left_menu_03"
@@ -142,7 +142,8 @@
             android:layout_height="1dp"
             android:background="@drawable/tab_line"
             />
-        <RelativeLayout 
+        <RelativeLayout             
+            android:id="@+id/about"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_marginTop="10dp"
@@ -158,7 +159,6 @@
                 android:src="@drawable/left_menu_04"
                 />            
             <TextView 
-                android:id="@+id/about"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_toRightOf="@id/left_menu_04"
@@ -173,7 +173,8 @@
             android:layout_height="1dp"
             android:background="@drawable/tab_line"
             />
-        <RelativeLayout 
+        <RelativeLayout             
+            android:id="@+id/security"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_marginTop="10dp"
@@ -189,7 +190,6 @@
                 android:src="@drawable/left_menu_05"
                 />            
             <TextView 
-                android:id="@+id/security"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_toRightOf="@id/left_menu_05"
@@ -237,5 +237,14 @@
             /> -->
     </LinearLayout>
     
-
+	
+    <ImageView
+        android:onClick="toggleMenu"
+        android:layout_width="30dp"
+        android:layout_height="30dp"
+        android:background="@drawable/back_icon"
+        android:layout_alignParentBottom="true"
+        android:layout_alignParentRight="true"
+        android:layout_marginBottom="15dp"
+        />
 </RelativeLayout>
