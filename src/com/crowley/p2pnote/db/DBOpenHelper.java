@@ -305,9 +305,9 @@ public class DBOpenHelper extends SQLiteOpenHelper{
 		db.execSQL("insert into product(platform,product,money,earningMin,earningMax,method,period) values('爱投资','爱融租',-1,-1,-1,-1,-1)");
 		db.execSQL("insert into product(platform,product,money,earningMin,earningMax,method,period) values('爱投资','爱收藏',-1,-1,-1,-1,-1)");
 		
-		db.execSQL("insert into product(platform,product,money,earningMin,earningMax,method,period) values('点融网','新手投资团',100,0.07,0.16,2,12)");
+		db.execSQL("insert into product(platform,product,money,earningMin,earningMax,method,period) values('点融网','新手投资团',100,0,0.07,2,12)");
 		db.execSQL("insert into product(platform,product,money,earningMin,earningMax,method,period) values('点融网','稳健投资团',1000,0,0.09,2,12)");
-		db.execSQL("insert into product(platform,product,money,earningMin,earningMax,method,period) values('点融网','高手投资团',500,0,0.07,2,12)");
+		db.execSQL("insert into product(platform,product,money,earningMin,earningMax,method,period) values('点融网','高手投资团',500,0.07,0.16,2,12)");
 		db.execSQL("insert into product(platform,product,money,earningMin,earningMax,method,period) values('点融网','点融VIP团',300000,0,0.12,2,12)");
 		db.execSQL("insert into product(platform,product,money,earningMin,earningMax,method,period) values('点融网','散标',-1,-1,-1,-1,-1)");
 		

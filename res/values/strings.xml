@@ -9,7 +9,7 @@
     <string name="basic_info01">当日收益（元）</string>
     <string name="basic_info02">均年化收益</string>
     <string name="basic_info03">在投总额（元）</string>
-    <string name="basic_info04">累计收益</string>
+    <string name="basic_info04">累计收益（元）</string>
     <string name="addMinus">±</string>
     <string name="add">+</string>
     <string name="minus">-</string>
@@ -130,7 +130,7 @@
     <string name="advice_title">意见反馈</string> 
     <string name="advice_button">发送</string> 
     
-    <string name="about_title">关于钱去哪了</string>
+    <string name="about_title">关于钱在哪了</string>
     
     <string name="sure">确认</string>
     <string name="cancel">取消</string>

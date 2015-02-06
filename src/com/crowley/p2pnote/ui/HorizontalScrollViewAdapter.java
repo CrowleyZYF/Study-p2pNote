@@ -48,19 +48,24 @@ public class HorizontalScrollViewAdapter extends SimpleAdapter{
         if (convertView == null)  
         {  
             viewHolder = new ViewHolder();  
-            convertView = mInflater.inflate(  
-                    R.layout.platform_tab, parent, false);  
-            viewHolder.mImg = (ImageView) convertView  
-                    .findViewById(R.id.platform_tab_img);  
-            viewHolder.mText = (TextView) convertView  
-                    .findViewById(R.id.platform_name);  
+            convertView = mInflater.inflate(R.layout.platform_tab, parent, false);  
+            viewHolder.mImg = (ImageView) convertView.findViewById(R.id.platform_tab_img);  
+            viewHolder.mText = (TextView) convertView.findViewById(R.id.platform_name);  
             convertView.setTag(viewHolder);  
         } else  
         {  
             viewHolder = (ViewHolder) convertView.getTag();  
         }  
-        viewHolder.mImg.setImageResource(mDatas.get(position));  
-        viewHolder.mText.setText(mDatas2.get(position));
+        if(mDatas.get(position)==R.drawable.company_icon32_big){
+        	viewHolder.mImg.setImageResource(mDatas.get(position));  
+            viewHolder.mText.setText(mDatas2.get(position));
+            viewHolder.mText.setVisibility(View.VISIBLE);
+        }else{
+        	viewHolder.mImg.setImageResource(mDatas.get(position));  
+            viewHolder.mText.setText(mDatas2.get(position));
+            viewHolder.mText.setVisibility(View.GONE);
+        }
+        
   
         return convertView;  
     }  

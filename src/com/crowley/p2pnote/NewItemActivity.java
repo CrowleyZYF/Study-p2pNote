@@ -234,9 +234,9 @@ public class NewItemActivity extends Activity implements OnItemSelectedListener,
 		if(tempCursor.getCount()!=0){
 			tempCursor.moveToFirst();
 			ProductModel productModel=new ProductModel(tempCursor);
-			if(productModel.getMoney()>0){
+			/*if(productModel.getMoney()>0){
 				money.setText(productModel.getMoney().toString());
-			}
+			}*/
 			if(productModel.getEarningMin()>=0){
 				minEditText.setText(Float.valueOf(Common.dealFloat(productModel.getEarningMin()*100)).toString());
 				maxEditText.setText(Float.valueOf(Common.dealFloat(productModel.getEarningMax()*100)).toString());
@@ -416,6 +416,9 @@ public class NewItemActivity extends Activity implements OnItemSelectedListener,
 				if(company_name.equals(getResources().getString(R.string.company_name32))){
 					customLinearLayout.setVisibility(View.VISIBLE);	
 					typeSpinner.setVisibility(View.GONE);
+					money.setText("");
+					minEditText.setText("");
+					maxEditText.setText("");
 				//不是其他
 				}else{
 					customLinearLayout.setVisibility(View.GONE);	
