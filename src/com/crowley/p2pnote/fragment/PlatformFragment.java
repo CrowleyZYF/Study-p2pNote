@@ -241,11 +241,11 @@ public class PlatformFragment extends Fragment implements OnClickListener,OnTouc
 			if(TextUtils.isEmpty(getOutText.getText())){
 				erroredBoolean=true;
 				errorString="请输入具体金额";	
-			}else if(Float.parseFloat(getOutText.getText().toString())<0){
+			}else if(Float.parseFloat(getOutText.getText().toString())<0&&erroredBoolean==false){
 				erroredBoolean=true;
 				errorString="金额不可小于0";
 			}			
-			if ((actionNameTextView.getText().toString()).equals("取出余额")) {
+			if ((actionNameTextView.getText().toString()).equals("取出余额")&&erroredBoolean==false) {
 				if (Float.parseFloat(getOutText.getText().toString())>Float.parseFloat(getOutText.getHint().toString())) {
 					erroredBoolean=true;
 					errorString="取出金额不可大于现余额";	

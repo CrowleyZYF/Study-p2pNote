@@ -8,7 +8,7 @@ import javax.security.auth.PrivateCredentialPermission;
 
 import com.crowley.p2pnote.R;
 import com.crowley.p2pnote.db.DBOpenHelper;
-import com.crowley.p2pnote.functions.ReturnList;
+import com.crowley.p2pnote.functions.Common;
 
 import android.content.Context;
 import android.content.res.Resources;
@@ -27,7 +27,6 @@ public class listAdapter extends SimpleAdapter{
 	private String[] from;
 	private int[] to;
 	private Context context;
-	private ReturnList returnList;
 
 	public listAdapter(Context context, List<Map<String, Object>> data,
 			int resource, String[] from, int[] to) {
@@ -37,7 +36,6 @@ public class listAdapter extends SimpleAdapter{
 		this.from=from;
 		this.to=to;
 		// TODO Auto-generated constructor stub
-		this.returnList=new ReturnList(context);
 	}
 	
 	@Override
@@ -55,7 +53,7 @@ public class listAdapter extends SimpleAdapter{
 		String tempString=((TextView)convertView.findViewById(R.id.timeEnd)).getText().toString();
 		String[] time=tempString.split(" ");
 		String stateString=((TextView)convertView.findViewById(R.id.item_state)).getText().toString();
-		if(returnList.parseDay(time[1])<=returnList.daysNumber()&&stateString.equals("0")){
+		if(Common.parseDay(time[1])<=Common.parseDay(Common.getTime())&&stateString.equals("0")){
 			((ImageView)convertView.findViewById(R.id.circle)).setImageResource(R.drawable.red_circle);
 		}else{
 			((ImageView)convertView.findViewById(R.id.circle)).setImageResource(R.drawable.white_circle);

@@ -10,7 +10,6 @@ import cn.pedant.SweetAlert.SweetAlertDialog;
 
 import com.crowley.p2pnote.db.HttpUtils;
 import com.crowley.p2pnote.functions.Common;
-import com.crowley.p2pnote.functions.ReturnList;
 
 import android.annotation.SuppressLint;
 import android.app.Activity;
@@ -37,7 +36,6 @@ public class RegisterActivity extends Activity implements OnClickListener {
 	private Button registerButton;
 	private ImageButton backButton;
 	
-	private ReturnList returnList;
 	
 	private int error_code = 3;
 	private final int REGIST_SUCCESS = 0;
@@ -118,8 +116,6 @@ public class RegisterActivity extends Activity implements OnClickListener {
 	};
 
 	private void initView() {
-		returnList = new ReturnList(this);
-		
 		registerButton=(Button) findViewById(R.id.register_button);
 		backButton=(ImageButton) findViewById(R.id.back);
 		accountEditText=(EditText) findViewById(R.id.account);
@@ -133,7 +129,7 @@ public class RegisterActivity extends Activity implements OnClickListener {
 	private void register(String account,String password,String password_repeat){
 		if(!Common.isOpenNetwork(this)){
 			Common.errorDialog(nowContext, "◊¢≤· ß∞‹", "Õ¯¬ÁŒ¥¡¥Ω”").show();
-		}else if(!returnList.isEmail(account)){
+		}else if(!Common.isEmail(account)){
 			Common.errorDialog(nowContext, "◊¢≤· ß∞‹", "” œ‰∏Ò Ω”–ŒÛ£°").show();
 		}else if(!password.equals(password_repeat)){
 			Common.errorDialog(nowContext, "◊¢≤· ß∞‹", "¡Ω¥Œ√‹¬Î≤ª“ª÷¬£°").show();

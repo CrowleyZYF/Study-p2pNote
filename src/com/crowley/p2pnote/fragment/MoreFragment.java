@@ -18,7 +18,6 @@ import com.crowley.p2pnote.R.layout;
 import com.crowley.p2pnote.db.HttpUtils;
 import com.crowley.p2pnote.db.NewsModel;
 import com.crowley.p2pnote.functions.Common;
-import com.crowley.p2pnote.functions.ReturnList;
 import com.crowley.p2pnote.ui.RefreshListView;
 import com.crowley.p2pnote.ui.RefreshListView.IReflashListener;
 
@@ -45,7 +44,6 @@ public class MoreFragment extends Fragment implements IReflashListener{
 	
 	private String timeString;
 	
-	private ReturnList returnList;
 	
 	private SharedPreferences preferences;
 	
@@ -59,7 +57,6 @@ public class MoreFragment extends Fragment implements IReflashListener{
 							String addString=((JSONObject)array.get(i)).get("add_time").toString();
 							String content=((JSONObject)array.get(i)).get("content").toString();
 							NewsModel temp=new NewsModel(0,titleString,addString,content);
-							returnList.saveNews(temp);
 							Long tsLong = System.currentTimeMillis();
 							timeString = tsLong.toString();							
 						} catch (JSONException e1) {
@@ -89,7 +86,6 @@ public class MoreFragment extends Fragment implements IReflashListener{
 		View view = inflater.inflate(R.layout.news_fragment, container, false);
 		
 		dataList=new ArrayList<Map<String,Object>>();
-		returnList=new ReturnList(this.getActivity());
         listView=(RefreshListView) view.findViewById(R.id.listview);
         listView.setInterface(this);
         preferences=this.getActivity().getSharedPreferences("user", android.content.Context.MODE_PRIVATE);
@@ -124,7 +120,6 @@ public class MoreFragment extends Fragment implements IReflashListener{
 			dataList.add(map);
 		}else if(type==1){
 			List<Map<String, Object>> temp = new ArrayList<Map<String,Object>>();
-			temp=returnList.getAllNews();
 			for (int i = 0; i < temp.size(); i++) {
 				//dataList.add(temp.get(i));			
 				Map<String, Object> map=new HashMap<String, Object>();  

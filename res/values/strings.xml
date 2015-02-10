@@ -103,12 +103,12 @@
     <string name="left_menu_01">数据云备份</string>
     <string name="left_menu_02">检查更新</string>
     <string name="left_menu_03">用户反馈</string>
-    <string name="left_menu_04">关于钱去哪了</string>
+    <string name="left_menu_04">关于钱在哪儿</string>
     <string name="left_menu_05">安全设置</string>
     <string name="left_menu_06">分享给好友</string>
     
-    <string name="login_title">登录网贷篮子</string>
-    <string name="register_title">注册网贷篮子</string> 
+    <string name="login_title">登录钱在哪儿</string>
+    <string name="register_title">注册钱在哪儿</string> 
     <string name="modify_title">修改密码</string>   
     <string name="login_button">登 录</string>    
     <string name="register_button">注 册</string>    
@@ -130,7 +130,7 @@
     <string name="advice_title">意见反馈</string> 
     <string name="advice_button">发送</string> 
     
-    <string name="about_title">关于钱在哪了</string>
+    <string name="about_title">关于钱在哪儿</string>
     
     <string name="sure">确认</string>
     <string name="cancel">取消</string>

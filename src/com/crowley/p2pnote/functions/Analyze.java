@@ -76,7 +76,7 @@ public class Analyze {
 	/**
 	 * 返回饼状图所需数据 
 	 * @param context
-	 * @param type 为0表示平台在投金额分析，1为收益率，2为期限结构，3为回款时间，4为平台余额分析
+	 * @param type 为0表示平台在投金额分析，1为收益率，3为期限结构，2为回款时间，4为平台余额分析
 	 * @param xVals 饼状图分类
 	 * @return
 	 */
@@ -86,7 +86,8 @@ public class Analyze {
 		//收益率计算节点
 		Float[] analyze01={0.06f,0.08f,0.1f,0.12f,0.15f,0.2f,0.25f};
 		//期限结构计算节点
-		Integer[] analyze02={1,3,6,9,12,18,24};
+		//Integer[] analyze02={1,3,6,9,12,18,24};
+		Integer[] analyze02={40,100,190,280,380,570,760};
 		//回款时间计算节点 第一个数字为天数 其他的为月数
 		Integer[] analyze03={7,1,3,6,9,12};
 		
@@ -137,11 +138,12 @@ public class Analyze {
 					}
 					break;						
 				}
-				case 2:{
+				case 3:{
 					if(record.getState()==1){
 						continue;
 					}
-					int duration=Common.parseMonth(record.getTimeEnd())-Common.parseMonth(record.getTimeBegin());
+					//int duration=Common.parseMonth(record.getTimeEnd())-Common.parseMonth(record.getTimeBegin());
+					int duration=Common.parseDay(record.getTimeEnd())-Common.parseDay(record.getTimeBegin());
 					boolean added=false;
 					for(int i=0;i<analyze02.length&&added==false;i++){
 						if(duration<analyze02[i]){
@@ -156,7 +158,7 @@ public class Analyze {
 					}	
 					break;
 				}
-				case 3:{
+				case 2:{
 					if(record.getState()==1){
 						continue;
 					}

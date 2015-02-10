@@ -31,21 +31,14 @@ import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.TextView;
 
-public class AnalyzeFragment extends Fragment implements OnClickListener,OnTouchListener{
+public class AnalyzeFragment extends Fragment implements OnClickListener{
 
 	private int status;
 	private Analyze analyze;
-	private MyHorizontalScrollView mHorizontalScrollView;
-	
-	private LinearLayout analyzeLinearLayout;
 	private PieChart mChart;	
 	private TextView analyze_name;
 	private ImageView prev;
 	private ImageView next;
-	
-	final int RIGHT = 0;  
-    final int LEFT = 1;  
-    private GestureDetector gestureDetector;
 	
 	@Override
 	public View onCreateView(LayoutInflater inflater, ViewGroup container,
@@ -63,8 +56,6 @@ public class AnalyzeFragment extends Fragment implements OnClickListener,OnTouch
 	public void initEvent() {
 		prev.setOnClickListener(this);
         next.setOnClickListener(this);
-        analyzeLinearLayout.setOnTouchListener(this);
-        mHorizontalScrollView.setOnTouchListener(this);
 	}
 
 	public void initData() {
@@ -90,13 +81,10 @@ public class AnalyzeFragment extends Fragment implements OnClickListener,OnTouch
 	}
 
 	public void initView(View v) {		
-		mHorizontalScrollView = (MyHorizontalScrollView) v.findViewById(R.id.scroll_view);
-		analyzeLinearLayout = (LinearLayout) v.findViewById(R.id.analyze);
 		mChart = (PieChart) v.findViewById(R.id.pieChart1);
 		analyze_name=(TextView) v.findViewById(R.id.analyze_name);
 		prev=(ImageView) v.findViewById(R.id.prev);
 		next=(ImageView) v.findViewById(R.id.next);
-		gestureDetector = new GestureDetector(this.getActivity(),onGestureListener); 
 	}
 	
 	protected PieData generatePieData(int type) {
@@ -121,20 +109,20 @@ public class AnalyzeFragment extends Fragment implements OnClickListener,OnTouch
 	        	xVals.add("> 25%");
 	        	break;
 			}
-			case 2:{
+			case 3:{
 				//期限结构
 				xVals = new ArrayList<String>();
-	        	xVals.add("小于一个月");
-	        	xVals.add("小于三个月");
-	        	xVals.add("小于半年");
-	        	xVals.add("小于九个月");
-	        	xVals.add("小于一年");
-	        	xVals.add("小于一年半");
-	        	xVals.add("小于两年");
+	        	xVals.add("约一个月(<40天)");
+	        	xVals.add("约三个月(<100天)");
+	        	xVals.add("约半年(<190天)");
+	        	xVals.add("约九个月(<280天)");
+	        	xVals.add("约一年(<380天)");
+	        	xVals.add("约一年半(<570天)");
+	        	xVals.add("约两年(<760天)");
 	        	xVals.add("两年以上");
 	        	break;
 			}
-			case 3:{
+			case 2:{
 				//回款时间
 				xVals = new ArrayList<String>();
 	        	xVals.add("小于一周");
@@ -143,7 +131,7 @@ public class AnalyzeFragment extends Fragment implements OnClickListener,OnTouch
 	        	xVals.add("小于半年");
 	        	xVals.add("小于九个月");
 	        	xVals.add("小于一年");
-	        	xVals.add("小于一年以上");
+	        	xVals.add("大于一年以上");
 	        	break;
 			}
 			default:
@@ -230,61 +218,4 @@ public class AnalyzeFragment extends Fragment implements OnClickListener,OnTouch
 		mChart.setCenterText(this.getActivity().getResources().getString(DBOpenHelper.ANALYZE_TITLE_SMALL[status]));
 		mChart.invalidate();
 	}
-	
-	private GestureDetector.OnGestureListener onGestureListener =   
-	        new GestureDetector.SimpleOnGestureListener() {  
-	        @Override  
-	        public boolean onFling(MotionEvent e1, MotionEvent e2, float velocityX,  
-	                float velocityY) {  
-	            float x = e2.getX() - e1.getX();  
-	            float y = e2.getY() - e1.getY();  
-	            if (x > 0) {  
-	                doResult(RIGHT);  
-	            } else if (x < 0) {  
-	                doResult(LEFT);  
-	            }  
-	            return true;  
-	        }  
-	    }; 
-
-	@Override
-	public boolean onTouch(View arg0, MotionEvent arg1) {
-		// TODO Auto-generated method stub
-		switch (arg0.getId()) {
-		case R.id.analyze:{
-			return gestureDetector.onTouchEvent(arg1); 			
-		}
-		default:
-			break;
-		}
-		return false;
-	}
-	
-	public void doResult(int action) { 		  
-        switch (action) {  
-        case RIGHT:  
-        	if(status==4){
-				status=0;
-			}else{
-				status++;
-			}
-			analyze_name.setText(DBOpenHelper.ANALYZE_TITLE[status]);
-			mChart.setData(generatePieData(status));
-			mChart.setCenterText(this.getActivity().getResources().getString(DBOpenHelper.ANALYZE_TITLE_SMALL[status]));
-			mChart.invalidate();
-            break;    
-        case LEFT:          	
-			if(status==0){
-				status=4;
-			}else{
-				status--;
-			}
-			analyze_name.setText(DBOpenHelper.ANALYZE_TITLE[status]);
-			mChart.setData(generatePieData(status));
-			mChart.setCenterText(this.getActivity().getResources().getString(DBOpenHelper.ANALYZE_TITLE_SMALL[status]));
-			mChart.invalidate();
-            break;   
-        }  
-    }
-
 }

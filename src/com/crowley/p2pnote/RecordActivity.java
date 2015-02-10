@@ -7,7 +7,6 @@ import java.util.List;
 import java.util.Map;
 
 import com.crowley.p2pnote.functions.Platform;
-import com.crowley.p2pnote.functions.ReturnList;
 import com.crowley.p2pnote.ui.recordAdapter;
 
 import android.app.Activity;

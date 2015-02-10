@@ -13,7 +13,6 @@ import com.crowley.p2pnote.db.ProductModel;
 import com.crowley.p2pnote.db.RecordModel;
 import com.crowley.p2pnote.functions.Common;
 import com.crowley.p2pnote.functions.Platform;
-import com.crowley.p2pnote.functions.ReturnList;
 import com.github.mikephil.charting.utils.ColorTemplate;
 
 import android.app.Activity;
@@ -39,7 +38,6 @@ import android.widget.Spinner;
 import android.widget.TextView;
 
 public class NewItemActivity extends Activity implements OnItemSelectedListener,android.view.View.OnClickListener{	
-	private ReturnList returnList;
 	
 	private Platform platform;
 	private boolean init = false;
@@ -115,7 +113,7 @@ public class NewItemActivity extends Activity implements OnItemSelectedListener,
 		
 
 		if(modelString.equals("1")){
-    		RecordModel itemModel=returnList.getRecordModel(idString);
+    		RecordModel itemModel=Common.getRecordModel(this,idString);
     		//检测平台是否为其他
     		boolean isOther=true;
     		for(int i=0;i<DBOpenHelper.PLATFORM_NAMES.length;i++){
@@ -200,8 +198,6 @@ public class NewItemActivity extends Activity implements OnItemSelectedListener,
 
 	private void initData() {
 		platform=new Platform(this);
-		//方法类
-		returnList = new ReturnList(this);
 		//数据源
 		platformList = new ArrayList<Map<String,Object>>();
 		rateList = new ArrayList<Map<String,Object>>();
@@ -240,6 +236,9 @@ public class NewItemActivity extends Activity implements OnItemSelectedListener,
 			if(productModel.getEarningMin()>=0){
 				minEditText.setText(Float.valueOf(Common.dealFloat(productModel.getEarningMin()*100)).toString());
 				maxEditText.setText(Float.valueOf(Common.dealFloat(productModel.getEarningMax()*100)).toString());
+			}else{
+				minEditText.setText("");
+				maxEditText.setText("");
 			}
 			if(productModel.getEarningMin()>0){
 				rateSpinner.setSelection(0);
@@ -610,12 +609,9 @@ public class NewItemActivity extends Activity implements OnItemSelectedListener,
 			int day1=Integer.parseInt(time1[2]);
 			int day2=Integer.parseInt(time2[2]);			
 			
-			if(returnList.parseDay(begin_dayString)>=returnList.parseDay(end_dayString)){
+			if(Common.parseDay(begin_dayString)>=Common.parseDay(end_dayString)){
 				erroredBoolean=true;
 				errorString="结束时间应晚于计息时间";	
-			}else if(day1!=day2&&method!=0){
-				erroredBoolean=true;
-				errorString="必须以整月形式购买";	
 			}
 			//创建时间戳
 			Long tsLong = System.currentTimeMillis();

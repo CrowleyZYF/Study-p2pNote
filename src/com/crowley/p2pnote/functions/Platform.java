@@ -70,7 +70,7 @@ public class Platform {
 		tempCursor.close();
 		db.close();
 		helper.close();
-		return rest;
+		return Common.dealFloat(rest);
 	}
 	
 	/**
@@ -152,7 +152,7 @@ public class Platform {
 			helper.close();
 			db.close();
 			tempCursor.close();
-			return earningAll;
+			return Common.dealFloat(earningAll);
 		}else{
 			helper.close();
 			db.close();
@@ -210,7 +210,7 @@ public class Platform {
 			helper.close();
 			db.close();
 			tempCursor.close();
-			return amount;
+			return Common.dealFloat(amount);
 		}else{
 			helper.close();
 			db.close();
@@ -285,7 +285,7 @@ public class Platform {
 			helper.close();
 			db.close();
 			tempCursor.close();
-			return tempRecordModel.getMoney().toString();
+			return Common.dealFloat(tempRecordModel.getMoney()).toString();
 		}else{
 			helper.close();
 			db.close();

@@ -2,6 +2,8 @@ package com.crowley.p2pnote.functions;
 
 import java.math.BigDecimal;
 import java.util.Calendar;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
 import android.content.Context;
 import android.content.SharedPreferences;
@@ -239,6 +241,25 @@ public class Common {
 		Cursor tempCursor2=db.rawQuery("select * from rest WHERE userName='not_login'", null);
 		
 		boolean result=(!(tempCursor.getCount()==0))||(!(tempCursor2.getCount()==0));
+		db.close();
+		helper.close();
+		return result;
+	}
+	
+	public static boolean isEmail(String email) {
+		String str = "^([a-zA-Z0-9_\\-\\.]+)@((\\[[0-9]{1,3}\\.[0-9]{1,3}\\.[0-9]{1,3}\\.)|(([a-zA-Z0-9\\-]+\\.)+))([a-zA-Z]{2,4}|[0-9]{1,3})(\\]?)$";
+		Pattern p = Pattern.compile(str);
+		Matcher m = p.matcher(email);
+
+		return m.matches();
+	}
+	
+	public static RecordModel getRecordModel(Context context, String id){		
+		DBOpenHelper helper = new DBOpenHelper(context, "record.db");
+		SQLiteDatabase db = helper.getWritableDatabase();
+		Cursor tempCursor=db.rawQuery("select * from record WHERE _id = "+id, null);
+		tempCursor.moveToFirst();
+		RecordModel result=new RecordModel(tempCursor);
 		db.close();
 		helper.close();
 		return result;

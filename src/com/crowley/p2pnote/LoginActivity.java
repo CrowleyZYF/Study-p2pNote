@@ -7,7 +7,6 @@ import org.json.JSONObject;
 import cn.pedant.SweetAlert.SweetAlertDialog;
 import com.crowley.p2pnote.db.HttpUtils;
 import com.crowley.p2pnote.functions.Common;
-import com.crowley.p2pnote.functions.ReturnList;
 import android.annotation.SuppressLint;
 import android.app.Activity;
 import android.content.Context;
@@ -32,9 +31,7 @@ public class LoginActivity extends Activity implements OnClickListener {
 	private ImageButton backButton;
 	private EditText accountEditText;
 	private EditText passwordEditText;
-	
-	private ReturnList returnList;
-	
+		
 	private int error_code = 2;
 	private final int LOGIN_SUCCESS = 0;
 	private final int NOT_EXIST = 1;
@@ -118,7 +115,6 @@ public class LoginActivity extends Activity implements OnClickListener {
 	}
 
 	public void initView() {
-		returnList = new ReturnList(this);
 		
 		loginButton = (Button) findViewById(R.id.login_button);
 		registerButton = (Button) findViewById(R.id.register_button);
@@ -138,7 +134,7 @@ public class LoginActivity extends Activity implements OnClickListener {
 			Common.errorDialog(nowContext, "µÇÂ½Ê§°Ü", "ÕËºÅ²»µÃÎª¿Õ").show();
 		}else if(password==""){
 			Common.errorDialog(nowContext, "µÇÂ½Ê§°Ü", "ÃÜÂë²»µÃÎª¿Õ").show();
-		}else if(!returnList.isEmail(account)){
+		}else if(!Common.isEmail(account)){
 			Common.errorDialog(nowContext, "µÇÂ½Ê§°Ü", "ÓÊÏä¸ñÊ½ÓÐÎó£¡").show();					
 		}else {
 			final Map<String, String> params = new HashMap<String, String>();
