@@ -27,6 +27,7 @@ import android.content.SharedPreferences;
 import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
 import android.os.Bundle;
+import android.text.InputType;
 import android.text.TextUtils;
 import android.view.LayoutInflater;
 import android.view.MotionEvent;
@@ -143,7 +144,7 @@ public class PlatformFragment extends Fragment implements OnClickListener,OnTouc
         dialog.setContentView(R.layout.takeout_dialog);
         timeEndTextView=(TextView) dialog.findViewById(R.id.end_time);
         productTextView=(TextView) dialog.findViewById(R.id.item_name);
-        getOutText=(EditText) dialog.findViewById(R.id.get_out);        
+        getOutText=(EditText) dialog.findViewById(R.id.get_out);     
         sureButton = (Button) dialog.findViewById(R.id.sure_button);
         cancelButton = (Button) dialog.findViewById(R.id.cancel_button);
         actionTitleTextView = (TextView) dialog.findViewById(R.id.action_title);

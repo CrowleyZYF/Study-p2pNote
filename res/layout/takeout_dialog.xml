@@ -143,6 +143,9 @@
                         android:paddingTop="3dp"
 	            		android:textSize="20sp"
 	            		android:gravity="right"
+	            		android:focusable="true"
+	            		android:focusableInTouchMode="true"
+	            		android:minWidth="100dp"
 		                />
 	                
 				</RelativeLayout>

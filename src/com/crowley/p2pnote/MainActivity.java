@@ -1,7 +1,14 @@
 package com.crowley.p2pnote;
 
+import java.util.HashMap;
+import java.util.Map;
+
+import org.json.JSONException;
+import org.json.JSONObject;
+
 import cn.pedant.SweetAlert.SweetAlertDialog;
 
+import com.crowley.p2pnote.db.HttpUtils;
 import com.crowley.p2pnote.fragment.AnalyzeFragment;
 import com.crowley.p2pnote.fragment.IndexFragment;
 import com.crowley.p2pnote.fragment.MoreFragment;
@@ -10,13 +17,22 @@ import com.crowley.p2pnote.fragment.WaterFragment;
 import com.crowley.p2pnote.functions.Common;
 import com.crowley.p2pnote.ui.SlidingMenu;
 
+import android.R.integer;
 import android.app.Activity;
 import android.app.FragmentManager;
 import android.app.FragmentTransaction;
+import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
+import android.content.SharedPreferences.Editor;
+import android.content.pm.PackageInfo;
+import android.content.pm.PackageManager.NameNotFoundException;
+import android.net.Uri;
 import android.os.Bundle;
 import android.os.CountDownTimer;
+import android.os.Handler;
+import android.os.Message;
+import android.util.Log;
 import android.view.View;
 import android.view.View.OnClickListener;
 import android.view.Window;
@@ -60,12 +76,59 @@ public class MainActivity extends Activity implements OnClickListener{
     //private TextView shareTextView;
     
     private int indexNumber=0;   
+    private String versionCode="0";
+    
+    private String updateUrlString="http://120.27.44.42/p2pbeerich/index.php/update";
+    private String downUrlString="";
+    PackageInfo pi;
+    
+    private int state = 0;
+    private SweetAlertDialog pDialog;
+    
+    private Handler handler = new Handler(){
+		public void handleMessage(Message msg){
+			if(msg.what==0x123){
+				switch (state) {
+				case 0:{
+					pDialog.setTitleText("当前已为最新版本!")
+	                    .setConfirmText("确定")
+	                    .changeAlertType(SweetAlertDialog.SUCCESS_TYPE);
+					break;					
+				}
+				case 1:{
+					pDialog.setTitleText("有新的版本可供更新!")
+                    .setConfirmText("前去下载")
+                    .setCancelText("暂不更新")
+                    .setConfirmClickListener(new SweetAlertDialog.OnSweetClickListener() {
+			                @Override
+			                public void onClick(SweetAlertDialog sDialog) {
+			                	Uri uri = Uri.parse(downUrlString);  
+			                	Intent it = new Intent(Intent.ACTION_VIEW, uri);  
+			                	startActivity(it);
+			                }
+			            })
+                    .changeAlertType(SweetAlertDialog.SUCCESS_TYPE);
+					break;
+				}
+				default:
+					break;
+				}				
+			}
+		}		
+	};
     	
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         requestWindowFeature(Window.FEATURE_NO_TITLE);
-        setContentView(R.layout.activity_main);        
+        setContentView(R.layout.activity_main);   
+        try {
+			pi=this.getPackageManager().getPackageInfo(this.getPackageName(), 0);
+			versionCode=Integer.valueOf(pi.versionCode-1).toString();
+		} catch (NameNotFoundException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
         initViews();  
         fragmentManager = getFragmentManager();  
         setTabSelection(indexNumber);
@@ -335,11 +398,28 @@ public class MainActivity extends Activity implements OnClickListener{
             break;
         }*/
         case R.id.check_update:{
-        	final SweetAlertDialog pDialog = new SweetAlertDialog(this, SweetAlertDialog.PROGRESS_TYPE);
+            pDialog = new SweetAlertDialog(this, SweetAlertDialog.PROGRESS_TYPE);
         	pDialog.setTitleText("检查更新...");
         	pDialog.show();
             pDialog.setCancelable(false);
-            new CountDownTimer(800 * 2, 800) {
+            final Map<String, String> params = new HashMap<String, String>();
+			params.put("version", versionCode);
+            new Thread(){
+				public void run(){
+					String teString=HttpUtils.submitPostData(updateUrlString , params, "utf-8");
+					try {
+						JSONObject object=new JSONObject(teString);
+						state = (Integer) object.get("state");
+						if (state==1) {
+							downUrlString = (String) object.get("url");
+						}
+						handler.sendEmptyMessage(0x123);
+					} catch (JSONException e) {
+						e.printStackTrace();
+					}
+				}
+			}.start();
+            /*new CountDownTimer(800 * 2, 800) {
                 public void onTick(long millisUntilFinished) {
                     // you can change the progress bar color by ProgressHelper every 800 millis
                 	iCount++;
@@ -358,7 +438,7 @@ public class MainActivity extends Activity implements OnClickListener{
                             .setConfirmText("确定")
                             .changeAlertType(SweetAlertDialog.SUCCESS_TYPE);
                 }
-            }.start();
+            }.start();*/
         	break;
         }
         case R.id.advice:{
