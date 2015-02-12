@@ -321,7 +321,7 @@ public class DBOpenHelper extends SQLiteOpenHelper{
 		db.execSQL("insert into product(platform,product,money,earningMin,earningMax,method,period) values('陆金所','稳盈安业-6个月',250000,0,0.078,2,6)");
 		db.execSQL("insert into product(platform,product,money,earningMin,earningMax,method,period) values('陆金所','专享理财',100000,0.1,0.15,0,1)");
 		
-		db.execSQL("insert into product(platform,product,money,earningMin,earningMax,method,period) values('人人贷','U计划A',1000,0,0.07,0,3en )");
+		db.execSQL("insert into product(platform,product,money,earningMin,earningMax,method,period) values('人人贷','U计划A',1000,0,0.07,0,3)");
 		db.execSQL("insert into product(platform,product,money,earningMin,earningMax,method,period) values('人人贷','U计划B',10000,0,0.09,0,6)");
 		db.execSQL("insert into product(platform,product,money,earningMin,earningMax,method,period) values('人人贷','U计划C',10000,0,0.11,0,12)");
 		db.execSQL("insert into product(platform,product,money,earningMin,earningMax,method,period) values('人人贷','散标',-1,-1,-1,-1,-1)");

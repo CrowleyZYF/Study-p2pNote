@@ -53,7 +53,7 @@ public class AboutActivity extends Activity implements OnClickListener {
 			//Common.toBeContinuedDialog(this).show();
 			new SweetAlertDialog(this, SweetAlertDialog.CUSTOM_IMAGE_TYPE)
 			    .setTitleText("请截屏后扫一扫")
-			    .setContentText("关注我们的公众号O(∩_∩)O")
+			    .setContentText("关注我们的公众号money_note")
 			    .setCustomImage(R.drawable.weichatcode)
 			    .setConfirmText("确定")
 			    .show();
