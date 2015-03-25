@@ -214,21 +214,37 @@ public class PlatformFragment extends Fragment implements OnClickListener,OnTouc
             break;			
 		}
 		case R.id.platform_invest:{
-			actionNameTextView.setText("充值金额");
-			actionTitleTextView.setText("充值金额");
-			productTextView.setText(title.getText());
-			timeEndTextView.setText(Common.getTime());
-			getOutText.setHint("0");
-			dialog.show();
+			if((title.getText().toString()).equals("平台")){
+				new SweetAlertDialog(this.getActivity(), SweetAlertDialog.ERROR_TYPE)
+	                .setTitleText("操作失败")
+	                .setContentText("请先创建投资记录")
+	                .setConfirmText("确定")
+	                .show();
+			}else{
+				actionNameTextView.setText("充值金额");
+				actionTitleTextView.setText("充值金额");
+				productTextView.setText(title.getText());
+				timeEndTextView.setText(Common.getTime());
+				getOutText.setHint("0");
+				dialog.show();
+			}			
             break;			
 		}
 		case R.id.platform_out:{
-			actionNameTextView.setText("取出余额");
-			actionTitleTextView.setText("取出余额");
-			productTextView.setText(title.getText());
-			timeEndTextView.setText(Common.getTime());
-			getOutText.setHint(platform_rest.getText());
-			dialog.show();
+			if((title.getText().toString()).equals("平台")){
+				new SweetAlertDialog(this.getActivity(), SweetAlertDialog.ERROR_TYPE)
+                .setTitleText("操作失败")
+                .setContentText("请先创建投资记录")
+                .setConfirmText("确定")
+                .show();
+			}else{
+				actionNameTextView.setText("取出余额");
+				actionTitleTextView.setText("取出余额");
+				productTextView.setText(title.getText());
+				timeEndTextView.setText(Common.getTime());
+				getOutText.setHint(platform_rest.getText());
+				dialog.show();
+			}			
 			break;
 		}
 		case R.id.cancel_button:{
@@ -245,7 +261,7 @@ public class PlatformFragment extends Fragment implements OnClickListener,OnTouc
 			}else if(Float.parseFloat(getOutText.getText().toString())<0&&erroredBoolean==false){
 				erroredBoolean=true;
 				errorString="金额不可小于0";
-			}			
+			}
 			if ((actionNameTextView.getText().toString()).equals("取出余额")&&erroredBoolean==false) {
 				if (Float.parseFloat(getOutText.getText().toString())>Float.parseFloat(getOutText.getHint().toString())) {
 					erroredBoolean=true;

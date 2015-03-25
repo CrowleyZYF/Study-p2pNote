@@ -1,5 +1,6 @@
 package com.crowley.p2pnote;
 
+import java.text.ParseException;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -66,7 +67,7 @@ public class MainActivity extends Activity implements OnClickListener{
     
     private TextView title;
     
-    private ImageButton newItem;
+    private TextView newItem;
     private TextView login;
     private RelativeLayout checkTextView;
     //private TextView backupTextView;
@@ -147,7 +148,15 @@ public class MainActivity extends Activity implements OnClickListener{
     	super.onStart();
     	switch (indexNumber) {
 		case 0:{
-			indexFragment.reflash();
+			try {
+				indexFragment.reflash();
+			} catch (NumberFormatException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			} catch (ParseException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			}
 			break;
 		}
 		case 1:{
@@ -179,7 +188,7 @@ public class MainActivity extends Activity implements OnClickListener{
         switch (index)  
         {  
         case 0:   
-        	((ImageButton)findViewById(R.id.new_item)).setVisibility(View.VISIBLE);
+        	((TextView)findViewById(R.id.new_item)).setVisibility(View.VISIBLE);
         	title.setText(R.string.tab_index);
             ((ImageView)tabIndex.findViewById(R.id.tab_index_icon)).setImageResource(R.drawable.index_focus);
             ((TextView)tabIndex.findViewById(R.id.tab_index_text)).setTextColor(getResources().getColor(R.color.tab_text_chosen));
@@ -190,11 +199,19 @@ public class MainActivity extends Activity implements OnClickListener{
             } else  
             {   
                 transaction.show(indexFragment);
-                indexFragment.reflash();
+                try {
+					indexFragment.reflash();
+				} catch (NumberFormatException e) {
+					// TODO Auto-generated catch block
+					e.printStackTrace();
+				} catch (ParseException e) {
+					// TODO Auto-generated catch block
+					e.printStackTrace();
+				}
             }  
             break;  
         case 1:  
-        	((ImageButton)findViewById(R.id.new_item)).setVisibility(View.VISIBLE);
+        	((TextView)findViewById(R.id.new_item)).setVisibility(View.VISIBLE);
         	title.setText(R.string.tab_water);
         	((ImageView)tabWater.findViewById(R.id.tab_water_icon)).setImageResource(R.drawable.water_focus);
             ((TextView)tabWater.findViewById(R.id.tab_water_text)).setTextColor(getResources().getColor(R.color.tab_text_chosen));  
@@ -209,7 +226,7 @@ public class MainActivity extends Activity implements OnClickListener{
             }  
             break;  
         case 2:  
-        	((ImageButton)findViewById(R.id.new_item)).setVisibility(View.VISIBLE);
+        	((TextView)findViewById(R.id.new_item)).setVisibility(View.VISIBLE);
         	title.setText(R.string.tab_analyze);
         	((ImageView)tabAnalyze.findViewById(R.id.tab_analyze_icon)).setImageResource(R.drawable.analyze_focus);
             ((TextView)tabAnalyze.findViewById(R.id.tab_analyze_text)).setTextColor(getResources().getColor(R.color.tab_text_chosen));  
@@ -224,7 +241,7 @@ public class MainActivity extends Activity implements OnClickListener{
             }  
             break;  
         case 3: 
-        	((ImageButton)findViewById(R.id.new_item)).setVisibility(View.VISIBLE);
+        	((TextView)findViewById(R.id.new_item)).setVisibility(View.VISIBLE);
         	title.setText(R.string.tab_platform);
         	((ImageView)tabPlatform.findViewById(R.id.tab_platform_icon)).setImageResource(R.drawable.platform_focus); 
             ((TextView)tabPlatform.findViewById(R.id.tab_platform_text)).setTextColor(getResources().getColor(R.color.tab_text_chosen)); 
@@ -239,7 +256,7 @@ public class MainActivity extends Activity implements OnClickListener{
             }  
             break;
 		/*case 4:  
-        	((ImageButton)findViewById(R.id.new_item)).setVisibility(View.GONE);
+        	((TextView)findViewById(R.id.new_item)).setVisibility(View.GONE);
 			title.setText(R.string.tab_news);
 	    	((ImageView)tabMore.findViewById(R.id.tab_more_icon)).setImageResource(R.drawable.more_focus);  
             ((TextView)tabMore.findViewById(R.id.tab_more_text)).setTextColor(getResources().getColor(R.color.tab_text_chosen));
@@ -305,7 +322,7 @@ public class MainActivity extends Activity implements OnClickListener{
 		tabPlatform = (LinearLayout) findViewById(R.id.tab_platform);
 		//tabMore = (LinearLayout) findViewById(R.id.tab_more);
 		
-		newItem = (ImageButton) findViewById(R.id.new_item);
+		newItem = (TextView) findViewById(R.id.new_item);
 		
 		title = (TextView) findViewById(R.id.main_tab_banner_title);		
 

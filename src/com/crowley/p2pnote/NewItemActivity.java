@@ -515,6 +515,9 @@ public class NewItemActivity extends Activity implements OnItemSelectedListener,
 				if(TextUtils.isEmpty(custom_platform.getText())||TextUtils.isEmpty(custom_type.getText())){
 					erroredBoolean=true;
 					errorString="自定义平台和其投资类型不得为空";
+				}else if((custom_platform.getText().toString()).equals("平台")){
+					erroredBoolean=true;
+					errorString="自定义平台名称不得为“平台”";
 				}else{
 					company=custom_platform.getText().toString();
 					type=custom_type.getText().toString();

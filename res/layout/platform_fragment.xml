@@ -25,170 +25,90 @@
     <LinearLayout 
         android:layout_width="match_parent"
         android:layout_height="0dp"
-        android:layout_weight="4"
+        android:layout_weight="2"
   		android:orientation="vertical"
+  		android:background="@color/platform_chosen"
+        android:paddingTop="20dp"
+        android:paddingBottom="20dp"
+        android:paddingLeft="15dp"
+        android:paddingRight="15dp"
         >
         
-        <RelativeLayout 
-            android:layout_width="match_parent"
-            android:layout_height="0dp"
-            android:layout_weight="35"
-            android:background="@color/platform_chosen"
-            android:orientation="horizontal"
-            android:paddingTop="20dp"
-            android:paddingBottom="20dp"
-            android:paddingLeft="15dp"
-            android:paddingRight="15dp"
-            >
-            
-            <LinearLayout 
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:orientation="vertical"
-                android:layout_centerVertical="true"
-                >
-                
-                <TextView
-		            android:layout_width="wrap_content"
-		            android:layout_height="wrap_content"            
-		            android:textSize="18sp"
-		            android:textColor="@color/white"
-		            android:text="@string/platform_earning"
-		            />
-                
-                <LinearLayout 
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:orientation="horizontal"
-                    android:paddingTop="5dp"
-                    >
-                    
-                    <TextView
-	                    android:id="@+id/platform_earning"
-			            android:layout_width="wrap_content"
-			            android:layout_height="wrap_content"            
-			            android:textSize="24sp"
-			            android:textColor="@color/white"
-			            android:textStyle="bold"
-			            android:text="@string/without_data"
-			            />
-                    
-                    <TextView
-			            android:layout_width="wrap_content"
-			            android:layout_height="wrap_content"
-			            android:paddingLeft="5dp"            
-			            android:textSize="14sp"
-			            android:textColor="@color/white"
-			            android:text="@string/base_money"
-			            />
-                    
-                </LinearLayout>                
-                
-            </LinearLayout>
-            
-            <ImageView 
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:src="@drawable/divider"
-                android:layout_centerInParent="true"
-                />
-            
-            <LinearLayout 
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:orientation="vertical"
-                android:layout_centerVertical="true"
-                android:layout_alignParentRight="true"
-                >
-                
-                <TextView
-		            android:layout_width="wrap_content"
-		            android:layout_height="wrap_content"            
-		            android:textSize="18sp"
-		            android:textColor="@color/white"
-		            android:text="@string/platform_earning_rate"
-		            />
-                
-                <LinearLayout 
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:orientation="horizontal"
-			        android:layout_gravity="right"
-                    android:paddingTop="5dp"
-                    >
-                    
-                    <TextView
-	                    android:id="@+id/platform_earning_rate"
-			            android:layout_width="wrap_content"
-			            android:layout_height="wrap_content"            
-			            android:textSize="24sp"
-			            android:textColor="@color/white"
-			            android:textStyle="bold"
-			            android:text="@string/without_data"
-			            />
-                    
-                    <TextView
-			            android:layout_width="wrap_content"
-			            android:layout_height="wrap_content"
-			            android:paddingLeft="5dp"            
-			            android:textSize="14sp"
-			            android:textColor="@color/white"
-			            android:text="@string/base_money_rate"
-			            />
-                    
-                </LinearLayout>                
-                
-            </LinearLayout>
-            
-        </RelativeLayout>
-        
         <LinearLayout 
-            android:layout_width="match_parent"
-            android:layout_height="0dp"
-            android:layout_weight="65"
-            android:orientation="vertical"        
-            >
-            
-            <LinearLayout 
                 android:layout_width="match_parent"
-	            android:layout_height="0dp"
-	            android:layout_weight="2"
-	            android:orientation="vertical"
-	            android:gravity="center_vertical"
-	            android:paddingLeft="15dp"
-	            android:paddingRight="15dp"    
+                android:layout_height="0dp"
+                android:layout_weight="1"
+                android:orientation="horizontal"
+                android:layout_gravity="center_vertical"                
                 >
                 
-                <LinearLayout 
-	                android:layout_width="match_parent"
-	                android:layout_height="0dp"
-	                android:layout_weight="1"
-		            android:orientation="horizontal"
+            <LinearLayout 
+	                android:layout_width="0dp"
+	                android:layout_weight="4"
+	                android:layout_height="wrap_content"
+	                android:orientation="vertical"
+	                android:layout_gravity="center_vertical"
 	                >
 	                
-                    <TextView
+	                <TextView
 			            android:layout_width="wrap_content"
-			            android:layout_height="wrap_content"
+			            android:layout_height="wrap_content"            
 			            android:textSize="18sp"
-			            android:textColor="@color/light_black"
-			            android:text="@string/platform_money"
-			            android:layout_gravity="center_vertical"
+			            android:textColor="@color/yellow"
+			            android:text="@string/basic_info05"
 			            />
-                    
-                    <LinearLayout 
-	                    android:layout_width="match_parent"
+	                
+	                <LinearLayout 
+	                    android:layout_width="wrap_content"
 	                    android:layout_height="wrap_content"
 	                    android:orientation="horizontal"
-			            android:layout_gravity="center_vertical"
-			            android:gravity="right"
+	                    android:paddingTop="5dp"
 	                    >
 	                    
 	                    <TextView
-		                    android:id="@+id/platform_amount"
+		                    android:id="@+id/platform_earning_tobe"
 				            android:layout_width="wrap_content"
 				            android:layout_height="wrap_content"            
 				            android:textSize="24sp"
-				            android:textColor="@color/platform_chosen"
+				            android:textColor="@color/yellow"
+				            android:textStyle="bold"
+				            android:text="@string/without_data"
+				            />
+	                    
+	                </LinearLayout>                
+	                
+	            </LinearLayout>
+                
+                
+	            <LinearLayout 
+	                android:layout_width="0dp"
+	                android:layout_weight="3"
+	                android:layout_height="wrap_content"
+	                android:orientation="vertical"
+	                android:layout_gravity="center_vertical"
+	                >
+	                
+	                <TextView
+			            android:layout_width="wrap_content"
+			            android:layout_height="wrap_content"            
+			            android:textSize="18sp"
+			            android:textColor="@color/white"
+			            android:text="@string/platform_earning_rate"
+			            />
+	                
+	                <LinearLayout 
+	                    android:layout_width="wrap_content"
+	                    android:layout_height="wrap_content"
+	                    android:orientation="horizontal"
+	                    android:paddingTop="5dp"
+	                    >
+	                    
+	                    <TextView
+		                    android:id="@+id/platform_earning_rate"
+				            android:layout_width="wrap_content"
+				            android:layout_height="wrap_content"            
+				            android:textSize="24sp"
+				            android:textColor="@color/white"
 				            android:textStyle="bold"
 				            android:text="@string/without_data"
 				            />
@@ -198,13 +118,117 @@
 				            android:layout_height="wrap_content"
 				            android:paddingLeft="5dp"            
 				            android:textSize="14sp"
-				            android:textColor="@color/light_black"
-				            android:text="@string/base_money"
+				            android:textColor="@color/white"
+				            android:text="@string/base_money_rate"
 				            />
 	                    
-	                </LinearLayout>     
+	                </LinearLayout>                
 	                
 	            </LinearLayout>
+            </LinearLayout>
+        
+        <LinearLayout 
+                android:layout_width="match_parent"
+                android:layout_height="0dp"
+                android:layout_weight="1"
+                android:orientation="horizontal"
+                android:layout_gravity="center_vertical"
+                >
+	            
+            <LinearLayout 
+	                android:layout_width="0dp"
+	                android:layout_weight="4"
+	                android:layout_height="wrap_content"
+	                android:orientation="vertical"
+	                android:layout_gravity="center_vertical"
+	                >
+	                
+	                <TextView
+			            android:layout_width="wrap_content"
+			            android:layout_height="wrap_content"
+			            android:textSize="18sp"
+			            android:textColor="@color/white"
+			            android:text="@string/platform_money"
+			            android:layout_gravity="center_vertical"
+			            />
+	                
+	                <LinearLayout 
+	                    android:layout_width="wrap_content"
+	                    android:layout_height="wrap_content"
+	                    android:orientation="horizontal"
+	                    android:paddingTop="5dp"
+	                    >
+	                    
+	                    <TextView
+		                    android:id="@+id/platform_amount"
+				            android:layout_width="wrap_content"
+				            android:layout_height="wrap_content"            
+				            android:textSize="24sp"
+				            android:textColor="@color/white"
+				            android:textStyle="bold"
+				            android:text="@string/without_data"
+				            />
+	                    
+	                </LinearLayout>                
+	                
+	            </LinearLayout>
+	            <LinearLayout 
+	                android:layout_width="0dp"
+	                android:layout_weight="3"
+	                android:layout_height="wrap_content"
+	                android:orientation="vertical"
+	                android:layout_gravity="center_vertical"
+	                >
+	                
+	                <TextView
+			            android:layout_width="wrap_content"
+			            android:layout_height="wrap_content"            
+			            android:textSize="18sp"
+			            android:textColor="@color/white"
+			            android:text="@string/platform_earning"
+			            />
+	                
+	                <LinearLayout 
+	                    android:layout_width="wrap_content"
+	                    android:layout_height="wrap_content"
+	                    android:orientation="horizontal"
+	                    android:paddingTop="5dp"
+	                    >
+	                    
+	                    <TextView
+		                    android:id="@+id/platform_earning"
+				            android:layout_width="wrap_content"
+				            android:layout_height="wrap_content"            
+				            android:textSize="24sp"
+				            android:textColor="@color/white"
+				            android:textStyle="bold"
+				            android:text="@string/without_data"
+				            />
+	                    
+	                </LinearLayout>                
+	                
+	            </LinearLayout>
+                
+            </LinearLayout>
+        
+        
+    </LinearLayout>
+    <LinearLayout 
+            android:layout_width="match_parent"
+            android:layout_height="0dp"
+            android:layout_weight="2"
+            android:orientation="vertical"        
+            >
+            
+            <LinearLayout 
+                android:layout_width="match_parent"
+	            android:layout_height="0dp"
+	            android:layout_weight="3"
+	            android:orientation="vertical"
+	            android:gravity="center_vertical"
+	            android:paddingLeft="15dp"
+	            android:paddingRight="15dp"    
+                >
 	            
                 <LinearLayout 
 	                android:layout_width="match_parent"
@@ -264,7 +288,7 @@
             <LinearLayout 
                 android:layout_width="match_parent"
 	            android:layout_height="0dp"
-	            android:layout_weight="2"
+	            android:layout_weight="4"
 	            android:orientation="vertical"
 	            android:gravity="center_vertical"
 	            android:paddingLeft="15dp"
@@ -372,7 +396,7 @@
             <LinearLayout 
 	            android:layout_width="match_parent"
 	            android:layout_height="0dp"
-	            android:layout_weight="1"
+	            android:layout_weight="2"
 	            android:orientation="horizontal">
 	            
 	            <LinearLayout 
@@ -418,7 +442,6 @@
 	            
 	        </LinearLayout>
         </LinearLayout>
-    </LinearLayout>
     
 
 </LinearLayout>

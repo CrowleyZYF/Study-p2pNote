@@ -53,11 +53,11 @@ public class IndexFragment extends Fragment implements OnClickListener,OnItemLon
 	
 	private TextView timeTextView;
 	private TextView index_info_basic01_number;
-	private TextView index_info_basic01_float;
 	private TextView index_info_basic02_number;
 	private TextView index_info_basic02_float;
 	private TextView index_info_basic03_number;
 	private TextView index_info_basic04_number;
+	private TextView index_info_basic05_number;
 	
 	private Dialog dialog;
 	
@@ -84,7 +84,15 @@ public class IndexFragment extends Fragment implements OnClickListener,OnItemLon
 		View view = inflater.inflate(R.layout.index_fragment, container, false);
         
         initView(view);    	
-        initData(view);
+        try {
+			initData(view);
+		} catch (NumberFormatException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		} catch (ParseException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
         initEvent();
         
         return view;
@@ -99,7 +107,7 @@ public class IndexFragment extends Fragment implements OnClickListener,OnItemLon
         listView.setOnItemLongClickListener(this);
 	}
 
-	public void initData(View view) {
+	public void initData(View view) throws NumberFormatException, ParseException {
 		index = new Index(this.getActivity());
 		platform = new Platform(this.getActivity());
         dataList=new ArrayList<Map<String,Object>>();
@@ -109,11 +117,11 @@ public class IndexFragment extends Fragment implements OnClickListener,OnItemLon
         getData(0);
         timeTextView.setText(index.getTime());
         index_info_basic01_number.setText(index.getBaseInfo01Number01());
-    	index_info_basic01_float.setText(index.getBaseInfo01Number02());
     	index_info_basic02_number.setText(index.getBaseInfo02Number01());
     	index_info_basic02_float.setText(index.getBaseInfo02Number02());
     	index_info_basic03_number.setText(index.getBaseInfo03());
     	index_info_basic04_number.setText(index.getBaseInfo04());
+    	index_info_basic05_number.setText(index.getBaseInfo05());
     	
         tab_button01_number.setText(String.valueOf(index.indexCount(0)));
         tab_button02_number.setText(String.valueOf(index.indexCount(1)));
@@ -129,11 +137,11 @@ public class IndexFragment extends Fragment implements OnClickListener,OnItemLon
         
         timeTextView = (TextView) view.findViewById(R.id.index_info_time);
         index_info_basic01_number = (TextView) view.findViewById(R.id.index_info_basic01_number);
-    	index_info_basic01_float = (TextView) view.findViewById(R.id.index_info_basic01_float);
     	index_info_basic02_number = (TextView) view.findViewById(R.id.index_info_basic02_number);
     	index_info_basic02_float = (TextView) view.findViewById(R.id.index_info_basic02_float);
     	index_info_basic03_number = (TextView) view.findViewById(R.id.index_info_basic03_number);
     	index_info_basic04_number = (TextView) view.findViewById(R.id.index_info_basic04_number);
+    	index_info_basic05_number = (TextView) view.findViewById(R.id.index_info_basic05_number);
     	
     	dialog = new Dialog(this.getActivity(), R.style.MyDialog);
         //设置它的ContentView
@@ -202,7 +210,15 @@ public class IndexFragment extends Fragment implements OnClickListener,OnItemLon
 				earningFloat-=Float.parseFloat(moneyTextView.getText().toString());
 				index.dealRecord(id, earningFloat, getOutFloat);				
 				dialog.dismiss();
-				reflash();
+				try {
+					reflash();
+				} catch (NumberFormatException e) {
+					// TODO Auto-generated catch block
+					e.printStackTrace();
+				} catch (ParseException e) {
+					// TODO Auto-generated catch block
+					e.printStackTrace();
+				}
 			}
         	break;
         }
@@ -233,7 +249,15 @@ public class IndexFragment extends Fragment implements OnClickListener,OnItemLon
                 @Override
                 public void onClick(SweetAlertDialog sDialog) {
                 	Common.deleteItem(nowContext,((TextView)arg1.findViewById(R.id.item_id)).getText().toString());
-                	reflash();
+                	try {
+						reflash();
+					} catch (NumberFormatException e) {
+						// TODO Auto-generated catch block
+						e.printStackTrace();
+					} catch (ParseException e) {
+						// TODO Auto-generated catch block
+						e.printStackTrace();
+					}
                     sDialog.setTitleText("记录已删除")
                             .setConfirmText("确定")
                             .showContentText(false)
@@ -252,17 +276,17 @@ public class IndexFragment extends Fragment implements OnClickListener,OnItemLon
 		}		
 	}
 	
-	public void reflash(){
+	public void reflash() throws NumberFormatException, ParseException{
 		getData(nowState);
         list_adapter.notifyDataSetChanged();
         tab_button01_number.setText(String.valueOf(index.indexCount(0)));
         tab_button02_number.setText(String.valueOf(index.indexCount(1)));
         index_info_basic01_number.setText(index.getBaseInfo01Number01());
-    	index_info_basic01_float.setText(index.getBaseInfo01Number02());
     	index_info_basic02_number.setText(index.getBaseInfo02Number01());
     	index_info_basic02_float.setText(index.getBaseInfo02Number02());
     	index_info_basic03_number.setText(index.getBaseInfo03());
     	index_info_basic04_number.setText(index.getBaseInfo04());
+    	index_info_basic05_number.setText(index.getBaseInfo05());
 	}
 
 	@Override

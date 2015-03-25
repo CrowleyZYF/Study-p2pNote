@@ -1,5 +1,6 @@
 package com.crowley.p2pnote.functions;
 
+import java.math.BigDecimal;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
@@ -299,6 +300,51 @@ public class Index {
 			db.close();
 			helper.close();
 			return Float.valueOf(Common.dealFloat(amount)).toString();
+		}else{
+			tempCursor.close();
+			db.close();
+			helper.close();
+			return Float.valueOf(0.0f).toString();
+		}	
+	}
+	
+	/**
+	 * 
+	 * @return 代收收益
+	 * @throws ParseException 
+	 * @throws NumberFormatException 
+	 */
+	public String getBaseInfo05() throws NumberFormatException, ParseException{
+		float amount=0.0f;
+		DBOpenHelper helper = new DBOpenHelper(nowContext, "record.db");
+		SQLiteDatabase db = helper.getWritableDatabase();
+		
+		Cursor tempCursor=db.rawQuery("select * from record WHERE state=0 AND isDeleted=0 AND userName='"+Common.updateLogin(nowContext)+"'", null);
+		if(tempCursor.getCount()!=0){
+			while(tempCursor.moveToNext()){
+				RecordModel tempRecordModel=new RecordModel(tempCursor);
+				String idString = Integer.valueOf(tempRecordModel.getID()).toString();
+				String earningString = getEarning(idString);
+				Float earningFloat = 0.0f;
+				if (tempRecordModel.getEarningMin()==0.0) {
+					earningFloat = Float.valueOf(earningString);
+				}else{
+					String minString = earningString.substring(0, earningString.indexOf('~'));
+					String maxString = earningString.substring(earningString.indexOf('~')+1,earningString.length());
+					earningFloat = (Float.valueOf(minString)+Float.valueOf(maxString))/2;
+				}
+				//Float earningFloat = Float.valueOf(getEarning(idString));
+				amount+=earningFloat;
+				//String testString="asd"+earningFloat;
+			}
+			tempCursor.close();
+			db.close();
+			helper.close();
+			BigDecimal bd = new BigDecimal(Common.dealFloat(amount));
+			//Float tempFloat = Common.dealFloat(amount);
+			String tempString = bd.toPlainString();
+			return tempString;
+			//return Float.valueOf(Common.dealFloat(amount)).toString();
 		}else{
 			tempCursor.close();
 			db.close();

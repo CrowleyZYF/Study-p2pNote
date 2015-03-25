@@ -7,7 +7,8 @@
     <color name="font_gray">#999999</color>
     <color name="user_banner">#e8e8e8</color>    
     <color name="user_bg">#e2e1e1</color>    
-    <color name="user_time">#797b7e</color>
+    <color name="user_time">#797b7e</color>        
+    <color name="yellow">#fff000</color>
     
         
     <color name="tab_text_chosen">#7fc0e9</color>

@@ -5,8 +5,9 @@
     
     <string name="default_progressbar">Default Progressbar:</string>
     
-    <string name="new_item">新的投资</string>
-    <string name="basic_info01">当日收益（元）</string>
+    <string name="new_item">加一笔</string>
+    <string name="basic_info01">当日收益</string>
+    <string name="basic_info05">待收收益（元）</string>
     <string name="basic_info02">均年化收益</string>
     <string name="basic_info03">在投总额（元）</string>
     <string name="basic_info04">累计收益（元）</string>
@@ -35,6 +36,10 @@
     <string name="new_item_info06">计息方式</string>
     <string name="new_item_info07">计息时间</string>
     <string name="new_item_info08">结束时间</string>
+    <string name="new_item_info09">续标奖励</string>
+    <string name="new_item_info10">管理费</string>
+    <string name="new_item_info11">投标奖励</string>
+    <string name="new_item_info12">额外奖金</string>
     
     
     <string name="tab_index">主页</string>
@@ -135,10 +140,10 @@
     <string name="sure">确认</string>
     <string name="cancel">取消</string>
     
-    <string name="platform_earning">平台投资总收益</string>
-    <string name="platform_earning_rate">预期年化收益率</string>
-    <string name="platform_money">在投总额</string>
-    <string name="platform_rest">平台余额</string>
+    <string name="platform_earning">历史收益（元）</string>
+    <string name="platform_earning_rate">均年化收益率</string>
+    <string name="platform_money">在投总额（元）</string>
+    <string name="platform_rest">账户余额</string>
     <string name="platform_record">成交记录</string>
     
     <string name="platform_add">新增</string> 
